@@ -36,7 +36,7 @@
               "page": {
                 "resourceType": "core/franklin/components/image/v1/image",
                 "template": {
-                  "link": "https://www.deloittedigital.com/us/en.html"
+                  "href": "https://www.deloittedigital.com/us/en.html"
                 }
               }
             }
