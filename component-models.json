@@ -195,5 +195,31 @@
         "label": "Reference"
       }
     ]
+  },
+  {
+    "id": "imageLink",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "alt",
+        "value": "Default alt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "href",
+        "label": "Page",
+        "value": ""
+      }
+    ]
   }
 ]
