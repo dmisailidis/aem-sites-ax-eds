@@ -1,5 +1,5 @@
 mountpoints:
   /:
-    url: "https://author-p34811-e212389.adobeaemcloud.com/bin/franklin.delivery/dmisailidis/aem-sites-ax-eds/main"
+    url: "https://author-p34811-e212389.adobeaemcloud.com/bin/franklin.delivery/dmisailidis/aem-sites-ax-eds/header"
     type: "markup"
     suffix: ".html"
