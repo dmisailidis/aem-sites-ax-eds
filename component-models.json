@@ -105,6 +105,14 @@
           {
             "name": "secondary",
             "value": "secondary"
+          },
+          {
+            "name": "facebook",
+            "value": "icon-facebook"
+          },
+          {
+            "name": "twitter",
+            "value": "icon-twitter"
           }
         ]
       }
