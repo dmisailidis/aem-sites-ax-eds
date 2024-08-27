@@ -1,6 +1,5 @@
 import {
   createOptimizedPicture,
-  decorateIcons,
   fetchPlaceholders,
 } from '../../scripts/aem.js';
 
@@ -265,5 +264,4 @@ export default async function decorate(block) {
     input.dispatchEvent(new Event('input'));
   }
 
-  decorateIcons(block);
 }
