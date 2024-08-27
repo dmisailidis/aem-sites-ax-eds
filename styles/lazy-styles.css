@@ -1,1 +1,9 @@
 /* add global styles that can be loaded post LCP here */
+iframe {
+    border: 0;
+}
+
+b,
+strong {
+    font-weight: bolder;
+}
