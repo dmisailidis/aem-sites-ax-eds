@@ -195,5 +195,57 @@
         "label": "Reference"
       }
     ]
+  },
+  {
+    "id": "imageLink",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "alt",
+        "value": "Default alt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "href",
+        "label": "Page",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "search",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "source",
+        "label": "Source",
+        "value": "/query-index.json"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "value": "Search..."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "searchNoResults",
+        "label": "No Results",
+        "value": "No results found."
+      }
+    ]
   }
 ]

@@ -28,7 +28,9 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "imageLink",
+      "search"
     ]
   },
   {

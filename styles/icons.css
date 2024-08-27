@@ -5,13 +5,13 @@
     speak: never;
     display: inline-block;
     text-decoration: inherit;
-    width: 1em;
-    margin-right: .2em;
+    width: 1rem;
+    margin-right: .2rem;
     text-align: center;
     font-variant: normal;
     text-transform: none;
-    line-height: 1em;
-    margin-left: .2em;
+    line-height: 1rem;
+    margin-left: .2rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
