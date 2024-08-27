@@ -51,6 +51,20 @@
               }
             }
           }
+        },
+        {
+          "title": "Icon Button",
+          "id": "icon-button",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/button/v1/button",
+                "template": {
+                  "icon": ""
+                }
+              }
+            }
+          }
         }
       ]
     },
