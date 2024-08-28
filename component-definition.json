@@ -51,6 +51,20 @@
               }
             }
           }
+        },
+        {
+          "title": "Extended Button",
+          "id": "extended-button",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/button/v1/button",
+                "template": {
+                  "icon": ""
+                }
+              }
+            }
+          }
         }
       ]
     },
