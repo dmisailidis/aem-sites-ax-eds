@@ -310,6 +310,11 @@
         "name": "Breadcrumbs",
         "label": "Breadcrumbs",
         "value": "true"
+      },
+      {
+        "component": "text",
+        "name": "theme",
+        "label": "Theme"
       }
     ]
   }
