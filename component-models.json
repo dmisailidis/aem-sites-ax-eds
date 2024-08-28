@@ -111,7 +111,7 @@
     ]
   },
   {
-    "id": "extended-button",
+    "id": "iconButton",
     "fields": [
       {
         "component": "text",
@@ -299,6 +299,22 @@
         "name": "searchNoResults",
         "label": "No Results",
         "value": "No results found."
+      }
+    ]
+  },
+  {
+    "id": "page-metadata",
+    "fields": [
+      {
+        "component": "text",
+        "name": "breadcrumbs",
+        "label": "Breadcrumbs",
+        "value": "true"
+      },
+      {
+        "component": "text",
+        "name": "theme",
+        "label": "Theme"
       }
     ]
   }
