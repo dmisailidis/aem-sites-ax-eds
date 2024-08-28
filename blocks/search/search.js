@@ -263,5 +263,4 @@ export default async function decorate(block) {
     input.value = searchParams.get('q');
     input.dispatchEvent(new Event('input'));
   }
-
 }
