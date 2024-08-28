@@ -13,7 +13,7 @@ export default function decorate(block) {
       else div.className = 'cards-card-body';
     });
     li.querySelectorAll('a').forEach((a) => {
-      a.classList.add('icon-right-dir'); 
+      a.classList.add('icon-right-dir');
     });
     ul.append(li);
   });
