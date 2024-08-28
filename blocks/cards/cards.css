@@ -16,6 +16,7 @@
 .cards > ul > li .cards-card-body {
   padding: 20px;
 }
+
 .cards > ul > li .cards-card-body h1,h2,h3,h4,h5,h6{
   color: black;
   font-size: 22px;
@@ -32,9 +33,11 @@
 .cards > ul > li .cards-card-body p strong{
   color: black;
 }
+
 .cards > ul > li .cards-card-body p a {
   margin-right: .5rem;
 }
+
 .cards > ul > li .cards-card-body p a.icon-right-dir::before{
   margin-left: 0;
   margin-right: .3rem;
@@ -43,6 +46,7 @@
 .cards > ul > li .cards-card-body p a:hover{
   text-decoration:none;
 }
+
 .cards > ul > li .cards-card-image {
   line-height: 0;
 }
