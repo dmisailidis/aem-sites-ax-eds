@@ -3,44 +3,55 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: stretch; 
   grid-gap: 16px;
 }
 
-.cards > ul > li.contained {
-  /* border: 1px solid var(--dark-color);  */
-  background-color: var(--background-color);
-  height: max-content;
+.cards > ul > li {
+  background-color: #F2F2F8;
+  width: 100%;
 }
 
-.cards > ul > li.contained .cards-card-body {
-  margin: 20px;
-  height:450px;
+.cards > ul > li .cards-card-body {
+  padding: 20px;
 }
-.cards > ul > li.contained .cards-card-body h1,h2,h3,h4,h5,h6{
+.cards > ul > li .cards-card-body h1,h2,h3,h4,h5,h6{
+  color: black;
   font-size: 22px;
   font-weight: 700;
 }
 
-.cards > ul > li.contained .cards-card-body p{
-  font-size: 16px;
-  color: #5C5E63;
+.cards > ul > li .cards-card-body p{
+  font-size: 14px;
+  color: var(--color-base-text);
+  margin-top:.5rem;
+  margin-bottom: .5rem;
 }
 
-.cards > ul > li.contained .cards-card-body p strong{
+.cards > ul > li .cards-card-body p strong{
   color: black;
 }
-
-.cards > ul > li.contained .cards-card-image {
-  line-height: 0;
-  padding: 20px;
+.cards > ul > li .cards-card-body p a {
+  margin-right: .5rem;
+}
+.cards > ul > li .cards-card-body p a.icon-right-dir::before{
+  margin-left: 0;
+  margin-right: .3rem;
 }
 
-.cards > ul > li.contained .cards-card-body > *:first-child {
+.cards > ul > li .cards-card-body p a:hover{
+  text-decoration:none;
+}
+.cards > ul > li .cards-card-image {
+  line-height: 0;
+}
+
+.cards > ul > li .cards-card-body > *:first-child {
   margin-top: 0;
 }
 
-.cards > ul > li.contained img {
+.cards > ul > li img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
