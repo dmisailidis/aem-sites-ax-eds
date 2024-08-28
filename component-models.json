@@ -307,6 +307,12 @@
     "fields": [
       {
         "component": "text",
+        "name": "breadcrumbs",
+        "label": "Breadcrumbs",
+        "value": "true"
+      },
+      {
+        "component": "text",
         "name": "Breadcrumbs",
         "label": "Breadcrumbs",
         "value": "true"
