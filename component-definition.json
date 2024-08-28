@@ -58,7 +58,7 @@
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/button/v1/button",
+                "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "icon": ""
                 }
