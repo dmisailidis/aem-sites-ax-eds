@@ -111,7 +111,7 @@
     ]
   },
   {
-    "id": "icon-button",
+    "id": "iconButton",
     "fields": [
       {
         "component": "text",
