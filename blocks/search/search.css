@@ -1,6 +1,5 @@
 /* search box */
 .search .search-box {
-
     position: relative;
 }
 
@@ -44,6 +43,7 @@
 .search .search-results {
     padding: 2rem 0;
 }
+
 .search .search-results > li {
     border-bottom: 1px solid var(--border-color-base);
 }
