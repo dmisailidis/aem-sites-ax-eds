@@ -32,7 +32,8 @@
       "columns",
       "fragment",
       "imageLink",
-      "search"
+      "search",
+      "breadcrumb"
     ]
   },
   {
