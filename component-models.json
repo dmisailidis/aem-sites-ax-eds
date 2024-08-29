@@ -341,5 +341,43 @@
         "name": "hideCurrentPage"
       }
     ]
+  },
+  {
+    "id": "embed",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link",
+        "label": "Source Link",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "Image",
+        "multi": false
+      }
+    ]
+  },
+  {
+    "id": "accordion-item",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "accordion-title",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "body-text",
+        "label": "Text",
+        "value": ""
+      }
+    ]
   }
 ]

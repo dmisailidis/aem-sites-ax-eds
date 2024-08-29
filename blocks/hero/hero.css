@@ -15,7 +15,12 @@ main .hero-container {
 .hero >div:last-child {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem;
+}
+
+@media (min-width: 768px) {
+  .hero >div:last-child {
+    padding: 3rem;
+  }
 }
 
 .hero >div:last-child > div {
