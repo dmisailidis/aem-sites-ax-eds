@@ -16,7 +16,16 @@
       "image",
       "button",
       "iconButton",
-      "title"
+      "title",
+      "hero",
+      "cards",
+      "columns",
+      "fragment",
+      "imageLink",
+      "search",
+      "breadcrumb",
+      "embed",
+      "accordion"
     ]
   },
   {
@@ -33,7 +42,9 @@
       "fragment",
       "imageLink",
       "search",
-      "breadcrumb"
+      "breadcrumb",
+      "embed",
+      "accordion"
     ]
   },
   {
@@ -41,5 +52,9 @@
     "components": [
       "card"
     ]
+  },
+  {
+    "id": "accordion",
+    "components": ["accordion-item"]
   }
 ]
