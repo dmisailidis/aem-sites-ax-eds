@@ -153,12 +153,28 @@
             "value": ""
           },
           {
+            "name": "outline",
+            "value": "outline"
+          },
+          {
             "name": "primary",
             "value": "primary"
           },
           {
             "name": "secondary",
             "value": "secondary"
+          },
+          {
+            "name": "secondary-outline",
+            "value": "secondary-outline"
+          },
+          {
+            "name": "tertiary-outline",
+            "value": "tertiary-outline"
+          },
+          {
+            "name": "noborder",
+            "value": "noborder"
           }
         ]
       }

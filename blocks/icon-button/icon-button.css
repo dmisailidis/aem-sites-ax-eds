@@ -1,8 +1,39 @@
+/* -------------------------------------------------------------------------- */
+/*                               DEFAULT BUTTON                               */
+/* -------------------------------------------------------------------------- */
 .icon-button {
-    color: #b0b1b3;
-    font-size: 1.5rem;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: var(--bg-color-primary);
+  color: var(--color-tertiary);
+  padding: var(--padding-button);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-primary-button);
+  border: var(--border-primary-button);
+  border-radius: var(--border-radius-default);
+  transition: var(--transition-primary-button);
 }
 
 .icon-button:hover {
-    color: #fff;
+  background-color: var(--bg-color-primary-hover);
+  border: var(--border-primary-button-hover);
+}
+
+.icon-button:focus-visible {
+  background-color: var(--bg-color-primary-focus);
+  box-shadow: var(--box-shadow-primary-button-focus);
+  outline: none;
+}
+
+.icon-button:active {
+  background-color: var(--bg-color-primary-active);
+  border: var(--border-primary-button-hover);
+}
+
+.icon-button p {
+  margin: 0; /* margin reset */
 }

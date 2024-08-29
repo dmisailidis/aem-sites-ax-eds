@@ -84,6 +84,15 @@ footer .footer p {
   margin: 0;
 }
 
+footer .icon-button {
+  background-color: unset;
+  padding: unset;
+}
+footer .icon-button:hover {
+  background-color: unset;
+}
+
+
 footer .icon-button a {
   font-size: 1.5rem;
   color: #b0b1b3;
