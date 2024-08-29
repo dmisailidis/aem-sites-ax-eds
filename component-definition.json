@@ -276,7 +276,6 @@
                 "template": {
                   "name": "Accordion Item",
                   "model": "accordion-item",
-                  "filter": "section"
                 }
               }
             }

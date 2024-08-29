@@ -393,6 +393,16 @@
         "name": "body-text",
         "label": "Text",
         "value": ""
+      },
+      {
+        "component": "select",
+        "label": "Icon",
+        "name": "icon",
+        "valueType": "string",
+        "options": [
+          { "name": "Plus / Minus", "value": "plus-minus" },
+          { "name": "Chevron Up / Down", "value": "chevron-up-down" }
+        ]
       }
     ]
   }

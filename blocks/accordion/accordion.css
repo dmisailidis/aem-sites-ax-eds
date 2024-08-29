@@ -1,97 +1,30 @@
-.accordion details {
-    border-top: 2px solid var(--c-gray-border);
-}
-
-.accordion details summary {
-    position: relative;
-    cursor: pointer;
-    list-style: none;
-    overflow: hidden;
-    min-height: 52px;
-    text-align: left;
-}
-
-.accordion details summary::-webkit-details-marker {
-    display: none;
-}
-
-.accordion details summary::after {
-    font-family: var(--ff-activate-icons);
-    font-size: var(--heading-font-size-xl);
-    content: var(--icon-accordion-closed);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 0.2s;
-}
-
-.accordion details[open] summary::after {
-    content: var(--icon-accordion-open);
-}
-
-.accordion details .accordion-item-body {
-    padding: 0 4px 30px;
-    font-family: var(--ff-secondary);
-    font-style: normal;
-    font-weight: var(--fw-regular);
-    color: var(--c-copy);
-    font-size: var(--heading-font-size-s);
-    line-height: 28px;
-    text-align: left;
-}
-
-.accordion .accordion-button {
-    background: transparent;
-    border:none;
-}
-
-.accordion .accordion-button:focus{
-    outline: none;
-    border:none;
-}
-
-.accordion .plus-icon{
-    color: var(--c-mega-menu-link);
-    cursor:pointer;
-    line-height: 0px;
-    font-family: var(--ff-pricefx-icons);
-    font-size: calc((30 / 16) * 1rem);
-    position: absolute;
-    right: 0;
-    height: 52px;
-}
-
-.accordion .accordion-item-label{
+.accordion .accordion-item-label {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    font-family: var(--ff-primary);
-    font-size: calc((33 / 16) * 1rem);
-    font-weight: var(--fw-med);
-    padding-bottom: 20px;
-    padding-right: 40px;
-    padding-top: 17px;
-    margin: 0;
+    border: none;
+    background: transparent;
+    padding: 1rem 0;
+    width: 100%;
 }
 
-.accordion .accordion-item-label p {
-    margin-bottom: 0;
+.accordion .accordion-item-container {
+    border-top: 1px solid #B0B2B8;
 }
 
-.accordion .accordion-item-label h3 {
-    margin: 0;
+.accordion .accordion-item-container:last-child {
+    border-bottom: 1px solid #B0B2B8;
 }
 
-.accordion .accordion-item[open] .plus-icon::after {
-    content: var(--icon-minus);
-    display: inline-block;
-    width: 31px;
-    height: 52px;
+.accordion .accordion-item-label:hover h3 {
+    color: var(--color-secondary);
 }
 
-.accordion .accordion-item:not([open]) .plus-icon::after {
-    content: var(--icon-plus);
-    display: inline-block;
-    width: 31px;
-    height: 52px;
+.accordion .accordion-item-label:hover .accordion-button {
+    color: var(--color-secondary);
+}
+
+.accordion .accordion-item-label .accordion-button {
+    background: transparent;
+    border: none;
+    padding: 0;
 }
