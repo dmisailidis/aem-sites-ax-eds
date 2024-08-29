@@ -55,10 +55,6 @@
   },
   {
     "id": "accordion",
-    "components": ["accordion-item"]
-  },
-  {
-    "id": "accordion-item",
-    "components": ["section"]
+    "components": ["accordion-item", "section"]
   }
 ]
