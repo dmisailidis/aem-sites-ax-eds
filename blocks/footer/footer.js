@@ -66,25 +66,15 @@ export default async function decorate(block) {
   const footerContainerBottom = document.querySelectorAll('.footer > div > .section')[1];
   footerContainerBottom.classList.add('footer__container-bottom');
 
-  // Select all elements with the class 'icon-button'
   const iconButtons = footerContainerBottom.querySelectorAll('.icon-button');
-
-  // Create a new .icon-button-wrapper element
   const newWrapper = document.createElement('div');
   newWrapper.classList.add('icon-button-wrapper');
-
-  // Move all .icon-button elements into the new wrapper
   iconButtons.forEach((button) => {
     newWrapper.appendChild(button);
   });
 
-  // Find the parent container where the original .icon-button-wrapper elements are
-  const iconButtonContainer = document.querySelector('.icon-button-container');
-
-  // Remove all existing .icon-button-wrapper elements
+  const iconButtonContainer = document.querySelector('footer').querySelector('.icon-button-container');
   const existingWrappers = iconButtonContainer.querySelectorAll('.icon-button-wrapper');
   existingWrappers.forEach((wrapper) => wrapper.remove());
-
-  // Append the new wrapper containing all buttons to the footer container
   iconButtonContainer.appendChild(newWrapper);
 }
