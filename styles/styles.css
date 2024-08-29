@@ -45,6 +45,14 @@
   --font-size-button: 0.875rem;
   --font-size-medium: 0.875rem;
   --font-size-small: 0.75rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+
+
+  /* PADDINGS */
+  --padding-button: 1rem 1.5rem;
+  --padding-button-small: 0.25rem 1rem;
 
   /* SPACE */
   --space-s: 1rem;
@@ -60,6 +68,37 @@
   --line-height-h4: 1.75rem;
   --line-height-h5: 1.5rem;
   --line-height-h6: 1.5rem;
+  
+  --line-height-primary-button: 1.5rem;
+
+  /* BORDERS */
+
+  --border-primary-button:                   1px solid $bg-color-primary;
+  --border-primary-button-hover:             1px solid $bg-color-primary;
+  --border-outline-primary-button:           1px solid $bg-color-primary;
+  --border-outline-primary-button-hover:     1px solid $bg-color-primary;
+
+  --border-secondary-button:                 1px solid $bg-color-secondary;
+  --border-secondary-button-hover:           1px solid $bg-color-secondary;
+  --border-outline-secondary-button:         1px solid $bg-color-secondary;
+  --border-outline-secondary-button-hover:   1px solid $bg-color-secondary;
+
+  --border-outline-tertiary-button:         1px solid #C8CACC;
+  --border-outline-tertiary-button-hover:   1px solid #484A4C;
+
+
+  --border-radius-default:                   2px;
+  --transition-primary-button:               background-color .3s,color .3s;
+
+  /* Buttons - Focus */
+  --border-primary-button-focus: 1px solid var(--bg-color-primary-focus);
+  --box-shadow-primary-button-focus: rgba(255, 171, 0, 1) 0px 0px 0px 0.2rem;
+
+  --border-secondary-button-focus: 1px solid var(--bg-color-secondary-focus);
+  --box-shadow-secondary-button-focus: rgba(255, 215, 64, 1) 0px 0px 0px 0.2rem;
+
+  --border-tertiary-button-focus: 1px solid var(--bg-color-tertiary-focus);
+  --box-shadow-tertiary-button-focus: rgba(32, 136, 52, 0.5) 0px 0px 0px 0.2rem;
 
   /* NAV HEIGHT */
   --nav-height: 64px;

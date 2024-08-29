@@ -1,6 +1,6 @@
 export default function decorate(block) {
   const [href, text, iconName] = block.children;
-  const btn = document.createElement('a');
+  const btn = href.querySelector('a') ? document.createElement('a') : document.createElement('p');
   block.replaceChildren();
 
   if (href.querySelector('a')) {
