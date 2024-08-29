@@ -1,7 +1,7 @@
 export default function decorate(block) {
   const [href, text, iconName] = block.children;
   const btn = document.createElement('a');
-  btn.classList.add(...block.classList);
+  block.replaceChildren();
 
   if (href.querySelector('a')) {
     btn.href = href.querySelector('a').href;
@@ -15,6 +15,5 @@ export default function decorate(block) {
     btn.classList.add(iconName.querySelector('p').innerText);
   }
 
-  block.insertAdjacentElement('afterend', btn);
-  block.remove();
+  block.appendChild(btn);
 }
