@@ -386,8 +386,8 @@
         "name": "icon",
         "valueType": "string",
         "options": [
-          { "name": "Plus / Minus", "value": "plus-minus" },
-          { "name": "Chevron Up / Down", "value": "chevron-up-down" }
+          { "name": "Plus / Minus", "value": "plus-minus"},
+          { "name": "Chevron Up / Down", "value": "chevron-up-down"}
         ]
       }
     ]
