@@ -378,28 +378,6 @@
     ]
   },
   {
-    "id": "accordion",
-    "fields": [
-      {
-        "component": "select",
-        "label": "Icon",
-        "name": "icon",
-        "valueType": "string",
-        "options": [
-          { "name": "Plus / Minus", "value": "plus-minus"},
-          { "name": "Chevron Up / Down", "value": "chevron-up-down"}
-        ]
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "test",
-        "label": "Test",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "accordion-item",
     "fields": [
       {
