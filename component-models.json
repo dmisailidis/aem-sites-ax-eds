@@ -389,6 +389,13 @@
           { "name": "Plus / Minus", "value": "plus-minus"},
           { "name": "Chevron Up / Down", "value": "chevron-up-down"}
         ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "test",
+        "label": "Test",
+        "value": ""
       }
     ]
   },
