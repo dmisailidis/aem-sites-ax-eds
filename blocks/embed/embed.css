@@ -40,14 +40,16 @@
     position: relative;
     display: block;
     transform: scale(3);
+    background-color: var(--color-primary);
     width: 22px;
     height: 22px;
-    border: 2px solid;
+    border: 2px solid white;
     border-radius: 20px;
     padding: 0;
 }
 
 .embed .embed-placeholder-play button::before {
+    color: white;
     content: "";
     display: block;
     box-sizing: border-box;
