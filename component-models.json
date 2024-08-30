@@ -130,7 +130,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "classes",
+        "name": "icon",
         "value": "",
         "label": "Icon"
       },
@@ -173,6 +173,13 @@
             "value": "icon-button--noborder"
           }
         ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "classes",
+        "value": "",
+        "label": "Icon Test"
       }
     ]
   },
