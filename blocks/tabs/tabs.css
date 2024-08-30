@@ -1,0 +1,34 @@
+.tabs .tabs-list {
+    display: flex;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.tabs .tabs-list button {
+    flex: 0 0 1;
+    font-size: var(--font-size-h5);
+    border: 0;
+    padding: 0 16px;
+    transition: background-color 0.25s;
+    font-weight: var(--font-weight-bold);
+    background-color: transparent;
+    overflow: unset;
+    white-space: unset;
+    border-bottom: 1px solid #b0b1b3;
+    cursor: pointer;
+}
+
+.tabs .tabs-list button[aria-selected="true"] {
+    border-bottom: 3px solid var(--color-primary);
+    cursor: initial;
+}
+
+.tabs .tabs-list button[aria-selected="false"]:hover,
+.tabs .tabs-list button[aria-selected="false"]:focus,
+.tabs .tabs-list button[aria-selected="true"] {
+    color: var(--color-secondary);
+}
+
+.tabs .tabs-panel[aria-hidden="true"] {
+    display: none;
+}
