@@ -4,6 +4,11 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+function toggleAllNavSections(sections, expanded = false) {
+  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li:not(.nav-drop)').forEach((section) => {
+    section.setAttribute('aria-expanded', expanded);
+  });
+}
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -31,12 +36,6 @@ function openOnKeydown(e) {
 
 function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
-}
-
-function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li:not(.nav-drop)').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
 }
 
 function handleAccordion(section) {
