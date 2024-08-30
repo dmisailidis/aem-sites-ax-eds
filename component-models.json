@@ -428,7 +428,7 @@
         "component": "multiselect",
         "name": "classes",
         "value": "",
-        "label": "Icon",
+        "label": "Type",
         "valueType": "string",
         "options": [
           {
@@ -444,16 +444,7 @@
             "value": "no-header"
           }
         ]
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "test",
-        "label": "No test",
-        "value": "",
-        "multi": true
       }
-
     ]
   }
 ]
