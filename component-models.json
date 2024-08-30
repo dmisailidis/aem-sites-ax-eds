@@ -413,5 +413,47 @@
         "value": ""
       }
     ]
+  },
+  {
+    "id": "table",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "body-text",
+        "label": "Text",
+        "value": ""
+      },
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "value": "",
+        "label": "Icon",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Primary",
+            "value": "primary"
+          },
+          {
+            "name": "Secondary",
+            "value": "secondary"
+          },
+          {
+            "name": "No Header",
+            "value": "no-header"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "test",
+        "label": "No test",
+        "value": "",
+        "multi": true
+      }
+
+    ]
   }
 ]
