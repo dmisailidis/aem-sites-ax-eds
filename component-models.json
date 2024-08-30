@@ -130,7 +130,7 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "icon",
+        "name": "classes",
         "value": "",
         "label": "Icon"
       },
@@ -154,27 +154,23 @@
           },
           {
             "name": "outline",
-            "value": "outline"
-          },
-          {
-            "name": "primary",
-            "value": "primary"
+            "value": "icon-button--outline"
           },
           {
             "name": "secondary",
-            "value": "secondary"
+            "value": "icon-button--secondary"
           },
           {
             "name": "secondary-outline",
-            "value": "secondary-outline"
+            "value": "icon-button--secondary-outline"
           },
           {
             "name": "tertiary-outline",
-            "value": "tertiary-outline"
+            "value": "icon-button--tertiary-outline"
           },
           {
             "name": "noborder",
-            "value": "noborder"
+            "value": "icon-button--noborder"
           }
         ]
       }
