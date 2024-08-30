@@ -154,32 +154,25 @@
           },
           {
             "name": "outline",
-            "value": "icon-button--outline"
+            "value": "icon-button-outline"
           },
           {
             "name": "secondary",
-            "value": "icon-button--secondary"
+            "value": "icon-button-secondary"
           },
           {
             "name": "secondary-outline",
-            "value": "icon-button--secondary-outline"
+            "value": "icon-button-secondary-outline"
           },
           {
             "name": "tertiary-outline",
-            "value": "icon-button--tertiary-outline"
+            "value": "icon-button-tertiary-outline"
           },
           {
             "name": "noborder",
-            "value": "icon-button--noborder"
+            "value": "icon-button-noborder"
           }
         ]
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "classes",
-        "value": "",
-        "label": "Icon Test"
       }
     ]
   },
