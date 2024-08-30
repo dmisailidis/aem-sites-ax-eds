@@ -45,7 +45,9 @@
       "breadcrumb",
       "embed",
       "accordion",
-      "table"
+      "table",
+      "carousel",
+      "tabs"
     ]
   },
   {
@@ -57,5 +59,17 @@
   {
     "id": "accordion",
     "components": ["accordion-item"]
+  },
+  {
+    "id": "carousel",
+    "components": [
+      "carousel-item"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tabs-item"
+    ]
   }
 ]
