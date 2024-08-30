@@ -484,5 +484,17 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "seperator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "Seperator",
+        "value": "",
+        "label": "Title",
+        "valueType": "string"
+      }
+    ]
   }
 ]

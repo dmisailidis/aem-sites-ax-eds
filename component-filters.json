@@ -25,7 +25,8 @@
       "search",
       "breadcrumb",
       "embed",
-      "accordion"
+      "accordion",
+      "seperator"
     ]
   },
   {
@@ -47,7 +48,8 @@
       "accordion",
       "table",
       "carousel",
-      "tabs"
+      "tabs",
+      "seperator"
     ]
   },
   {
