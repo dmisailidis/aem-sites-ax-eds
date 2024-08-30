@@ -142,7 +142,7 @@
         "label": "Title"
       },
       {
-        "component": "select",
+        "component": "multiselect",
         "name": "classes",
         "value": "",
         "label": "Type",
