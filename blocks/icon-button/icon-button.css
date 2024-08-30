@@ -1,7 +1,7 @@
 /* -------------------------------------------------------------------------- */
 /*                               DEFAULT BUTTON                               */
 /* -------------------------------------------------------------------------- */
-.icon-button {
+.icon-button button{
   display: inline-flex;
   flex-direction: row;
   align-items: center;
@@ -18,20 +18,174 @@
   transition: var(--transition-primary-button);
 }
 
-.icon-button:hover {
+.icon-button button:hover {
   background-color: var(--bg-color-primary-hover);
   border: var(--border-primary-button-hover);
 }
 
-.icon-button:focus-visible {
+.icon-button button:focus-visible {
   background-color: var(--bg-color-primary-focus);
   box-shadow: var(--box-shadow-primary-button-focus);
   outline: none;
 }
 
-.icon-button:active {
+.icon-button button:active {
   background-color: var(--bg-color-primary-active);
   border: var(--border-primary-button-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               OUTLINE BUTTON                               */
+/* -------------------------------------------------------------------------- */
+.icon-button.icon-button-outline button {
+    background-color: var(--bg-color-base);
+    color: var(--color-primary);
+    border: var(--border-primary-button);
+}
+
+.icon-button.icon-button-outline button:hover {
+    color: var(--color-tertiary);
+    background-color: var(--bg-color-outline-primary-hover);
+    border: var(--border-outline-primary-button-hover);
+}
+
+.icon-button.icon-button-outline button:focus-visible {
+    color: var(--color-primary);
+    background-color: var(--bg-color-outline-primary-focus);
+    border: var(--border-primary-button-focus);
+    box-shadow: var(--box-shadow-primary-button-focus);
+    outline: none;
+}
+
+.icon-button.icon-button-outline button:active {
+    color: var(--color-tertiary);
+    background-color: var(--bg-color-primary-active);
+    border: var(--border-primary-button-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              SECONDARY BUTTON                              */
+/* -------------------------------------------------------------------------- */
+.icon-button.icon-button-secondary button {
+  background-color: var(--bg-color-secondary);
+  border: var(--border-secondary-button);
+  color: var(--color-tertiary);
+}
+
+.icon-button.icon-button-secondary button:hover {
+  background-color: var(--bg-color-secondary-hover);
+  border: var(--border-secondary-button-hover);
+}
+
+.icon-button.icon-button-secondary button:focus-visible {
+  background-color: var(--bg-color-secondary-focus);
+  box-shadow: var(--box-shadow-secondary-button-focus);
+  outline: none;
+}
+
+.icon-button.icon-button-secondary button:active {
+  background-color: var(--bg-color-secondary-active);
+  border: var(--border-secondary-button-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              SECONDARY OUTLINE                             */
+/* -------------------------------------------------------------------------- */
+.icon-button.icon-button-secondary-outline button {
+  background-color: var(--bg-color-base);
+  color: var(--color-secondary);
+  border: var(--border-primary-button);
+}
+
+.icon-button.icon-button-secondary-outline button:hover {
+  color: var(--color-tertiary);
+  background-color: var(--bg-color-secondary-hover);
+  border: var(--border-outline-primary-button-hover);
+}
+
+.icon-button.icon-button-secondary-outline button:focus-visible {
+  color: var(--color-secondary);
+  background-color: var(--bg-color-base);
+  border: var(--border-secondary-button-focus);
+  box-shadow: var(--box-shadow-secondary-button-focus);
+  outline: none;
+}
+
+.icon-button.icon-button-secondary-outline button:active {
+  color: var(--color-tertiary);
+  background-color: var(--bg-color-secondary-active);
+  border: var(--border-secondary-button-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              TERTIARY OUTLINE                              */
+/* -------------------------------------------------------------------------- */
+.icon-button.icon-button-tertiary-outline button {
+  background-color: var(--bg-color-base);
+  color: var(--color-base-text);
+  border: var(--border-outline-tertiary-button);
+}
+
+.icon-button.icon-button-tertiary-outline button:hover {
+  color: var(--color-base-text);
+  background-color: var(--bg-color-tertiary-hover);
+  border: var(--border-outline-tertiary-button-hover);
+}
+
+.icon-button.icon-button-tertiary-outline button:focus-visible {
+  color: var(--color-base-text);
+  background-color: var(--bg-color-outline-primary-focus);
+  border: var(--border-tertiary-button-focus);
+  box-shadow: var(--box-shadow-tertiary-button-focus);
+  outline: none;
+}
+
+.icon-button.icon-button-tertiary-outline button:active {
+  color: var(--color-base-text);
+  background-color: var(--bg-color-tertiary-active);
+  border: var(--bg-color-tertiary-active);
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*                               NOBORDER BUTTON                              */
+/* -------------------------------------------------------------------------- */
+.icon-button.icon-button-noborder button {
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: none;
+}
+
+.icon-button.icon-button-noborder button:hover {
+  background-color: transparent;
+  border: none;
+}
+
+.icon-button.icon-button-noborder button:hover p,
+.icon-button.icon-button-noborder button:hover a {
+  text-decoration: underline;
+}
+
+.icon-button.icon-button-noborder button:focus-visible {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.icon-button.icon-button-noborder button:focus-visible p,
+.icon-button.icon-button-noborder button:focus-visible a {
+  text-decoration: underline;
+}
+
+.icon-button.icon-button-noborder button:active {
+  background-color: transparent;
+  border: none;
+}
+
+.icon-button.icon-button-noborder button:active p,
+.icon-button.icon-button-noborder button:active a {
+  text-decoration: underline;
 }
 
 .icon-button p {

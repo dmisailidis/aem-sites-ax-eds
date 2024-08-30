@@ -73,15 +73,15 @@
 
   /* BORDERS */
 
-  --border-primary-button:                   1px solid $bg-color-primary;
-  --border-primary-button-hover:             1px solid $bg-color-primary;
-  --border-outline-primary-button:           1px solid $bg-color-primary;
-  --border-outline-primary-button-hover:     1px solid $bg-color-primary;
+  --border-primary-button:                   1px solid var(--bg-color-primary);
+  --border-primary-button-hover:             1px solid var(--bg-color-primary);
+  --border-outline-primary-button:           1px solid var(--bg-color-primary);
+  --border-outline-primary-button-hover:     1px solid var(--bg-color-primary);
 
-  --border-secondary-button:                 1px solid $bg-color-secondary;
-  --border-secondary-button-hover:           1px solid $bg-color-secondary;
-  --border-outline-secondary-button:         1px solid $bg-color-secondary;
-  --border-outline-secondary-button-hover:   1px solid $bg-color-secondary;
+  --border-secondary-button:                 1px solid var(--bg-color-secondary);
+  --border-secondary-button-hover:           1px solid var(--bg-color-secondary);
+  --border-outline-secondary-button:         1px solid var(--bg-color-secondary);
+  --border-outline-secondary-button-hover:   1px solid var(--bg-color-secondary);
 
   --border-outline-tertiary-button:         1px solid #C8CACC;
   --border-outline-tertiary-button-hover:   1px solid #484A4C;
