@@ -15,5 +15,9 @@ export default function decorate(block) {
     btn.classList.add(iconName.querySelector('p').innerText);
   }
 
-  block.appendChild(btn);
+  const buttonElement = document.createElement('button');
+
+  buttonElement.setAttribute('type', 'button');
+  buttonElement.appendChild(btn);
+  block.appendChild(buttonElement);
 }

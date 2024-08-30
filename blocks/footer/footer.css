@@ -84,12 +84,14 @@ footer .footer p {
   margin: 0;
 }
 
-footer .icon-button {
+footer .icon-button button{
   background-color: unset;
   padding: unset;
+  border: unset;
 }
-footer .icon-button:hover {
+footer .icon-button button:hover {
   background-color: unset;
+  border: unset;
 }
 
 
