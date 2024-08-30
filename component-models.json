@@ -408,6 +408,13 @@
         "name": "accordion-title",
         "label": "Title",
         "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "body-text",
+        "label": "Text",
+        "value": ""
       }
     ]
   }
