@@ -283,8 +283,8 @@
           }
         },
         {
-          "name": "Table",
-          "model": "table",
+          "title": "Table",
+          "id": "table",
           "xwalk": {
             "page": {
               "resourceType": "core/franklin/components/block/v1/block",
