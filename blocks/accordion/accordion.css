@@ -15,8 +15,16 @@
     border-bottom: 1px solid #B0B2B8;
 }
 
+.accordion .accordion-item-label:hover {
+    cursor: pointer;
+}
+
 .accordion .accordion-item-label:hover h3 {
     color: var(--color-secondary);
+}
+
+.accordion .icon-plus::before, .icon-minus::before {
+    font-size: 1.25rem;
 }
 
 .accordion .accordion-item-label:hover .accordion-button {
