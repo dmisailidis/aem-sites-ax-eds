@@ -180,11 +180,18 @@
     "id": "download",
     "fields": [
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "assetTitle",
+        "label": "Title",
+        "value": ""
+      },
+      {
         "component": "aem-content",
         "valueType": "string",
         "name": "assetLink",
         "value": "",
-        "label": "assetLink"
+        "label": "Asset Link"
       }
     ]
   },
