@@ -177,6 +177,18 @@
     ]
   },
   {
+    "id": "download",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "assetLink",
+        "value": "",
+        "label": "assetLink"
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
@@ -481,6 +493,18 @@
         "name": "text",
         "value": "",
         "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "separator",
+    "fields": [
+      {
+        "component": "text",
+        "name": "Separator",
+        "value": "",
+        "label": "Title",
         "valueType": "string"
       }
     ]
