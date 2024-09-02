@@ -177,6 +177,18 @@
     ]
   },
   {
+    "id": "download",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "assetLink",
+        "value": "",
+        "label": "assetLink"
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
