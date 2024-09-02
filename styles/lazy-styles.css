@@ -9,9 +9,9 @@ strong {
 }
 /*section content block*/
 .section.content-block{
-    background-color: black;
+    background-color:var(--color-dark-text);
 }
 
 .section.content-block p,h1,h2,h3,h4,h5,h6{
-    color: white;
+    color: #d3d3d4;
 }

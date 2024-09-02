@@ -486,11 +486,11 @@
     ]
   },
   {
-    "id": "seperator",
+    "id": "separator",
     "fields": [
       {
         "component": "text",
-        "name": "Seperator",
+        "name": "Separator",
         "value": "",
         "label": "Title",
         "valueType": "string"
