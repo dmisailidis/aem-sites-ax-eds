@@ -52,9 +52,7 @@
   },
   {
     "id": "cards",
-    "components": [
-      "card"
-    ]
+    "components": ["card"]
   },
   {
     "id": "accordion",
@@ -62,15 +60,10 @@
   },
   {
     "id": "carousel",
-    "components": [
-      "carousel-item",
-      "hero"
-    ]
+    "components": ["carousel-item"]
   },
   {
     "id": "tabs",
-    "components": [
-      "tabs-item"
-    ]
+    "components": ["tabs-item"]
   }
 ]
