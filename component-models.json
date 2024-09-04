@@ -515,5 +515,17 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "map-locator",
+    "fields": [
+      {
+        "component": "aem-tag",
+        "label": "AEM Tag Picker",
+        "name": "cq:tags",
+        "valueType": "string",
+        "multi": true
+      }
+    ]
   }
 ]

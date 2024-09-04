@@ -50,7 +50,8 @@
       "table",
       "carousel",
       "tabs",
-      "separator"
+      "separator",
+      "map-locator"
     ]
   },
   {
