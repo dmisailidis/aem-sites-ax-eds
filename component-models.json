@@ -530,6 +530,13 @@
         "label": "AEM Tag Picker",
         "name": "cq:tags",
         "valueType": "string"
+      },
+      {
+        "component": "aem-content-fragment",
+        "name": "map-locator-cf",
+        "label": "Map Locator",
+        "valueType": "string",
+        "variationName": "contentFragmentVariation"
       }
     ]
   }
