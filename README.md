@@ -4,8 +4,8 @@ This demo project leverages Edge Delivery Services (EDS) with Adobe Experience M
 
 ## Environments
 
-- **Preview:** [https://main--aem-sites-ax-eds--dmisailidis.hlx.page/](https://main--aem-sites-ax-eds--dmisailidis.hlx.page/)
-- **Live:** [https://main--aem-sites-ax-eds--dmisailidis.hlx.live/](https://main--aem-sites-ax-eds--dmisailidis.hlx.live/)
+- **Preview:** [https://main--aem-sites-ax-eds--dmisailidis.aem.page/](https://main--aem-sites-ax-eds--dmisailidis.aem.page/)
+- **Live:** [https://main--aem-sites-ax-eds--dmisailidis.aem.live/](https://main--aem-sites-ax-eds--dmisailidis.aem.live/)
 
 ## Installation
 

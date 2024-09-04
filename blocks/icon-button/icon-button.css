@@ -18,6 +18,16 @@
   transition: var(--transition-primary-button);
 }
 
+.icon-button button:has(a) {
+  padding: unset;
+}
+
+.icon-button button:has(a) a{
+  padding: var(--padding-button);
+  color: var(--color-tertiary);
+  text-decoration: none;
+}
+
 .icon-button button:hover {
   background-color: var(--bg-color-primary-hover);
   border: var(--border-primary-button-hover);
@@ -43,10 +53,19 @@
     border: var(--border-primary-button);
 }
 
+.icon-button.icon-button-outline button:has(a) a{
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
 .icon-button.icon-button-outline button:hover {
     color: var(--color-tertiary);
     background-color: var(--bg-color-outline-primary-hover);
     border: var(--border-outline-primary-button-hover);
+}
+
+.icon-button.icon-button-outline button:has(a) a:hover{
+  color: var(--color-tertiary);
 }
 
 .icon-button.icon-button-outline button:focus-visible {
@@ -97,10 +116,18 @@
   border: var(--border-primary-button);
 }
 
+.icon-button.icon-button-secondary-outline button:has(a) a{
+  color: var(--color-secondary);
+}
+
 .icon-button.icon-button-secondary-outline button:hover {
   color: var(--color-tertiary);
   background-color: var(--bg-color-secondary-hover);
   border: var(--border-outline-primary-button-hover);
+}
+
+.icon-button.icon-button-secondary-outline button:has(a) a:hover{
+  color: var(--color-tertiary);
 }
 
 .icon-button.icon-button-secondary-outline button:focus-visible {
@@ -126,10 +153,18 @@
   border: var(--border-outline-tertiary-button);
 }
 
+.icon-button.icon-button-tertiary-outline button:has(a) a{
+  color: var(--color-base-text);
+}
+
 .icon-button.icon-button-tertiary-outline button:hover {
   color: var(--color-base-text);
   background-color: var(--bg-color-tertiary-hover);
   border: var(--border-outline-tertiary-button-hover);
+}
+
+.icon-button.icon-button-tertiary-outline button:has(a) a:hover{
+  color: var(--color-base-text);
 }
 
 .icon-button.icon-button-tertiary-outline button:focus-visible {
@@ -156,6 +191,10 @@
   border: none;
 }
 
+.icon-button.icon-button-noborder button:has(a) a{
+  color: var(--color-secondary);
+}
+
 .icon-button.icon-button-noborder button:hover {
   background-color: transparent;
   border: none;
@@ -164,6 +203,10 @@
 .icon-button.icon-button-noborder button:hover p,
 .icon-button.icon-button-noborder button:hover a {
   text-decoration: underline;
+}
+
+.icon-button.icon-button-noborder button:has(a) a:hover{
+  text-decoration: none;
 }
 
 .icon-button.icon-button-noborder button:focus-visible {

@@ -218,9 +218,12 @@ main .section {
 }
 
 @media (width >= 900px) {
-  .section > div {
+  .section:not(.full-width) > div {
     max-width: 1200px;
     margin: auto;
+  }
+  .section.full-width {
+    padding: 0;
   }
 }
 
@@ -263,4 +266,10 @@ h6 {
 
 .hide {
   display: none!important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

@@ -12,6 +12,12 @@ strong {
     background-color:var(--color-dark-text);
 }
 
-.section.content-block p,h1,h2,h3,h4,h5,h6{
+.section.content-block p,
+.section.content-block h1,
+.section.content-block h2,
+.section.content-block h3,
+.section.content-block h4,
+.section.content-block h5,
+.section.content-block h6 {
     color: #d3d3d4;
 }
