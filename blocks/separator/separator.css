@@ -1,5 +1,9 @@
 .separator hr{
     border: none;
+}
+
+.separator-primary hr{
+    border: none;
     height: 1px;                 
     background-color: var(--border-color-base);
 }
