@@ -515,12 +515,8 @@
         "valueType": "string",
         "options": [
           {
-            "name": "default",
-            "value": ""
-          },
-          {
-            "name": "primary",
-            "value": "separator-primary"
+            "name": "space",
+            "value": "separator-space"
           }
         ]
       }
