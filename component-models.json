@@ -508,11 +508,21 @@
     "id": "separator",
     "fields": [
       {
-        "component": "text",
-        "name": "Separator",
+        "component": "multiselect",
+        "name": "classes",
         "value": "",
-        "label": "Title",
-        "valueType": "string"
+        "label": "Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "default",
+            "value": ""
+          },
+          {
+            "name": "primary",
+            "value": "separator-primary"
+          }
+        ]
       }
     ]
   }
