@@ -533,7 +533,8 @@
         "component": "aem-tag",
         "label": "AEM Tag Picker",
         "name": "cq:tags",
-        "valueType": "string"
+        "valueType": "string",
+        "multi": true
       }
     ]
   }
