@@ -2,6 +2,8 @@
   "mappings": [
     "/content/aem-sites-ax-eds/:/",
     "/content/aem-sites-ax-eds/en/placeholders.html:/en/placeholders.json",
-    "/content/aem-sites-ax-eds/en/test.html:/en/test.json"
+    "/content/aem-sites-ax-eds/en/test.html:/en/test.json",
+    "/content/aem-sites-ax-eds/en/placeholders:/en/placeholders.json",
+    "/content/aem-sites-ax-eds/en/test:/en/test.json"
   ]
 }
