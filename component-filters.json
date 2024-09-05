@@ -51,7 +51,8 @@
       "carousel",
       "tabs",
       "separator",
-      "map-locator"
+      "map-locator",
+      "card"
     ]
   },
   {
