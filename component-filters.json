@@ -7,9 +7,7 @@
   },
   {
     "id": "columns",
-    "components": [
-      "column"
-    ]
+    "components": []
   },
   {
     "id": "column",
@@ -29,7 +27,8 @@
       "embed",
       "accordion",
       "separator",
-      "card"
+      "card",
+      "card-block"
     ]
   },
   {
@@ -55,12 +54,16 @@
       "tabs",
       "separator",
       "map-locator",
-      "card"
+      "card",
+      "card-block"
     ]
   },
   {
     "id": "cards",
-    "components": ["card"]
+    "components": [
+      "card",
+      "card-block"
+    ]
   },
   {
     "id": "accordion",
