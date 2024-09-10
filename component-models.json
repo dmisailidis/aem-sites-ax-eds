@@ -230,19 +230,6 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
-      },
-      {
-        "component": "multiselect",
-        "name": "classes",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Author",
-            "value": "author"
-          }
-        ]
       }
     ]
   },
