@@ -337,6 +337,23 @@
     "id": "page-metadata",
     "fields": [
       {
+        "component": "select",
+        "name": "isArticlePage",
+        "value": true,
+        "label": "Is Article Page",
+        "valueType": "boolean",
+        "options": [
+          {
+            "name": "True",
+            "value": true
+          },
+          {
+            "name": "False",
+            "value": false
+          }
+        ]
+      },
+      {
         "component": "text",
         "name": "breadcrumbs",
         "label": "Breadcrumbs",
