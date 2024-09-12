@@ -29,7 +29,8 @@
       "embed",
       "accordion",
       "separator",
-      "card"
+      "card",
+      "socialShare"
     ]
   },
   {
@@ -55,7 +56,8 @@
       "tabs",
       "separator",
       "map-locator",
-      "card"
+      "card",
+      "socialShare"
     ]
   },
   {

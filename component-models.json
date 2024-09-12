@@ -391,6 +391,42 @@
     ]
   },
   {
+    "id": "socialShare",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "dark",
+        "label": "Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Dark",
+            "value": "dark"
+          },
+          {
+            "name": "Light",
+            "value": "light"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "facebookLink",
+        "label": "Facebook Link",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "twitterLink",
+        "label": "Twitter/X Link",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "embed",
     "fields": [
       {
