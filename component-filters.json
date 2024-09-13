@@ -30,7 +30,8 @@
       "accordion",
       "separator",
       "card",
-      "socialShare"
+      "socialShare",
+      "authorInfo"
     ]
   },
   {
@@ -57,7 +58,8 @@
       "separator",
       "map-locator",
       "card",
-      "socialShare"
+      "socialShare",
+      "authorInfo"
     ]
   },
   {

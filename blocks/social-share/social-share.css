@@ -1,0 +1,21 @@
+.social-share {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.social-share.dark .icon-button button {
+  background-color: unset;
+  padding: unset;
+  border: unset;
+}
+
+.social-share.dark .icon-button a {
+  font-size: 1.5rem;
+  color: #696a70;
+  text-decoration: none;
+  padding: unset;
+}
+
+.social-share.dark .icon-button a:hover {
+  color: #111;
+}
