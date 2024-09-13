@@ -423,6 +423,20 @@
         "name": "twitterLink",
         "label": "Twitter/X Link",
         "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "instagramLink",
+        "label": "Instagram Link",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkedinLink",
+        "label": "LinkedIn Link",
+        "value": ""
       }
     ]
   },
