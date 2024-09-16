@@ -1,0 +1,14 @@
+.video.block {
+    display: flex;
+}
+
+.video.block video {
+    margin: 0 auto;
+    max-width: 320px;
+}
+
+@media screen and (min-width: 768px) {
+    .video.block video {
+        min-width: 640px;
+    }
+}
