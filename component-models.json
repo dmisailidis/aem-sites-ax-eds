@@ -441,6 +441,16 @@
     ]
   },
   {
+    "id": "video",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "reference",
+        "label": "Reference"
+      }
+    ]
+  },
+  {
     "id": "authorInfo",
     "fields": [
       {
