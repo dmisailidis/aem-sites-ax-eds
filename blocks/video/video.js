@@ -3,8 +3,6 @@ export default function decorate(block) {
   block.replaceChildren();
   const url = videoDiv.querySelector('a').innerText;
   const video = document.createElement('video');
-  video.width = 640;
-  video.height = 360;
   video.controls = true;
 
   const source = document.createElement('source');
