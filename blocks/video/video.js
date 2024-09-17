@@ -4,6 +4,8 @@ export default function decorate(block) {
   const url = videoDiv.querySelector('a').innerText;
   const video = document.createElement('video');
   video.controls = true;
+  video.autoplay = true;
+  video.muted = true;
 
   const source = document.createElement('source');
   source.src = url;
