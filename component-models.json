@@ -447,6 +447,13 @@
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Text",
+        "value": ""
       }
     ]
   },
