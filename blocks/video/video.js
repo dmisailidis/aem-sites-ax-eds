@@ -19,6 +19,8 @@ export default function decorate(block) {
   }
 
   const videoTitle = text.querySelector('h1');
+  const ulElement = text.querySelector('ul');
+
   const body = videoTitle.nextElementSibling;
   videoTitle.className = 'video-title';
   content.appendChild(videoTitle);
@@ -27,7 +29,14 @@ export default function decorate(block) {
   videoBody.innerHTML = body.innerHTML;
   content.appendChild(videoBody);
 
-  const ulElement = text.querySelector('ul');
+  let sibling = videoTitle.nextElementSibling;
+  while (sibling && sibling !== ulElement) {
+    if (sibling.tagName.toLowerCase() === 'p' || sibling.tagName.toLowerCase().startsWith('h')) {
+      videoBody.innerHTML += sibling.outerHTML;
+    }
+    sibling = sibling.nextElementSibling;
+  }
+
   if (ulElement) {
     const cta = document.createElement('div');
     cta.className = 'video-cta icon-button';
