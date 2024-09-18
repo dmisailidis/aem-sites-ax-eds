@@ -1,14 +1,37 @@
 .video.block {
     display: flex;
+    flex-direction: column;
 }
 
-.video.block video {
+.video.block video,
+.video.block .video-text {
     margin: 0 auto;
-    max-width: 320px;
+    height: 100%;
+    width: 100%;
 }
+
+.video.block .video-pretitle {
+    color: #42ad93;
+    font-size: .6875rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    text-transform: uppercase;
+}
+
+.video.block .video-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 
 @media screen and (min-width: 768px) {
-    .video.block video {
-        min-width: 640px;
+    .video.block video,
+    .video.block .video-text {
+        max-width: 640px;
+    }
+
+    .video.block .video-cta {
+        flex-direction: row;
     }
 }
