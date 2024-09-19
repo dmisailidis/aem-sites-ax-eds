@@ -1,12 +1,36 @@
 export default function decorate(block) {
-  const [videoDiv, textDiv] = [...block.children];
+  const [videoDiv, controlsDiv, autoplayDiv, mutedDiv, textDiv] = [...block.children];
   const url = videoDiv.querySelector('a').innerText;
   const richText = textDiv.querySelector('div');
 
   const video = document.createElement('video');
-  video.controls = true;
-  video.autoplay = true;
-  video.muted = true;
+  if (controlsDiv.querySelector('p')) {
+    if (controlsDiv.querySelector('p').innerText === 'true') {
+      video.setAttribute('controls', '');
+    } else {
+      video.removeAttribute('controls');
+    }
+  } else {
+    video.removeAttribute('controls');
+  }
+  if (autoplayDiv.querySelector('p')) {
+    if (autoplayDiv.querySelector('p').innerText === 'true') {
+      video.setAttribute('autoplay', '');
+    } else {
+      video.removeAttribute('autoplay');
+    }
+  } else {
+    video.removeAttribute('autoplay');
+  }
+  if (mutedDiv.querySelector('p')) {
+    if (mutedDiv.querySelector('p').innerText === 'true') {
+      video.setAttribute('muted', '');
+    } else {
+      video.removeAttribute('muted');
+    }
+  } else {
+    video.removeAttribute('muted');
+  }
   const source = document.createElement('source');
   source.src = url;
   source.type = 'video/mp4';
