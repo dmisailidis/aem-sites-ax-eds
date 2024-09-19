@@ -449,6 +449,17 @@
         "label": "Reference"
       },
       {
+        "component": "checkbox-group",
+        "label": "Video Options",
+        "name": "checkbox",
+        "valueType": "boolean[]",
+        "options": [
+          { "name": "Controls", "value": true },
+          { "name": "Autoplay", "value": true },
+          { "name": "Muted", "value": true }
+        ]
+      },
+      {
         "component": "richtext",
         "valueType": "string",
         "name": "text",
