@@ -1,65 +1,66 @@
 export default function decorate(block) {
   const [videoDiv, textDiv] = [...block.children];
-  block.replaceChildren();
   const url = videoDiv.querySelector('a').innerText;
-  const text = textDiv.querySelector('div');
+  const richText = textDiv.querySelector('div');
+
   const video = document.createElement('video');
   video.controls = true;
   video.autoplay = true;
   video.muted = true;
-
-  const content = document.createElement('div');
-  content.classList.add('video-text');
-
-  if (text.children[0].tagName.toLowerCase() === 'p') {
-    const pretitle = document.createElement('p');
-    pretitle.classList.add('video-pretitle');
-    pretitle.innerHTML = text.children[0].innerHTML;
-    content.appendChild(pretitle);
-  }
-
-  const videoTitle = text.querySelector('h1');
-  const ulElement = text.querySelector('ul');
-
-  const body = videoTitle.nextElementSibling;
-  videoTitle.className = 'video-title';
-  content.appendChild(videoTitle);
-  const videoBody = document.createElement('p');
-  videoBody.classList.add('video-body');
-  videoBody.innerHTML = body.innerHTML;
-  content.appendChild(videoBody);
-
-  let sibling = videoTitle.nextElementSibling;
-  while (sibling && sibling !== ulElement) {
-    if (sibling.tagName.toLowerCase() === 'p' || sibling.tagName.toLowerCase().startsWith('h')) {
-      videoBody.innerHTML += sibling.outerHTML;
-    }
-    sibling = sibling.nextElementSibling;
-  }
-
-  if (ulElement) {
-    const cta = document.createElement('div');
-    cta.className = 'video-cta icon-button';
-
-    ulElement.querySelectorAll('li').forEach((li) => {
-      const anchor = li.querySelector('a');
-      if (anchor) {
-        const button = document.createElement('button');
-        const buttonAnchor = document.createElement('a');
-        buttonAnchor.href = anchor.href;
-        buttonAnchor.textContent = anchor.textContent;
-        button.appendChild(buttonAnchor);
-        cta.appendChild(button);
-      }
-    });
-
-    content.appendChild(cta);
-  }
-
   const source = document.createElement('source');
   source.src = url;
   source.type = 'video/mp4';
   video.appendChild(source);
   video.innerHTML += 'Your browser does not support the video tag.';
-  block.append(video, content);
+  block.append(video);
+
+  const firstP = richText.querySelector('p');
+  const firstH1 = richText.querySelector('h1');
+  const elementsAfterH1 = [];
+  let nextElement = firstH1.nextElementSibling;
+
+  while (nextElement && nextElement.tagName.toLowerCase() !== 'ul') {
+    elementsAfterH1.push(nextElement);
+    nextElement = nextElement.nextElementSibling;
+  }
+
+  const ulElement = richText.querySelector('ul');
+
+  const newDiv = document.createElement('div');
+  newDiv.classList.add('video-text');
+
+  if (firstP) {
+    const pretitle = document.createElement('p');
+    pretitle.classList.add('pretitle');
+    pretitle.textContent = firstP.textContent;
+    newDiv.appendChild(pretitle);
+  }
+
+  const body = document.createElement('div');
+  body.classList.add('body');
+  body.appendChild(firstH1);
+  elementsAfterH1.forEach((element) => {
+    body.appendChild(element);
+  });
+
+  newDiv.appendChild(body);
+
+  if (ulElement) {
+    const ctaDiv = document.createElement('div');
+    ctaDiv.classList.add('cta', 'icon-button');
+
+    const listItems = ulElement.querySelectorAll('li');
+    listItems.forEach((li) => {
+      const anchor = li.querySelector('a');
+      const button = document.createElement('button');
+
+      button.appendChild(anchor);
+      ctaDiv.appendChild(button);
+    });
+
+    newDiv.appendChild(ctaDiv);
+  }
+
+  block.replaceChildren();
+  block.append(video, newDiv);
 }
