@@ -4,44 +4,39 @@ export default function decorate(block) {
   const richText = textDiv.querySelector('div');
 
   const video = document.createElement('video');
-  if (controlsDiv.querySelector('p')) {
-    if (controlsDiv.querySelector('p').innerText === 'true') {
-      video.setAttribute('controls', '');
-    } else {
-      video.removeAttribute('controls');
-    }
-  } else {
-    video.removeAttribute('controls');
-  }
-  if (autoplayDiv.querySelector('p')) {
-    if (autoplayDiv.querySelector('p').innerText === 'true') {
-      video.setAttribute('autoplay', '');
-    } else {
-      video.removeAttribute('autoplay');
-    }
-  } else {
-    video.removeAttribute('autoplay');
-  }
-  if (mutedDiv.querySelector('p')) {
-    if (mutedDiv.querySelector('p').innerText === 'true') {
-      video.setAttribute('muted', '');
-    } else {
-      video.removeAttribute('muted');
-    }
-  } else {
-    video.removeAttribute('muted');
-  }
   const source = document.createElement('source');
   source.src = url;
   source.type = 'video/mp4';
   video.appendChild(source);
   video.innerHTML += 'Your browser does not support the video tag.';
-  block.append(video);
 
-  const firstP = richText.querySelector('p');
+  if (controlsDiv.querySelector('p')?.innerText === 'true') {
+    video.setAttribute('controls', '');
+  } else {
+    video.removeAttribute('controls');
+  }
+
+  if (autoplayDiv.querySelector('p')?.innerText === 'true') {
+    video.setAttribute('autoplay', '');
+  } else {
+    video.removeAttribute('autoplay');
+  }
+
+  if (mutedDiv.querySelector('p')?.innerText === 'true') {
+    video.setAttribute('muted', '');
+  } else {
+    video.removeAttribute('muted');
+  }
+
+  if (!richText || !richText.children.length) {
+    block.replaceChildren();
+    block.append(video);
+    return;
+  }
+
   const firstH1 = richText.querySelector('h1');
   const elementsAfterH1 = [];
-  let nextElement = firstH1.nextElementSibling;
+  let nextElement = firstH1?.nextElementSibling;
 
   while (nextElement && nextElement.tagName.toLowerCase() !== 'ul') {
     elementsAfterH1.push(nextElement);
@@ -53,7 +48,8 @@ export default function decorate(block) {
   const newDiv = document.createElement('div');
   newDiv.classList.add('video-text');
 
-  if (firstP) {
+  const firstP = firstH1?.previousElementSibling;
+  if (firstP && firstP.tagName.toLowerCase() === 'p') {
     const pretitle = document.createElement('p');
     pretitle.classList.add('pretitle');
     pretitle.textContent = firstP.textContent;
@@ -62,10 +58,13 @@ export default function decorate(block) {
 
   const body = document.createElement('div');
   body.classList.add('body');
-  body.appendChild(firstH1);
-  elementsAfterH1.forEach((element) => {
-    body.appendChild(element);
-  });
+
+  if (firstH1) {
+    body.appendChild(firstH1);
+    elementsAfterH1.forEach((element) => {
+      body.appendChild(element);
+    });
+  }
 
   newDiv.appendChild(body);
 
@@ -77,7 +76,6 @@ export default function decorate(block) {
     listItems.forEach((li) => {
       const anchor = li.querySelector('a');
       const button = document.createElement('button');
-
       button.appendChild(anchor);
       ctaDiv.appendChild(button);
     });
