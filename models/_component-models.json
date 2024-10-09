@@ -1,0 +1,53 @@
+[
+  {
+    "id": "page-metadata",
+    "fields": [
+      {
+        "component": "select",
+        "name": "isArticlePage",
+        "value": true,
+        "label": "Is Article Page",
+        "valueType": "boolean",
+        "options": [
+          {
+            "name": "True",
+            "value": true
+          },
+          {
+            "name": "False",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "breadcrumbs",
+        "label": "Breadcrumbs",
+        "value": "true"
+      },
+      {
+        "component": "text",
+        "name": "theme",
+        "label": "Theme"
+      }
+    ]
+  },
+  {
+    "...": "./_image.json#/models"
+  },
+  {
+    "...": "./_title.json#/models"
+  },
+  {
+    "...": "./_text.json#/models"
+  },
+  {
+    "...": "./_button.json#/models"
+  },
+  {
+    "...": "./_section.json#/models"
+  },
+  {
+    "...": "../blocks/*/_*.json#/models"
+  }
+]

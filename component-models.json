@@ -1,20 +1,65 @@
 [
   {
+    "id": "page-metadata",
+    "fields": [
+      {
+        "component": "select",
+        "name": "isArticlePage",
+        "value": true,
+        "label": "Is Article Page",
+        "valueType": "boolean",
+        "options": [
+          {
+            "name": "True",
+            "value": true
+          },
+          {
+            "name": "False",
+            "value": false
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "breadcrumbs",
+        "label": "Breadcrumbs",
+        "value": "true"
+      },
+      {
+        "component": "text",
+        "name": "theme",
+        "label": "Theme"
+      }
+    ]
+  },
+  {
+    "id": "image",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      }
+    ]
+  },
+  {
     "id": "title",
     "fields": [
       {
         "component": "text",
-        "valueType": "string",
-        "name": "jcr:title",
-        "value": "",
-        "label": "Text"
+        "name": "title",
+        "label": "Title"
       },
       {
         "component": "select",
-        "name": "type",
-        "value": "h1",
-        "label": "Type",
-        "valueType": "string",
+        "name": "titleType",
+        "label": "Title Type",
         "options": [
           {
             "name": "h1",
@@ -45,54 +90,27 @@
     ]
   },
   {
-    "id": "image",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "fileReference",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "alt",
-        "value": "Default alt",
-        "label": "Alt Text"
-      }
-    ]
-  },
-  {
     "id": "button",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "href",
-        "value": "",
+        "component": "aem-content",
+        "name": "link",
         "label": "Link"
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "text",
-        "value": "",
+        "name": "linkText",
         "label": "Text"
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "value": "",
+        "name": "linkTitle",
         "label": "Title"
       },
       {
         "component": "select",
-        "name": "type",
-        "value": "",
+        "name": "linkType",
         "label": "Type",
-        "valueType": "string",
         "options": [
           {
             "name": "default",
@@ -107,6 +125,244 @@
             "value": "secondary"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "section",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Highlight",
+            "value": "highlight"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "accordion",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "",
+        "label": "Icon",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Plus - Minus",
+            "value": "plus-minus"
+          },
+          {
+            "name": "Up - Down",
+            "value": "up-down"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "accordion-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "accordion-title",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "body-text",
+        "label": "Text",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "authorInfo",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "authorName",
+        "label": "Author Name",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "date",
+        "label": "Date (dd/mm/yyyy)",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "breadcrumb",
+    "fields": [
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "label": "Hide Breadcrumb",
+        "name": "hideBreadcrumb"
+      },
+      {
+        "component": "text-input",
+        "valueType": "number",
+        "label": "Navigation Start Level",
+        "name": "navigationStartLevel",
+        "value": ""
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "label": "Hide Current Page",
+        "name": "hideCurrentPage"
+      }
+    ]
+  },
+  {
+    "id": "card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "carousel-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "columns",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "columns",
+        "value": "",
+        "label": "Columns"
+      },
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "rows",
+        "value": "",
+        "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "download",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "assetTitle",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "assetLink",
+        "value": "",
+        "label": "Asset Link"
+      }
+    ]
+  },
+  {
+    "id": "embed",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link",
+        "label": "Source Link",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "Image",
+        "multi": false
+      }
+    ]
+  },
+  {
+    "id": "fragment",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "reference",
+        "label": "Reference"
+      }
+    ]
+  },
+  {
+    "id": "hero",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
       }
     ]
   },
@@ -177,111 +433,6 @@
     ]
   },
   {
-    "id": "download",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "assetTitle",
-        "label": "Title",
-        "value": ""
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "assetLink",
-        "value": "",
-        "label": "Asset Link"
-      }
-    ]
-  },
-  {
-    "id": "columns",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "number",
-        "name": "columns",
-        "value": "",
-        "label": "Columns"
-      },
-      {
-        "component": "text",
-        "valueType": "number",
-        "name": "rows",
-        "value": "",
-        "label": "Rows"
-      }
-    ]
-  },
-  {
-    "id": "card",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "section",
-    "fields": [
-      {
-        "component": "text",
-        "name": "style",
-        "value": "",
-        "label": "Style",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "hero",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Alt",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "fragment",
-    "fields": [
-      {
-        "component": "aem-content",
-        "name": "reference",
-        "label": "Reference"
-      }
-    ]
-  },
-  {
     "id": "imageLink",
     "fields": [
       {
@@ -334,59 +485,20 @@
     ]
   },
   {
-    "id": "page-metadata",
+    "id": "separator",
     "fields": [
       {
-        "component": "select",
-        "name": "isArticlePage",
-        "value": true,
-        "label": "Is Article Page",
-        "valueType": "boolean",
+        "component": "multiselect",
+        "name": "classes",
+        "value": "",
+        "label": "Type",
+        "valueType": "string",
         "options": [
           {
-            "name": "True",
-            "value": true
-          },
-          {
-            "name": "False",
-            "value": false
+            "name": "space",
+            "value": "separator-space"
           }
         ]
-      },
-      {
-        "component": "text",
-        "name": "breadcrumbs",
-        "label": "Breadcrumbs",
-        "value": "true"
-      },
-      {
-        "component": "text",
-        "name": "theme",
-        "label": "Theme"
-      }
-    ]
-  },
-  {
-    "id": "breadcrumb",
-    "fields": [
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "label": "Hide Breadcrumb",
-        "name": "hideBreadcrumb"
-      },
-      {
-        "component": "text-input",
-        "valueType": "number",
-        "label": "Navigation Start Level",
-        "name": "navigationStartLevel",
-        "value": ""
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "label": "Hide Current Page",
-        "name": "hideCurrentPage"
       }
     ]
   },
@@ -441,127 +553,6 @@
     ]
   },
   {
-    "id": "video",
-    "fields": [
-      {
-        "component": "aem-content",
-        "name": "reference",
-        "label": "Reference"
-      },
-      {
-        "component": "boolean",
-        "label": "Controls",
-        "name": "controls",
-        "valueType": "boolean"
-      },
-      {
-        "component": "boolean",
-        "label": "Autoplay",
-        "name": "autoplay",
-        "valueType": "boolean"
-      },
-      {
-        "component": "boolean",
-        "label": "Muted",
-        "name": "muted",
-        "valueType": "boolean"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Text",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "authorInfo",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "fileReference",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "authorName",
-        "label": "Author Name",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "date",
-        "label": "Date (dd/mm/yyyy)",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "embed",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link",
-        "label": "Source Link",
-        "value": ""
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "fileReference",
-        "label": "Image",
-        "multi": false
-      }
-    ]
-  },
-  {
-    "id": "accordion",
-    "fields": [
-      {
-        "component": "select",
-        "name": "classes",
-        "value": "",
-        "label": "Icon",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Plus - Minus",
-            "value": "plus-minus"
-          },
-          {
-            "name": "Up - Down",
-            "value": "up-down"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "accordion-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "accordion-title",
-        "label": "Title",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "body-text",
-        "label": "Text",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "table",
     "fields": [
       {
@@ -595,25 +586,6 @@
     ]
   },
   {
-    "id": "carousel-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "tabs-item",
     "fields": [
       {
@@ -633,38 +605,37 @@
     ]
   },
   {
-    "id": "separator",
+    "id": "video",
     "fields": [
       {
-        "component": "multiselect",
-        "name": "classes",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "space",
-            "value": "separator-space"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "map-locator",
-    "fields": [
-      {
-        "component": "aem-tag",
-        "label": "AEM Tag Picker",
-        "name": "cq:tags",
-        "valueType": "string"
+        "component": "aem-content",
+        "name": "reference",
+        "label": "Reference"
       },
       {
-        "component": "aem-content-fragment",
-        "name": "map-locator-cf",
-        "label": "Map Locator",
+        "component": "boolean",
+        "label": "Controls",
+        "name": "controls",
+        "valueType": "boolean"
+      },
+      {
+        "component": "boolean",
+        "label": "Autoplay",
+        "name": "autoplay",
+        "valueType": "boolean"
+      },
+      {
+        "component": "boolean",
+        "label": "Muted",
+        "name": "muted",
+        "valueType": "boolean"
+      },
+      {
+        "component": "richtext",
         "valueType": "string",
-        "variationName": "contentFragmentVariation"
+        "name": "text",
+        "label": "Text",
+        "value": ""
       }
     ]
   }
