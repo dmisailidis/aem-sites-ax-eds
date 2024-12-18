@@ -396,6 +396,21 @@
           }
         },
         {
+          "title": "Tabs Item",
+          "id": "tabs-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Tabs Item",
+                  "model": "tabs-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Video",
           "id": "video",
           "plugins": {
