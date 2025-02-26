@@ -1,0 +1,28 @@
+{
+  "groups": [
+    {
+      "title": "Content Fragments",
+      "id": "content-fragments",
+      "components": [
+        {
+          "title": "Person",
+          "id": "person",
+          "plugins": {
+            "aem": {
+              "cf": {
+                "name": "person",
+                "cfModel": "/conf/my-project/settings/dam/cfm/models/person",
+                "cfFolder": "/content/dam/my-project/en",
+                "title": "person",
+                "template": {
+                  "fullName": "New Person",
+                  "biographyText": "This is biography of new person"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

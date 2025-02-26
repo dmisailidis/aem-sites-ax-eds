@@ -1,0 +1,5 @@
+
+> aem-tutorial-team-app@0.1.0 start
+> HTTPS=true react-scripts start
+
+Something is already running on port 3000.
