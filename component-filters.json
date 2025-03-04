@@ -17,7 +17,6 @@
       "hero",
       "cards",
       "columns",
-      "cookieNotice",
       "fragment",
       "imageLink",
       "search",
@@ -31,7 +30,8 @@
       "card",
       "socialShare",
       "authorInfo",
-      "video"
+      "video",
+      "cookieNotice"
     ]
   },
   {

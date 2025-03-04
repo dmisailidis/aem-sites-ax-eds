@@ -2,12 +2,12 @@ export default function decorate(block) {
 
   //const text = document.createElement('p');
   //text.appendChild(document.createTextNode('This is a cookie notice.'));
-  const btn = document.createElement('button');
-  btn.setAttribute('id', 'accept-cookies');
+  //const btn = document.createElement('button');
+  //btn.setAttribute('id', 'accept-cookies');
   //btn.appendChild(document.createTextNode('Accept'));
   //block.replaceChildren();
   //block.appendChild(text);
-  block.appendChild(btn);
+  //block.appendChild(btn);
 
   //initCookieNotice();
 
