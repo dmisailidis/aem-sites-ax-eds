@@ -556,11 +556,42 @@
     "id": "table",
     "fields": [
       {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "body-text",
-        "label": "Text",
-        "value": ""
+        "component": "number",
+        "name": "rowCount",
+        "label": "Rows",
+        "min": 1,
+        "max": 20,
+        "default": 3
+      },
+      {
+        "component": "number",
+        "name": "columnCount",
+        "label": "Columns",
+        "min": 1,
+        "max": 5,
+        "default": 3
+      },
+      {
+        "component": "multifield",
+        "name": "rows",
+        "label": "Rows",
+        "repeatable": true,
+        "fields": [
+          {
+            "component": "multifield",
+            "name": "cells",
+            "label": "Cells",
+            "repeatable": true,
+            "fields": [
+              {
+                "component": "richtext",
+                "name": "cellContent",
+                "label": "Cell Content",
+                "value": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "component": "multiselect",
@@ -569,18 +600,9 @@
         "label": "Type",
         "valueType": "string",
         "options": [
-          {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "No Header",
-            "value": "no-header"
-          }
+          { "name": "Primary", "value": "primary" },
+          { "name": "Secondary", "value": "secondary" },
+          { "name": "No Header", "value": "no-header" }
         ]
       }
     ]
