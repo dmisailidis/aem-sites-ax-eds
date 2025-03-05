@@ -81,6 +81,18 @@
     ]
   },
   {
+    "id": "table",
+    "components": [
+      "cell"
+    ]
+  },
+  {
+    "id": "cell",
+    "components": [
+      "text"
+    ]
+  },
+  {
     "id": "tabs",
     "components": [
       "tabs-item"
