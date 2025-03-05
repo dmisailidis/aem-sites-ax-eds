@@ -559,39 +559,25 @@
         "component": "number",
         "name": "rowCount",
         "label": "Rows",
-        "min": 1,
-        "max": 20,
-        "default": 3
+        "valueType": "number",
+        "required": true,
+        "validation": {
+          "numberMin": 1,
+          "numberMax": 10,
+          "customErrorMsg": "Choose a number between 1 and 10"
+        }
       },
       {
         "component": "number",
         "name": "columnCount",
         "label": "Columns",
-        "min": 1,
-        "max": 5,
-        "default": 3
-      },
-      {
-        "component": "multifield",
-        "name": "rows",
-        "label": "Rows",
-        "repeatable": true,
-        "fields": [
-          {
-            "component": "multifield",
-            "name": "cells",
-            "label": "Cells",
-            "repeatable": true,
-            "fields": [
-              {
-                "component": "richtext",
-                "name": "cellContent",
-                "label": "Cell Content",
-                "value": ""
-              }
-            ]
-          }
-        ]
+        "valueType": "number",
+        "required": true,
+        "validation": {
+          "numberMin": 1,
+          "numberMax": 5,
+          "customErrorMsg": "Choose a number between 1 and 5"
+        }
       },
       {
         "component": "multiselect",
