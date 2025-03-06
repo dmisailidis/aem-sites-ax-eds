@@ -553,36 +553,6 @@
     ]
   },
   {
-    "id": "table",
-    "fields": [
-      {
-        "component": "multiselect",
-        "name": "classes",
-        "value": "",
-        "label": "Table Style",
-        "options": [
-          {
-            "name": "Table Content Style",
-            "children": [
-              {
-                "name": "No Header",
-                "value": "no-header"
-              }
-            ]
-          }
-        ],
-        "valueType": "string[]"
-      },
-      {
-        "component": "richtext",
-        "label": "WYSIWYG Table Content",
-        "name": "content",
-        "value": "",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "tabs-item",
     "fields": [
       {
