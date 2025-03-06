@@ -10,13 +10,13 @@
   font-size: var(--body-font-size-xs);
 }
 
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .table table {
     font-size: var(--body-font-size-s);
   }
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
   .table table {
     font-size: var(--body-font-size-m);
   }
@@ -64,17 +64,4 @@
 .table.bordered table th,
 .table.bordered table td {
   border: 1px solid #dadada;
-}
-
-/* Styles to visually indicate the grid in the authoring dialog */
-.table-row {
-  display: flex;
-  gap: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.table-cell {
-  flex: 1;
-  border: 1px dashed #ccc;
-  padding: 0.5em;
 }
