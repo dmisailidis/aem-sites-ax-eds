@@ -556,40 +556,29 @@
     "id": "table",
     "fields": [
       {
-        "component": "number",
-        "name": "rowCount",
-        "label": "Rows",
-        "valueType": "number",
-        "required": true,
-        "validation": {
-          "numberMin": 1,
-          "numberMax": 10,
-          "customErrorMsg": "Choose a number between 1 and 10"
-        }
-      },
-      {
-        "component": "number",
-        "name": "columnCount",
-        "label": "Columns",
-        "valueType": "number",
-        "required": true,
-        "validation": {
-          "numberMin": 1,
-          "numberMax": 5,
-          "customErrorMsg": "Choose a number between 1 and 5"
-        }
-      },
-      {
         "component": "multiselect",
         "name": "classes",
         "value": "",
-        "label": "Type",
-        "valueType": "string",
+        "label": "Table Style",
         "options": [
-          { "name": "Primary", "value": "primary" },
-          { "name": "Secondary", "value": "secondary" },
-          { "name": "No Header", "value": "no-header" }
-        ]
+          {
+            "name": "Table Content Style",
+            "children": [
+              {
+                "name": "No Header",
+                "value": "no-header"
+              }
+            ]
+          }
+        ],
+        "valueType": "string[]"
+      },
+      {
+        "component": "richtext",
+        "label": "WYSIWYG Table Content",
+        "name": "content",
+        "value": "",
+        "valueType": "string"
       }
     ]
   },
