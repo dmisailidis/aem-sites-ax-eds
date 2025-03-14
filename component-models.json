@@ -522,6 +522,36 @@
     ]
   },
   {
+    "id": "wysiwyg-table",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "value": "",
+        "label": "Table Style",
+        "options": [
+          {
+            "name": "Table Content Style",
+            "children": [
+              {
+                "name": "No Header",
+                "value": "no-header"
+              }
+            ]
+          }
+        ],
+        "valueType": "string[]"
+      },
+      {
+        "component": "richtext",
+        "label": "WYSIWYG Table Content",
+        "name": "content",
+        "value": "",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "socialShare",
     "fields": [
       {
@@ -568,39 +598,6 @@
         "name": "linkedinLink",
         "label": "LinkedIn Link",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "table",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "body-text",
-        "label": "Text",
-        "value": ""
-      },
-      {
-        "component": "multiselect",
-        "name": "classes",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Primary",
-            "value": "primary"
-          },
-          {
-            "name": "Secondary",
-            "value": "secondary"
-          },
-          {
-            "name": "No Header",
-            "value": "no-header"
-          }
-        ]
       }
     ]
   },

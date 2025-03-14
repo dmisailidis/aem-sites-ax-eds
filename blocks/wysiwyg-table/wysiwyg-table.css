@@ -1,0 +1,69 @@
+.wysiwyg-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.wysiwyg-table table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: var(--body-font-size-xs);
+  table-layout: fixed;
+}
+
+@media (width >= 600px) {
+  .wysiwyg-table table {
+    font-size: var(--body-font-size-s);
+  }
+}
+
+@media (width >= 900px) {
+  .wysiwyg-table table {
+    font-size: var(--body-font-size-m);
+  }
+}
+
+.wysiwyg-table table thead tr {
+  border-top: 2px solid #dadada;
+  border-bottom: 2px solid #dadada;
+}
+
+.wysiwyg-table table tbody tr {
+  border-bottom: 1px solid #dadada;
+}
+
+.wysiwyg-table table th {
+  font-weight: 700;
+}
+
+.wysiwyg-table table th,
+.wysiwyg-table table td {
+  padding: 0.5em;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.wysiwyg-table table th p,
+.wysiwyg-table table td p {
+  margin: 0;
+}
+
+.wysiwyg-table table td p + p {
+  margin-top: 0.25em;
+}
+
+/* no header variant */
+.wysiwyg-table.no-header table tbody tr {
+  border-top: 1px solid #dadada;
+}
+
+/* striped variant */
+.wysiwyg-table.striped tbody tr:nth-child(odd) {
+  background-color: var(--light-color);
+}
+
+/* bordered variant */
+.wysiwyg-table.bordered table th,
+.wysiwyg-table.bordered table td {
+  border: 1px solid #dadada;
+}
