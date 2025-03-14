@@ -1,16 +1,18 @@
 export default function decorate(block) {
-  /*
-  const text = document.createElement('p');
-  text.appendChild(document.createTextNode('This is a cookie notice.'));
+  const [textDiv, buttonDiv] = [...block.children];
+  const text = textDiv.querySelector('p');
   const btn = document.createElement('button');
   btn.setAttribute('id', 'accept-cookies');
-  btn.appendChild(document.createTextNode('Accept'));
+  const btnLabel = buttonDiv.querySelector('p');
+  btn.innerText = btnLabel ? btnLabel.innerText : '';
+  const btnWrapper = document.createElement('div');
+  btnWrapper.classList.add('icon-button', 'icon-button-secondary');
+  btnWrapper.appendChild(btn);
   block.replaceChildren();
   block.appendChild(text);
-  block.appendChild(btn);
+  block.appendChild(btnWrapper);
 
   initCookieNotice();
-  */
 }
 
 function initCookieNotice() {

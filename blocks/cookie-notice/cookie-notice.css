@@ -1,4 +1,4 @@
-.cookie-notice-test {
+.cookie-notice {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -10,21 +10,8 @@
     display: none;
 }
 
-.cookie-notice-test p {
-    margin: 0;
+.cookie-notice p {
+    margin-top: 0;
     padding: 0;
     display: inline-block;
-}
-
-.cookie-notice-test button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-left: 20px;
-    cursor: pointer;
-}
-
-.cookie-notice-test button:hover {
-    background-color: #45a049;
 }
