@@ -459,6 +459,18 @@
     ]
   },
   {
+    "id": "progressBar",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "number",
+        "label": "Completion",
+        "name": "completion",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
