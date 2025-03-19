@@ -183,10 +183,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "section",
-      "components": ["maplocator"]
-    }
-  ]
+  "filters": []
 }

@@ -48,10 +48,5 @@
       ]
     }
   ],
-  "filters": [
-    {
-      "id": "section",
-      "components": ["wysiwyg-table"]
-    }
-  ]
+  "filters": []
 }
