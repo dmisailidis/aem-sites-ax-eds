@@ -459,7 +459,7 @@
     ]
   },
   {
-    "id": "maplocator",
+    "id": "map-locator",
     "fields": [
       {
         "component": "text",
