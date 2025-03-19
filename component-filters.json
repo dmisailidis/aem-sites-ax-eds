@@ -81,9 +81,21 @@
     ]
   },
   {
+    "id": "section",
+    "components": [
+      "maplocator"
+    ]
+  },
+  {
     "id": "tabs",
     "components": [
       "tabs-item"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "wysiwyg-table"
     ]
   }
 ]
