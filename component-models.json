@@ -469,18 +469,18 @@
         "value": ""
       },
       {
-        "component": "multiselect",
+        "component": "select",
         "name": "type",
         "value": "",
         "label": "Type",
         "valueType": "string",
         "options": [
           {
-            "name": "static",
+            "name": "Static",
             "value": "static"
           },
           {
-            "name": "dynamic",
+            "name": "Dynamic",
             "value": "dynamic"
           }
         ]
