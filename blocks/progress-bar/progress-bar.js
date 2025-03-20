@@ -31,5 +31,7 @@ export default function decorate(block) {
   block.classList.add(typeVal);
   block.append(progressBar);
 
-  bindProgressBar();
+  if (typeVal === 'dynamic') {
+    bindProgressBar();
+  }
 }
