@@ -467,6 +467,23 @@
         "label": "Completion",
         "name": "completion",
         "value": ""
+      },
+      {
+        "component": "multiselect",
+        "name": "type",
+        "value": "",
+        "label": "Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "static",
+            "value": "static"
+          },
+          {
+            "name": "dynamic",
+            "value": "dynamic"
+          }
+        ]
       }
     ]
   },
