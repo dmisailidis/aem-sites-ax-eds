@@ -3,6 +3,7 @@ const bindProgressBar = () => {
   if (scrollId) {
     scrollId.innerHTML = '';
     scrollId.style.width = "0%";
+
     function scrollSpy() {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -32,6 +33,9 @@ export default function decorate(block) {
   block.append(progressBar);
 
   if (typeVal === 'dynamic') {
+    const headerWrapper = document.querySelector("header");
+    const headerBottom = headerWrapper ? headerWrapper.offsetHeight : 64;
+    block.style.top = headerBottom + 'px';
     bindProgressBar();
   }
 }
