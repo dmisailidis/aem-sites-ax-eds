@@ -624,6 +624,18 @@
     ]
   },
   {
+    "id": "pdfViewer",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "PDF File",
+        "multi": false
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
