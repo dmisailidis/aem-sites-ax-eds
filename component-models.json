@@ -308,6 +308,13 @@
         "name": "btnLabel",
         "label": "Button Label",
         "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "version",
+        "label": "Version",
+        "value": "1.0"
       }
     ]
   },
