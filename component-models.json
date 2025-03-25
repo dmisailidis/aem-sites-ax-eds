@@ -314,7 +314,7 @@
         "valueType": "string",
         "name": "version",
         "label": "Version",
-        "value": "1.0"
+        "value": ""
       }
     ]
   },
