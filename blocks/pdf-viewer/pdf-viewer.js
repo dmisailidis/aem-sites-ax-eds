@@ -21,6 +21,10 @@ export default function decorate(block) {
     block.replaceChildren();
     block.append(pdfViewer);
 
+    if (embedMode === 'IN_LINE') {
+      block.style.height = "auto";
+    }
+
     document.addEventListener("adobe_dc_view_sdk.ready", function() {
       var adobeDCView = new AdobeDC.View({
           clientId: "30dc4a499b344bb08b65c0565d550089",
