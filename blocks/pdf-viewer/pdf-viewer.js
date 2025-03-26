@@ -26,7 +26,7 @@ export default function decorate(block) {
       });
       adobeDCView.previewFile({
           content: { location: { url: window.location.origin + filePath } },
-          metaData: { fileName: "Sample.pdf" }
+          metaData: { fileName: filePath.split('/').pop() }
       }, { embedMode: "SIZED_CONTAINER" });
     });
   }

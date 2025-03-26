@@ -632,6 +632,29 @@
         "name": "fileReference",
         "label": "PDF File",
         "multi": false
+      },
+      {
+        "component": "select",
+        "name": "embedMode",
+        "label": "Embed Mode",
+        "options": [
+          {
+            "name": "Full Window",
+            "value": "FULL_WINDOW"
+          },
+          {
+            "name": "Sized Container",
+            "value": "SIZED_CONTAINER"
+          },
+          {
+            "name": "In Line",
+            "value": "IN_LINE"
+          },
+          {
+            "name": "Light Box",
+            "value": "LIGHT_BOX"
+          }
+        ]
       }
     ]
   },
