@@ -7,9 +7,11 @@ const loadScript = () => {
 };
 
 export default function decorate(block) {
-  const [fileDiv] = [...block.children];
+  const [fileDiv, embedDiv] = [...block.children];
   const filePathContainer = fileDiv.querySelector('p');
   const filePath = filePathContainer ? filePathContainer.innerText : null;
+  const embedContainer = embedDiv.querySelector('p');
+  const embedMode = embedContainer ? embedContainer.innerText : "SIZED_CONTAINER";
 
   if (filePath) {
     loadScript();
@@ -27,7 +29,7 @@ export default function decorate(block) {
       adobeDCView.previewFile({
           content: { location: { url: window.location.origin + filePath } },
           metaData: { fileName: filePath.split('/').pop() }
-      }, { embedMode: "SIZED_CONTAINER" });
+      }, { embedMode: embedMode });
     });
   }
 }
