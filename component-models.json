@@ -624,6 +624,35 @@
     ]
   },
   {
+    "id": "progressBar",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "number",
+        "label": "Completion",
+        "name": "completion",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "name": "type",
+        "value": "",
+        "label": "Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Static",
+            "value": "static"
+          },
+          {
+            "name": "Dynamic",
+            "value": "dynamic"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "search",
     "fields": [
       {
