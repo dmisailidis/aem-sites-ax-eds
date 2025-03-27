@@ -31,7 +31,9 @@
       "card",
       "socialShare",
       "authorInfo",
-      "video"
+      "video",
+      "map-locator",
+      "progressBar"
     ]
   },
   {
