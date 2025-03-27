@@ -318,15 +318,15 @@
           }
         },
         {
-          "title": "Progress Bar",
-          "id": "progressBar",
+          "title": "Map Locator",
+          "id": "map-locator",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Progress Bar",
-                  "model": "progressBar"
+                  "name": "Map Locator",
+                  "model": "map-locator"
                 }
               }
             }
@@ -381,21 +381,6 @@
           }
         },
         {
-          "title": "WYSIWYG Table",
-          "id": "wysiwyg-table",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "WYSIWYG Table",
-                  "model": "wysiwyg-table"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Tabs",
           "id": "tabs",
           "plugins": {
@@ -435,6 +420,21 @@
                 "template": {
                   "name": "Video",
                   "model": "video"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "WYSIWYG Table",
+          "id": "wysiwyg-table",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "WYSIWYG Table",
+                  "model": "wysiwyg-table"
                 }
               }
             }

@@ -1,0 +1,187 @@
+{
+  "definitions": [
+    {
+      "title": "Map Locator",
+      "id": "map-locator",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Map Locator",
+              "model": "map-locator"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "map-locator",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "id",
+          "label": "ID",
+          "fieldDescription": "HTML ID attribute to apply to the component"
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "contentFragmentPath",
+          "label": "Location Content Fragments Root Path",
+          "fieldDescription": "The path should start with /content/dam",
+          "required": true
+        },
+        {
+          "component": "text-input",
+          "valueType": "number",
+          "name": "defaultZoomLevel",
+          "label": "Default Zoom Level",
+          "value": "7",
+          "fieldDescription": "Enter a number between 0 and 21 to set the default zoom level. Zoom levels range from 0 (the entire world view) to 21 (detailed indoor maps)."
+        },
+        {
+          "component": "text-input",
+          "valueType": "number",
+          "name": "defaultLatitude",
+          "label": "Default Latitude",
+          "fieldDescription": "Enter the default latitude value to set the center of the map."
+        },
+        {
+          "component": "text-input",
+          "valueType": "number",
+          "name": "defaultLongitude",
+          "label": "Default Longitude",
+          "fieldDescription": "Enter the default longitude value to set the center of the map."
+        },
+        {
+          "component": "select",
+          "name": "markerType",
+          "label": "Marker Type",
+          "valueType": "string",
+          "fieldDescription": "Select the type of marker to use.",
+          "options": [
+            {
+              "name": "Custom SVG Marker",
+              "value": "customSVG"
+            },
+            {
+              "name": "Google Maps Customizable Marker",
+              "value": "googleMapsCustomizable"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "svgUpload",
+          "label": "Custom SVG Marker Upload",
+          "fieldDescription": "Upload an SVG file from DAM to use as a custom marker.",
+          "multi": false
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "customTooltip",
+          "label": "Custom Tooltip",
+          "fieldDescription": "Enable custom tooltips for markers."
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "showFilters",
+          "label": "Show Filters",
+          "fieldDescription": "Enable filter options for the map."
+        },
+        {
+          "component": "multifield",
+          "name": "filterCategories",
+          "label": "Filter Categories",
+          "valueType": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "component": "text",
+                "valueType": "string",
+                "name": "title",
+                "label": "Title",
+                "required": true
+              },
+              "filterTags": {
+                "component": "multiselect",
+                "name": "filterTags",
+                "label": "Filter Elements",
+                "valueType": "string[]",
+                "required": true,
+                "options": []
+              }
+            }
+          }
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "enableSearchFilter",
+          "label": "Enable Search Filter",
+          "fieldDescription": "If this field checked, search filter is enabled"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "searchFilterTitle",
+          "label": "Search Filter Title",
+          "fieldDescription": "Search Filter Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "searchFilterInitText",
+          "label": "Search Filter Initial Text",
+          "fieldDescription": "Search Filter Initial Text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "countryCode",
+          "label": "Search Filter Country Code",
+          "fieldDescription": "Enter the two-letter country code that will be used to restrict the autocomplete results to a specific country. For example, 'US' for United States, 'GB' for United Kingdom, 'FR' for France, etc. If left blank, no country restriction will be applied and the results will be global."
+        },
+        {
+          "component": "text-input",
+          "valueType": "number",
+          "name": "proximityRadius",
+          "label": "Proximity Radius (meters)",
+          "value": "1000",
+          "fieldDescription": "Enter the distance (in meters) from the search location that nearby results should be displayed."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "showResults",
+          "label": "Show Results Label",
+          "fieldDescription": "Show Results Label",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "clearFilters",
+          "label": "Clear Filters Label",
+          "fieldDescription": "Clear Filters Label"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "selectInit",
+          "label": "Select Filters Initial Text",
+          "fieldDescription": "Select Filters Initial Text"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
