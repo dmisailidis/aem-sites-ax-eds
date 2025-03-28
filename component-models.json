@@ -462,16 +462,16 @@
   {
     "id": "lists",
     "fields": [
-
       {
         "component": "select",
+        "valueType": "string",
         "name": "buildList",
         "label": "Build List Using",
         "options": [
-          { "name": "childPages", "value": "Child pages" },
-          { "name": "fixedList", "value": "Fixed list" },
-          { "name": "search", "value": "Search" },
-          { "name": "tags", "value": "Tags" }
+          { "name": "Child Pages", "value": "childPages" },
+          { "name": "Fixed list", "value": "fixedList" },
+          { "name": "Search", "value": "search" },
+          { "name": "Tags", "value": "tags" }
         ]
       },
       {
