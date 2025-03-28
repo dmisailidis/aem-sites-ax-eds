@@ -462,6 +462,7 @@
   {
     "id": "lists",
     "fields": [
+
       {
         "component": "select",
         "name": "buildList",
@@ -471,6 +472,29 @@
           { "name": "fixedList", "value": "Fixed list" },
           { "name": "search", "value": "Search" },
           { "name": "tags", "value": "Tags" }
+        ]
+      },
+      {
+        "component": "group",
+        "name": "childPages",
+        "label": "Child Pages",
+        "visibleIf": {
+          "field": "buildList",
+          "value": "childPages"
+        },
+        "fields": [
+          {
+            "component": "reference",
+            "name": "parentPage",
+            "label": "Parent Page"
+          },
+          {
+            "component": "number",
+            "name": "childDepth",
+            "label": "Child Depth",
+            "min": 1,
+            "step": 1
+          }
         ]
       },
       {
@@ -510,40 +534,39 @@
         "fieldDescription": "HTML ID attribute to apply to the component"
       },
       {
-        "title": "Item Settings",
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "linkItems",
-            "label": "Link Items",
-            "defaultValue": false,
-            "fieldDescription": "Links item to the corresponding page"
-          },
-          {
-            "component": "boolean",
-            "name": "showDescription",
-            "label": "Show Description",
-            "defaultValue": false,
-            "fieldDescription": "Show descriptions of the link item"
-          },
-          {
-            "component": "boolean",
-            "name": "showDate",
-            "label": "Show Date",
-            "defaultValue": false,
-            "fieldDescription": "Show modification date of the link item"
-          },
-          {
-            "component": "boolean",
-            "name": "displayAsTeaser",
-            "label": "Display As Teaser",
-            "defaultValue": false,
-            "fieldDescription": "When checked, the item is displayed as a teaser item"
-          }
-        ]
+        "component": "boolean",
+        "name": "linkItems",
+        "label": "Link Items",
+        "defaultValue": false,
+        "fieldDescription": "Links item to the corresponding page"
+      },
+      {
+        "component": "boolean",
+        "name": "showDescription",
+        "label": "Show Description",
+        "defaultValue": false,
+        "fieldDescription": "Show descriptions of the link item"
+      },
+      {
+        "component": "boolean",
+        "name": "showDate",
+        "label": "Show Date",
+        "defaultValue": false,
+        "fieldDescription": "Show modification date of the link item"
+      },
+      {
+        "component": "boolean",
+        "name": "displayAsTeaser",
+        "label": "Display As Teaser",
+        "defaultValue": false,
+        "fieldDescription": "When checked, the item is displayed as a teaser item"
       }
     ]
   },
+
+
+
+
 
 
   {
