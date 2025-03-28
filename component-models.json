@@ -476,7 +476,7 @@
       },
       {
         "component": "group",
-        "name": "childPages",
+        "name": "childPagesDialog",
         "label": "Child Pages",
         "visibleIf": {
           "field": "buildList",
@@ -485,15 +485,34 @@
         "fields": [
           {
             "component": "reference",
+            "valueType": "string",
             "name": "parentPage",
             "label": "Parent Page"
           },
           {
             "component": "number",
+            "valueType": "number",
             "name": "childDepth",
             "label": "Child Depth",
             "min": 1,
             "step": 1
+          }
+        ]
+      },
+      {
+        "component": "group",
+        "name": "searchDialog",
+        "label": "Search",
+        "visibleIf": {
+          "field": "buildList",
+          "value": "search"
+        },
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "label": "Search Query",
+            "name": "searchQuery"
           }
         ]
       },
