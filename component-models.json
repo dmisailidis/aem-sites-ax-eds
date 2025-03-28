@@ -463,6 +463,16 @@
     "id": "lists",
     "fields": [
       {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description"
+      },
+      {
         "component": "select",
         "name": "buildList",
         "label": "Build List Using",
@@ -472,9 +482,32 @@
           { "name": "search", "value": "Search" },
           { "name": "tags", "value": "Tags" }
         ]
+      },
+      {
+        "component": "list",
+        "name": "items",
+        "label": "Items",
+        "multi": true,
+        "condition": {
+          "field": "buildList",
+          "equals": "fixedList"
+        },
+        "fields": [
+          {
+            "component": "text",
+            "name": "itemTitle",
+            "label": "Item Title"
+          },
+          {
+            "component": "text",
+            "name": "itemDescription",
+            "label": "Item Description"
+          }
+        ]
       }
     ]
   },
+
 
   {
     "id": "map-locator",
