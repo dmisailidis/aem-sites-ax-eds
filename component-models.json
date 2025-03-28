@@ -478,7 +478,7 @@
         "component": "group",
         "name": "childPagesDialog",
         "label": "Child Pages",
-        "visibleIf": {
+        "conditions": {
           "field": "buildList",
           "value": "childPages"
         },
@@ -503,7 +503,7 @@
         "component": "group",
         "name": "searchDialog",
         "label": "Search",
-        "visibleIf": {
+        "conditions": {
           "field": "buildList",
           "value": "search"
         },
