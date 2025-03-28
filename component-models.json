@@ -461,58 +461,53 @@
 
   {
     "id": "lists",
-    "tabs": [
+    "fields": [
       {
-        "title": "List Settings",
-        "fields": [
-          {
-            "component": "select",
-            "name": "buildList",
-            "label": "Build List Using",
-            "options": [
-              { "name": "childPages", "value": "Child pages" },
-              { "name": "fixedList", "value": "Fixed list" },
-              { "name": "search", "value": "Search" },
-              { "name": "tags", "value": "Tags" }
-            ]
-          },
-          {
-            "component": "select",
-            "name": "orderBy",
-            "label": "Order By",
-            "fieldDescription": "Enter a property like \"jcr:created\"",
-            "options": [
-              { "name": "title", "value": "Title" },
-              { "name": "lastModifiedDate", "value": "Last Modified Date" }
-            ]
-          },
-          {
-            "component": "select",
-            "name": "sortOrder",
-            "label": "Sort Order",
-            "fieldDescription": "Sort order as ascending or descending",
-            "options": [
-              { "name": "ascending", "value": "Ascending" },
-              { "name": "descending", "value": "Descending" }
-            ]
-          },
-          {
-            "component": "number",
-            "name": "maxItems",
-            "label": "Max Items",
-            "valueType": "number",
-            "min": 0,
-            "step": 1,
-            "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
-          },
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "id",
-            "label": "ID",
-            "fieldDescription": "HTML ID attribute to apply to the component"
-          }
+        "component": "select",
+        "name": "buildList",
+        "label": "Build List Using",
+        "options": [
+          { "name": "childPages", "value": "Child pages" },
+          { "name": "fixedList", "value": "Fixed list" },
+          { "name": "search", "value": "Search" },
+          { "name": "tags", "value": "Tags" }
         ]
+      },
+      {
+        "component": "select",
+        "name": "orderBy",
+        "label": "Order By",
+        "fieldDescription": "Enter a property like \"jcr:created\"",
+        "options": [
+          { "name": "title", "value": "Title" },
+          { "name": "lastModifiedDate", "value": "Last Modified Date" }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "sortOrder",
+        "label": "Sort Order",
+        "fieldDescription": "Sort order as ascending or descending",
+        "options": [
+          { "name": "ascending", "value": "Ascending" },
+          { "name": "descending", "value": "Descending" }
+        ]
+      },
+      {
+        "component": "number",
+        "name": "maxItems",
+        "label": "Max Items",
+        "valueType": "number",
+        "min": 0,
+        "step": 1,
+        "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "id",
+        "label": "ID",
+        "fieldDescription": "HTML ID attribute to apply to the component"
       },
       {
         "title": "Item Settings",
