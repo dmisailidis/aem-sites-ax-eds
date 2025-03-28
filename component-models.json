@@ -463,98 +463,83 @@
     "id": "lists",
     "fields": [
       {
-        "component": "tabs",
-        "name": "listSettings",
-        "label": "List Settings",
-        "fields": [
-          {
-            "component": "select",
-            "name": "buildList",
-            "label": "Build List Using",
-            "options": [
-              { "name": "childPages", "value": "Child pages" },
-              { "name": "fixedList", "value": "Fixed list" },
-              { "name": "search", "value": "Search" },
-              { "name": "tags", "value": "Tags" }
-            ]
-          },
-
-          {
-            "component": "select",
-            "name": "orderBy",
-            "label": "Order By",
-            "fieldDescription": "Enter a property like \"jcr:created\"",
-            "options": [
-              { "name": "title", "value": "Title" },
-              { "name": "lastModifiedDate", "value": "Last Modified Date" }
-            ]
-          },
-
-          {
-            "component": "select",
-            "name": "sortOrder",
-            "label": "Sort Order",
-            "fieldDescription": "Sort order as ascending or descending",
-            "options": [
-              { "name": "ascending", "value": "Ascending" },
-              { "name": "descending", "value": "Descending" }
-            ]
-          },
-          {
-            "component": "number",
-            "name": "maxItems",
-            "label": "Max Items",
-            "valueType": "integer",
-            "min": 0,
-            "step": 1,
-            "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
-          },
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "id",
-            "label": "ID",
-            "fieldDescription": "HTML ID attribute to apply to the component"
-          }
+        "component": "select",
+        "name": "buildList",
+        "label": "Build List Using",
+        "options": [
+          { "name": "childPages", "value": "Child pages" },
+          { "name": "fixedList", "value": "Fixed list" },
+          { "name": "search", "value": "Search" },
+          { "name": "tags", "value": "Tags" }
         ]
       },
       {
-        "component": "tabs",
-        "name": "itemSettings",
-        "label": "Item Settings",
-        "fields": [
-          {
-            "component": "toggle",
-            "name": "linkItems",
-            "label": "Link Items",
-            "defaultValue": false,
-            "fieldDescription": "Links item to the corresponding page"
-          },
-          {
-            "component": "toggle",
-            "name": "showDescription",
-            "label": "Show Description",
-            "defaultValue": false,
-            "fieldDescription": "Show descriptions of the link item"
-          },
-          {
-            "component": "toggle",
-            "name": "showDate",
-            "label": "Show Date",
-            "defaultValue": false,
-            "fieldDescription": "Show modification date of the link item"
-          },
-          {
-            "component": "toggle",
-            "name": "displayAsTeaser",
-            "label": "Display As Teaser",
-            "defaultValue": false,
-            "fieldDescription": "When checked, the item is displayed as a teaser item"
-          }
+        "component": "select",
+        "name": "orderBy",
+        "label": "Order By",
+        "fieldDescription": "Enter a property like \"jcr:created\"",
+        "options": [
+          { "name": "title", "value": "Title" },
+          { "name": "lastModifiedDate", "value": "Last Modified Date" }
         ]
+      },
+      {
+        "component": "select",
+        "name": "sortOrder",
+        "label": "Sort Order",
+        "fieldDescription": "Sort order as ascending or descending",
+        "options": [
+          { "name": "ascending", "value": "Ascending" },
+          { "name": "descending", "value": "Descending" }
+        ]
+      },
+      {
+        "component": "number",
+        "name": "maxItems",
+        "label": "Max Items",
+        "valueType": "integer",
+        "min": 0,
+        "step": 1,
+        "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "id",
+        "label": "ID",
+        "fieldDescription": "HTML ID attribute to apply to the component"
+      },
+      {
+        "component": "toggle",
+        "name": "linkItems",
+        "label": "Link Items",
+        "defaultValue": false,
+        "fieldDescription": "Links item to the corresponding page"
+      },
+      {
+        "component": "toggle",
+        "name": "showDescription",
+        "label": "Show Description",
+        "defaultValue": false,
+        "fieldDescription": "Show descriptions of the link item"
+      },
+      {
+        "component": "toggle",
+        "name": "showDate",
+        "label": "Show Date",
+        "defaultValue": false,
+        "fieldDescription": "Show modification date of the link item"
+      },
+      {
+        "component": "toggle",
+        "name": "displayAsTeaser",
+        "label": "Display As Teaser",
+        "defaultValue": false,
+        "fieldDescription": "When checked, the item is displayed as a teaser item"
       }
     ]
   },
+
 
 
 
