@@ -497,7 +497,7 @@
         "component": "number",
         "name": "maxItems",
         "label": "Max Items",
-        "valueType": "integer",
+        "valueType": "number",
         "min": 0,
         "step": 1,
         "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
@@ -510,28 +510,28 @@
         "fieldDescription": "HTML ID attribute to apply to the component"
       },
       {
-        "component": "toggle",
+        "component": "boolean",
         "name": "linkItems",
         "label": "Link Items",
         "defaultValue": false,
         "fieldDescription": "Links item to the corresponding page"
       },
       {
-        "component": "toggle",
+        "component": "boolean",
         "name": "showDescription",
         "label": "Show Description",
         "defaultValue": false,
         "fieldDescription": "Show descriptions of the link item"
       },
       {
-        "component": "toggle",
+        "component": "boolean",
         "name": "showDate",
         "label": "Show Date",
         "defaultValue": false,
         "fieldDescription": "Show modification date of the link item"
       },
       {
-        "component": "toggle",
+        "component": "boolean",
         "name": "displayAsTeaser",
         "label": "Display As Teaser",
         "defaultValue": false,
@@ -539,9 +539,6 @@
       }
     ]
   },
-
-
-
 
 
 
