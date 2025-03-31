@@ -496,12 +496,31 @@
           }
         ]
       },
+
       {
-        "component": "group",
-        "name": "searchDialog",
-        "label": "Search",
-        "condition": {"===": [{"var": "buildList"}, "search"]}
+        "component": "container",
+        "label": "Container",
+        "name": "container",
+        "valueType": "string",
+        "collapsible": false,
+        "condition": {"===": [{"var": "buildList"}, "childPages"]},
+        "fields": [
+          {
+            "component": "text-input",
+            "label": "Simple Text 1",
+            "name": "text",
+            "valueType": "string"
+          },
+          {
+            "component": "text-input",
+            "label": "Simple Text 2",
+            "name": "text2",
+            "valueType": "string"
+          }
+        ]
       },
+
+
       {
         "component": "select",
         "name": "orderBy",
