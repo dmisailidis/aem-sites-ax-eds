@@ -475,10 +475,12 @@
         ]
       },
       {
-        "component": "group",
+        "component": "container",
         "name": "childPagesDialog",
         "label": "Child Pages",
-        "condition": {"===": [{"var": "buildList"}, "Child Pages"]},
+        "collapsible": false,
+        "valueType": "string",
+        "condition": {"===": [{"var": "buildList"}, "childPages"]},
         "fields": [
           {
             "component": "reference",
