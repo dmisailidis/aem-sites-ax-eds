@@ -500,10 +500,7 @@
         "component": "group",
         "name": "searchDialog",
         "label": "Search",
-        "condition": {
-          "field": "buildList",
-          "value": "search"
-        },
+        "condition": {"===": [{"var": "buildList"}, "search"]},
         "fields": [
           {
             "component": "text",
@@ -512,6 +509,13 @@
             "name": "searchQuery"
           }
         ]
+      },
+      {
+        "component": "text-input",
+        "label": "Hidden text field",
+        "name": "hidden-text",
+        "valueType": "string",
+        "condition": { "===": [{"var" : "buildList"}, "search"] }
       },
       {
         "component": "select",
