@@ -501,27 +501,42 @@
 
       {
         "component": "container",
-        "label": "Container",
-        "name": "container",
-        "valueType": "string",
+        "name": "fixedListDialog",
+        "label": "Fixed List",
         "collapsible": false,
-        "condition": {"===": [{"var": "buildList"}, "childPages"]},
+        "valueType": "string",
+        "condition": {"===": [{"var": "buildList"}, "fixedList"]},
         "fields": [
           {
-            "component": "text-input",
-            "label": "Simple Text 1",
-            "name": "text",
+            "component": "aem-content",
+            "name": "reference",
+            "value": "",
+            "label": "Link",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
+          },
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title",
             "valueType": "string"
           },
           {
-            "component": "text-input",
-            "label": "Simple Text 2",
-            "name": "text2",
+            "component": "text",
+            "name": "description",
+            "label": "Description",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "icon",
+            "label": "Icon",
             "valueType": "string"
           }
         ]
       },
-
 
       {
         "component": "select",
