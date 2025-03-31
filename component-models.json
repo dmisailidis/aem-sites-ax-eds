@@ -509,7 +509,7 @@
         "fields": [
           {
             "component": "aem-content",
-            "name": "reference",
+            "name": "referenceLink",
             "value": "",
             "label": "Link",
             "valueType": "string",
@@ -534,6 +534,73 @@
             "name": "icon",
             "label": "Icon",
             "valueType": "string"
+          }
+        ]
+      },
+
+
+      {
+        "component": "container",
+        "name": "searchDialog",
+        "label": "Search",
+        "collapsible": false,
+        "valueType": "string",
+        "condition": {"===": [{"var": "buildList"}, "search"]},
+        "fields": [
+          {
+            "component": "text",
+            "name": "searcQuery",
+            "label": "Search Query",
+            "valueType": "string"
+          },
+          {
+            "component": "aem-content",
+            "name": "referenceSearchQuery",
+            "value": "",
+            "label": "Search Query",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
+          }
+        ]
+      },
+
+      {
+        "component": "container",
+        "name": "tagsDialog",
+        "label": "Tags",
+        "collapsible": false,
+        "valueType": "string",
+        "condition": {"===": [{"var": "buildList"}, "tags"]},
+        "fields": [
+          {
+            "component": "aem-content",
+            "name": "referenceParentPage",
+            "label": "Parent Page",
+            "valueType": "string",
+            "value": {
+              "rootPath": "/"
+            }
+          },
+          {
+            "component": "aem-content",
+            "name": "referenceTags",
+            "label": "Tags",
+            "valueType": "string",
+            "value": {
+              "rootPath": "/"
+            }
+          },
+          {
+            "component": "select",
+            "name": "match",
+            "label": "Match",
+            "valueType": "string",
+            "options": [
+              {"name": "Any tag", "value": "anyTag" },
+              {"name": "All tags", "value": "allTags"}
+            ]
           }
         ]
       },
