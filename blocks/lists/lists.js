@@ -17,11 +17,9 @@ export default function decorate(block) {
     }
 
     select.addEventListener('change', (e) => {
-        sortItems(e.target.value.toLowercase()); //sort items based on selected value
-    })
+        sortItems(e.target.value.toLowerCase());
+    });
 
-    sortItems(select.value.toLowerCase()); //sort items based on default value
-
+    sortItems(select.value.toLowerCase());
 
 }
-

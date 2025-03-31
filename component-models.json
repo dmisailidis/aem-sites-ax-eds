@@ -503,7 +503,6 @@
         "name": "fixedListDialog",
         "label": "Fixed List",
         "collapsible": false,
-        "multi": true,
         "valueType": "string",
         "condition": {"===": [{"var": "buildList"}, "fixedList"]},
         "fields": [
@@ -614,8 +613,8 @@
         "value": "title",
         "fieldDescription": "Enter a property like \"jcr:created\"",
         "options": [
-          { "name": "title", "value": "Title" },
-          { "name": "lastModifiedDate", "value": "Last Modified Date" }
+          { "name": "Title", "value": "title" },
+          { "name": "Description", "value": "description" }
         ]
       },
       {
@@ -624,8 +623,8 @@
         "label": "Sort Order",
         "fieldDescription": "Sort order as ascending or descending",
         "options": [
-          { "name": "ascending", "value": "Ascending" },
-          { "name": "descending", "value": "Descending" }
+          { "name": "Ascending", "value": "ascending" },
+          { "name": "Descending", "value": "descending" }
         ]
       },
       {
