@@ -493,8 +493,7 @@
             "valueType": "number",
             "name": "childDepth",
             "label": "Child Depth",
-            "min": 1,
-            "step": 1
+            "numberMin": 1
           }
         ]
       },
@@ -504,6 +503,7 @@
         "name": "fixedListDialog",
         "label": "Fixed List",
         "collapsible": false,
+        "multi": true,
         "valueType": "string",
         "condition": {"===": [{"var": "buildList"}, "fixedList"]},
         "fields": [
@@ -632,8 +632,7 @@
         "name": "maxItems",
         "label": "Max Items",
         "valueType": "number",
-        "min": 0,
-        "step": 1,
+        "numberMin": 0,
         "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
       },
       {
