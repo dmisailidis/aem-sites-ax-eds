@@ -478,7 +478,7 @@
         "component": "group",
         "name": "childPagesDialog",
         "label": "Child Pages",
-        "condition": {"===": [{"var": "buildList"}, "childPages"]},
+        "condition": {"===": [{"var": "buildList"}, "Child Pages"]},
         "fields": [
           {
             "component": "reference",
