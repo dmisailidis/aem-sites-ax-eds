@@ -504,7 +504,7 @@
         "name": "fixedListDialog",
         "label": "Fixed List",
         "collapsible": false,
-        "repetable": true,
+        "multi": true,
         "valueType": "string",
         "condition": {"===": [{"var": "buildList"}, "fixedList"]},
         "fields": [
