@@ -1,25 +1,27 @@
-/*
-document.addEventListener("DOMContentLoaded", function ()){
-    const buildListSelect = document.querySelector("[name = 'buildList']");
+export default function decorate(block) {
 
-    const sections = {
-        childPages: document.querySelector("[name = 'childPages']"),
-        fixedList: document.querySelector("[name = 'fixedList']"),
-        search: document.querySelector("[name = 'search']"),
-        tags: document.querySelector("[name = 'tags']"),
-    };
+    const items = [...block.children]; //get all children of the block
 
-    function updateVisibility(){
-        const selectedValue = buildListSelect.value;
-        Object.keys(sections).forEach(key => {
-            if(sections[key]){
-                sections[key].style.display = (key === selectedValue) ? "block" : "none";
-            }
+    const select = document.querySelector('[name = "orderBy"]'); //get the select element
+    if(!select) return; //if select element is not found, exit
+
+    //order by title or description
+    function sortItems(sortKey) {
+        items.sort((a, b) => {
+             const keyA = a.querySelector(`[data-sort-key="${sortKey}"]`)?.textContent.trim().toLowerCase() || '';
+             const keyB = b.querySelector(`[data-sort-key="${sortKey}"]`)?.textContent.trim().toLowerCase() || '';
+             return keyA.localeCompare(keyB);
         });
+        block.innerHTML = ''; //clear the block
+        items.forEach(item => block.appendChild(item)); //append sorted items to the block
     }
-    buildListSelect.addEventListener("change", updateVisibility);
-    updateVisibility();
+
+    select.addEventListener('change', (e) => {
+        sortItems(e.target.value.toLowercase()); //sort items based on selected value
+    })
+
+    sortItems(select.value.toLowerCase()); //sort items based on default value
 
 
+}
 
-}*/

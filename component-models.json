@@ -611,6 +611,7 @@
         "component": "select",
         "name": "orderBy",
         "label": "Order By",
+        "value": "title",
         "fieldDescription": "Enter a property like \"jcr:created\"",
         "options": [
           { "name": "title", "value": "Title" },
