@@ -577,9 +577,10 @@
           {
             "component": "aem-content",
             "name": "referenceParentPage",
+            "value": "",
             "label": "Parent Page",
             "valueType": "string",
-            "value": {
+            "validation": {
               "rootPath": "/"
             }
           },
@@ -587,8 +588,9 @@
             "component": "aem-content",
             "name": "referenceTags",
             "label": "Tags",
+            "value": "",
             "valueType": "string",
-            "value": {
+            "validation": {
               "rootPath": "/"
             }
           },
