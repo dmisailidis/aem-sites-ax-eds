@@ -293,32 +293,6 @@
     ]
   },
   {
-    "id": "cookieNotice",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "btnLabel",
-        "label": "Button Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "version",
-        "label": "Version",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "download",
     "fields": [
       {
@@ -485,6 +459,237 @@
     ]
   },
   {
+    "id": "lists",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "buildList",
+        "label": "Build List Using",
+        "options": [
+          {
+            "name": "Child Pages",
+            "value": "childPages"
+          },
+          {
+            "name": "Fixed list",
+            "value": "fixedList"
+          },
+          {
+            "name": "Search",
+            "value": "search"
+          },
+          {
+            "name": "Tags",
+            "value": "tags"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "parentPage",
+        "label": "Parent Page",
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "childPages"
+          ]
+        }
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "childDepth",
+        "label": "Child Depth",
+        "numberMin": 1,
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "childPages"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "searchQuery",
+        "label": "Search Query",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "search"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "referenceParentPage",
+        "value": "",
+        "label": "Parent Page",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "tags"
+          ]
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "referenceTags",
+        "label": "Tags",
+        "value": "",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "tags"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "match",
+        "label": "Match",
+        "valueType": "string",
+        "condition": {
+          "===": [
+            {
+              "var": "buildList"
+            },
+            "tags"
+          ]
+        },
+        "options": [
+          {
+            "name": "Any tag",
+            "value": "anyTag"
+          },
+          {
+            "name": "All tags",
+            "value": "allTags"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "orderBy",
+        "label": "Order By",
+        "value": "title",
+        "options": [
+          {
+            "name": "Title",
+            "value": "title"
+          },
+          {
+            "name": "Description",
+            "value": "description"
+          },
+          {
+            "name": "Last Modified",
+            "value": "lastModified"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "sortOrder",
+        "label": "Sort Order",
+        "options": [
+          {
+            "name": "Ascending",
+            "value": "ascending"
+          },
+          {
+            "name": "Descending",
+            "value": "descending"
+          }
+        ]
+      },
+      {
+        "component": "number",
+        "name": "maxItems",
+        "label": "Max Items",
+        "valueType": "number",
+        "numberMin": 0
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "id",
+        "label": "ID"
+      },
+      {
+        "component": "boolean",
+        "name": "linkItems",
+        "label": "Link Items",
+        "defaultValue": false
+      },
+      {
+        "component": "boolean",
+        "name": "showDescription",
+        "label": "Show Description",
+        "defaultValue": false
+      },
+      {
+        "component": "boolean",
+        "name": "showDate",
+        "label": "Show Date",
+        "defaultValue": false
+      },
+      {
+        "component": "boolean",
+        "name": "displayAsTeaser",
+        "label": "Display As Teaser",
+        "defaultValue": false
+      }
+    ]
+  },
+  {
+    "id": "list-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Link",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "icon",
+        "label": "Icon",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "map-locator",
     "fields": [
       {
@@ -646,35 +851,6 @@
         "name": "selectInit",
         "label": "Select Filters Initial Text",
         "fieldDescription": "Select Filters Initial Text"
-      }
-    ]
-  },
-  {
-    "id": "progressBar",
-    "fields": [
-      {
-        "component": "text-input",
-        "valueType": "number",
-        "label": "Completion",
-        "name": "completion",
-        "value": ""
-      },
-      {
-        "component": "select",
-        "name": "type",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Static",
-            "value": "static"
-          },
-          {
-            "name": "Dynamic",
-            "value": "dynamic"
-          }
-        ]
       }
     ]
   },
