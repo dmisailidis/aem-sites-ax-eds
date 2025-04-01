@@ -34,7 +34,7 @@ export default function decorate(block) {
 }*/
 
 
-/*
+
 export default function decorate(block) {
 
   const orderBySelect = document.querySelector('select[name="orderBy"]');
@@ -54,7 +54,7 @@ export default function decorate(block) {
     const aKey = a.getAttribute('data-' + orderBy) || "";
     const bKey = b.getAttribute('data-' + orderBy) || "";
     let cmp = aKey.localeCompare(bKey);
-    // Se sortOrder è "descending", inverti il risultato
+
     if (sortOrder.toLowerCase() === 'descending') {
       cmp = -cmp;
     }
@@ -70,6 +70,3 @@ export default function decorate(block) {
 
   limitedItems.forEach(item => block.appendChild(item));
 }
-
-
-*/
