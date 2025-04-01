@@ -267,6 +267,21 @@
           }
         },
         {
+          "title": "Cookie Notice",
+          "id": "cookieNotice",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Cookie Notice",
+                  "model": "cookieNotice"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Hero",
           "id": "hero",
           "plugins": {
@@ -276,6 +291,21 @@
                 "template": {
                   "name": "Hero",
                   "model": "hero"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Progress Bar",
+          "id": "progressBar",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Progress Bar",
+                  "model": "progressBar"
                 }
               }
             }
