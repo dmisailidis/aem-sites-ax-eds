@@ -47,7 +47,9 @@ export default function decorate(block) {
   const maxItems = maxItemsInput ? parseInt(maxItemsInput.value, 10) : Infinity; // Numero massimo di elementi
 
 
-  const itemsArray = Array.from(block.children).filter(item => !item.matches('select, input, label'));
+  const itemsArray = Array.from(block.children);
+  block.querySelectorAll('div').forEach(div => div.remove());
+
 
 
   itemsArray.sort((a, b) => {
