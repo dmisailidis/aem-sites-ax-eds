@@ -1,6 +1,6 @@
 export default function decorate(block) {
 
-    const items = [...block.children]; //get all children of the block
+   /* const items = [...block.children]; //get all children of the block
 
     const tagOrder = document.createElement('div'); //create a div to hold the tag order
     tagOrder.classList.add('orderBy'); //add class to the div
@@ -17,6 +17,8 @@ export default function decorate(block) {
              const keyB = b.querySelector(`[data-sort-key="${sortKey}"]`)?.textContent.trim().toLowerCase() || '';
              return keyA.localeCompare(keyB);
         });
+
+
         block.innerHTML = ''; //clear the block
         items.forEach(item => block.appendChild(item)); //append sorted items to the block
     }
@@ -41,7 +43,7 @@ export default function decorate(block) {
         ul.appendChild(li);
     });
 
-    block.appendChild(container);
+    block.appendChild(container);*/
 
 }
 
