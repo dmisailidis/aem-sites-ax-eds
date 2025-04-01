@@ -1,7 +1,3 @@
-import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
-import { loadFragment } from '../fragment/fragment.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
-
 /**
  * Fetches child pages based on the parent page path
  * @param {string} parentPath - Path to the parent page
@@ -16,17 +12,17 @@ async function fetchChildPages(parentPath, depth = 1) {
       throw new Error('Failed to fetch query index');
     }
     const data = await response.json();
-    
+
     // Filter pages that are children of the specified parent path
-    return data.filter(page => {
+    return data.filter((page) => {
       const pagePath = page.path;
       if (!pagePath.startsWith(parentPath)) return false;
-      
+
       // Calculate the level difference to check depth
       const parentPathParts = parentPath.split('/').filter(Boolean);
       const pagePathParts = pagePath.split('/').filter(Boolean);
       const levelDifference = pagePathParts.length - parentPathParts.length;
-      
+
       return levelDifference > 0 && levelDifference <= depth;
     });
   } catch (error) {
@@ -48,17 +44,15 @@ async function fetchSearchResults(query) {
       throw new Error('Failed to fetch query index');
     }
     const data = await response.json();
-    
+
     // Simple search implementation
     const searchTerms = query.toLowerCase().split(' ');
-    
-    return data.filter(page => {
+
+    return data.filter((page) => {
       const title = (page.title || '').toLowerCase();
       const description = (page.description || '').toLowerCase();
-      
-      return searchTerms.some(term => 
-        title.includes(term) || description.includes(term)
-      );
+
+      return searchTerms.some((term) => title.includes(term) || description.includes(term));
     });
   } catch (error) {
     console.error('Error performing search:', error);
@@ -81,23 +75,22 @@ async function fetchPagesByTags(parentPath, tags, match = 'anyTag') {
       throw new Error('Failed to fetch query index');
     }
     const data = await response.json();
-    
+
     // Filter pages based on tags
-    return data.filter(page => {
+    return data.filter((page) => {
       // First, check if we need to limit by parent path
       if (parentPath && !page.path.startsWith(parentPath)) {
         return false;
       }
-      
+
       // Then check tags
       const pageTags = page.tags || [];
-      
+
       if (match === 'anyTag') {
-        return tags.some(tag => pageTags.includes(tag));
-      } else {
-        // allTags - must match all specified tags
-        return tags.every(tag => pageTags.includes(tag));
+        return tags.some((tag) => pageTags.includes(tag));
       }
+      // allTags - must match all specified tags
+      return tags.every((tag) => pageTags.includes(tag));
     });
   } catch (error) {
     console.error('Error fetching pages by tags:', error);
@@ -116,11 +109,11 @@ function sortPages(pages, orderBy = 'title', sortOrder = 'ascending') {
   return [...pages].sort((a, b) => {
     const valA = a[orderBy] || '';
     const valB = b[orderBy] || '';
-    
-    const comparison = typeof valA === 'string' 
+
+    const comparison = typeof valA === 'string'
       ? valA.localeCompare(valB)
       : valA - valB;
-    
+
     return sortOrder === 'ascending' ? comparison : -comparison;
   });
 }
@@ -146,13 +139,19 @@ function formatDate(dateStr) {
  */
 function extractConfig(block) {
   const config = {};
-  block.querySelectorAll(':scope > div').forEach(row => {
+  block.querySelectorAll(':scope > div').forEach((row) => {
     if (row.children.length >= 2) {
       const key = row.children[0].textContent.trim();
       const value = row.children[1].textContent.trim();
       config[key] = value;
     }
   });
+
+  // If config doesn't have buildList and there are list-item elements, assume it's a fixedList
+  if (!config.buildList && block.querySelector('.list-item')) {
+    config.buildList = 'fixedList';
+  }
+
   return config;
 }
 
@@ -164,19 +163,19 @@ function extractConfig(block) {
  */
 function createListItems(items, config) {
   const fragment = document.createDocumentFragment();
-  
-  items.forEach(item => {
+
+  items.forEach((item) => {
     const li = document.createElement('li');
     li.classList.add('list-item');
-    
+
     if (config.displayAsTeaser === 'true') {
       li.classList.add('list-teaser');
     }
-    
+
     // Create title element
     const title = document.createElement(config.displayAsTeaser === 'true' ? 'h3' : 'span');
     title.classList.add('list-item-title');
-    
+
     if (config.linkItems === 'true' && item.path) {
       const link = document.createElement('a');
       link.href = item.path;
@@ -185,16 +184,16 @@ function createListItems(items, config) {
     } else {
       title.textContent = item.title || '';
     }
-    
+
     // Add icon if available
     if (item.icon) {
       const iconSpan = document.createElement('span');
       iconSpan.classList.add('list-item-icon', `icon-${item.icon}`);
       li.appendChild(iconSpan);
     }
-    
+
     li.appendChild(title);
-    
+
     // Add description if configured
     if (config.showDescription === 'true' && item.description) {
       const description = document.createElement('p');
@@ -202,7 +201,7 @@ function createListItems(items, config) {
       description.textContent = item.description;
       li.appendChild(description);
     }
-    
+
     // Add date if configured
     if (config.showDate === 'true' && item.lastModified) {
       const date = document.createElement('span');
@@ -210,10 +209,10 @@ function createListItems(items, config) {
       date.textContent = formatDate(item.lastModified);
       li.appendChild(date);
     }
-    
+
     fragment.appendChild(li);
   });
-  
+
   return fragment;
 }
 
@@ -224,47 +223,82 @@ function createListItems(items, config) {
 export default async function decorate(block) {
   // Extract configuration
   const config = extractConfig(block);
-  
-  // Parse fixed list items if using that mode
-  let fixedListItems = [];
-  if (config.buildList === 'fixedList') {
-    // For fixed list, we'll extract items from child blocks
-    const itemBlocks = [...block.querySelectorAll('.list-item')];
-    itemBlocks.forEach(itemBlock => {
-      const title = itemBlock.querySelector('.list-item-title')?.textContent || '';
-      const description = itemBlock.querySelector('.list-item-description')?.textContent || '';
-      const link = itemBlock.querySelector('.list-item-title a')?.href || '';
-      const iconEl = itemBlock.querySelector('.list-item-icon');
-      const icon = iconEl ? 
-        Array.from(iconEl.classList)
-          .find(cls => cls.startsWith('icon-'))?.substring(5) : '';
-      
-      fixedListItems.push({
-        title,
-        description,
-        path: link,
-        icon
-      });
-    });
+
+  // If the block already has list items, assume it's a fixed list
+  const hasListItems = block.querySelector('.list-item') !== null;
+
+  // Default to fixedList if buildList is undefined and we have list items
+  if (!config.buildList && hasListItems) {
+    config.buildList = 'fixedList';
+  } else if (!config.buildList) {
+    // Set a default if not specified (may be useful for new blocks)
+    config.buildList = 'fixedList';
   }
-  
+
+  // Parse fixed list items if using that mode
+  const fixedListItems = [];
+  if (config.buildList === 'fixedList') {
+    // Get all elements that look like list items
+    const itemBlocks = [...block.querySelectorAll('.list-item')];
+
+    // If we're in an editing context with list items
+    // (they might not have the expected structure yet)
+    if (itemBlocks.length > 0) {
+      itemBlocks.forEach((itemBlock) => {
+        const title = itemBlock.querySelector('.list-item-title')?.textContent
+                      || itemBlock.textContent || 'List Item';
+        const description = itemBlock.querySelector('.list-item-description')?.textContent || '';
+        const link = itemBlock.querySelector('.list-item-title a')?.href || '';
+        const iconEl = itemBlock.querySelector('.list-item-icon');
+        const icon = iconEl
+          ? Array.from(iconEl.classList)
+            .find((cls) => cls.startsWith('icon-'))?.substring(5) : '';
+
+        fixedListItems.push({
+          title,
+          description,
+          path: link,
+          icon,
+        });
+      });
+    }
+
+    // If we have no items, but we're in fixedList mode (likely a new block),
+    // show an empty message or placeholder
+    if (fixedListItems.length === 0) {
+      fixedListItems.push({
+        title: 'Add list items',
+        description: 'Use the "+" button to add list items',
+        path: '',
+        icon: '',
+      });
+    }
+  }
+
+  // Keep existing list items if this is just a refresh during editing
+  const existingItems = block.querySelector('.list-container');
+  if (existingItems && config.buildList === 'fixedList' && hasListItems) {
+    // Don't clear the content, let the existing items remain
+    return;
+  }
+
   // Clear the block content to prepare for the list
   block.innerHTML = '';
-  
+
   // Create list container
   const listElement = document.createElement('ul');
   listElement.classList.add('list-container');
-  
+
   if (config.displayAsTeaser === 'true') {
     listElement.classList.add('list-teaser-container');
   }
-  
+
   if (config.id) {
     listElement.id = config.id;
   }
-  
+
   let listItems = [];
-  
+
   // Fetch list items based on the buildList method
   try {
     switch (config.buildList) {
@@ -274,32 +308,39 @@ export default async function decorate(block) {
           listItems = await fetchChildPages(config.parentPage, childDepth);
         }
         break;
-        
+
       case 'fixedList':
         // Use the pre-processed fixed list items
         listItems = fixedListItems;
         break;
-        
+
       case 'search':
         if (config.searchQuery) {
           listItems = await fetchSearchResults(config.searchQuery);
         }
         break;
-        
+
       case 'tags':
         if (config.referenceTags) {
-          const tags = config.referenceTags.split(',').map(tag => tag.trim());
+          const tags = config.referenceTags.split(',').map((tag) => tag.trim());
           listItems = await fetchPagesByTags(config.referenceParentPage, tags, config.match);
         }
         break;
-        
+
       default:
         console.warn(`Unknown list building method: ${config.buildList}`);
+        // Default to empty fixed list if method is unknown
+        listItems = [{
+          title: 'Configure list building method',
+          description: 'Select a list building method in the component properties',
+          path: '',
+          icon: '',
+        }];
     }
-    
+
     // Apply sorting
     listItems = sortPages(listItems, config.orderBy, config.sortOrder);
-    
+
     // Apply item limit
     if (config.maxItems) {
       const maxItems = parseInt(config.maxItems, 10);
@@ -307,11 +348,10 @@ export default async function decorate(block) {
         listItems = listItems.slice(0, maxItems);
       }
     }
-    
+
     // Create and add list items
     const itemsFragment = createListItems(listItems, config);
     listElement.appendChild(itemsFragment);
-    
   } catch (error) {
     console.error('Error building list:', error);
     // Add a message for error state
@@ -319,7 +359,7 @@ export default async function decorate(block) {
     errorMsg.textContent = 'Unable to load list items.';
     listElement.appendChild(errorMsg);
   }
-  
+
   // Add the list to the block
   block.appendChild(listElement);
 }
