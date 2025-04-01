@@ -1,3 +1,4 @@
+/*
 function orderBy(condition, items) {
   if (condition === "title") {
     items.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
@@ -33,3 +34,4 @@ export default function decorate(block) {
         ul.appendChild(li);
     });
 }
+*/
