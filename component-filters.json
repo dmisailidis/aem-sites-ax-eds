@@ -30,9 +30,7 @@
       "card",
       "socialShare",
       "authorInfo",
-      "video",
-      "map-locator",
-      "lists"
+      "video"
     ]
   },
   {
@@ -80,6 +78,12 @@
       "card",
       "socialShare",
       "authorInfo"
+    ]
+  },
+  {
+    "id": "list",
+    "components": [
+      "list-item"
     ]
   },
   {
