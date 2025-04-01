@@ -17,7 +17,6 @@
       "hero",
       "cards",
       "columns",
-      "cookieNotice",
       "fragment",
       "imageLink",
       "search",
@@ -32,8 +31,10 @@
       "socialShare",
       "authorInfo",
       "video",
+      "cookieNotice",
       "map-locator",
-      "progressBar"
+      "progressBar",
+      "lists"
     ]
   },
   {
@@ -81,6 +82,12 @@
       "card",
       "socialShare",
       "authorInfo"
+    ]
+  },
+  {
+    "id": "lists",
+    "components": [
+      "list-item"
     ]
   },
   {
