@@ -11,9 +11,11 @@ export default function decorate(block) {
    const items = [...block.children];
 
     const listBlock = document.querySelector('.lists-block');
+    console.log("listBlock")
     if (!listBlock) return;
 
     let ul = listBlock.querySelector('ul');
+    console.log("ul")
     if (!ul) {
         ul = document.createElement('ul');
         ul.classList.add('list-container');
@@ -21,10 +23,10 @@ export default function decorate(block) {
     }
 
     const orderSelect = document.querySelector('select[name="orderBy"]');
+    console.log("orderSelect")
     const orderedItems = orderBy(orderSelect.value, items);
 
     ul.innerHTML = '';
-
     orderedItems.forEach((el) => {
         const li = document.createElement('li');
         li.textContent = el.title;
