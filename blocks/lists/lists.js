@@ -1,5 +1,4 @@
-/*
-function orderBy(condition, items) {
+/*function orderBy(condition, items) {
   if (condition === "title") {
     items.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
   } else if (condition === "description") {
@@ -10,7 +9,6 @@ function orderBy(condition, items) {
 
 export default function decorate(block) {
    const items = [...block.children];
-
     const listBlock = document.querySelector('.lists-block');
     console.log("listBlock")
     if (!listBlock) return;
@@ -33,5 +31,43 @@ export default function decorate(block) {
         li.textContent = el.title;
         ul.appendChild(li);
     });
+}*/
+
+
+export default function decorate(block) {
+
+  const orderBySelect = document.querySelector('select[name="orderBy"]');
+  const sortOrderSelect = document.querySelector('select[name="sortOrder"]');
+  const maxItemsInput = document.querySelector('input[name="maxItems"]');
+
+
+  const orderBy = orderBySelect ? orderBySelect.value : "title"; // "title" o "description"
+  const sortOrder = sortOrderSelect ? sortOrderSelect.value : "ascending"; // "ascending" o "descending"
+  const maxItems = maxItemsInput ? parseInt(maxItemsInput.value, 10) : Infinity; // Numero massimo di elementi
+
+
+  const itemsArray = Array.from(block.children);
+
+
+  itemsArray.sort((a, b) => {
+    const aKey = a.getAttribute('data-' + orderBy) || "";
+    const bKey = b.getAttribute('data-' + orderBy) || "";
+    let cmp = aKey.localeCompare(bKey);
+    // Se sortOrder è "descending", inverti il risultato
+    if (sortOrder.toLowerCase() === 'descending') {
+      cmp = -cmp;
+    }
+    return cmp;
+  });
+
+
+  const limitedItems = itemsArray.slice(0, maxItems);
+
+
+  block.innerHTML = "";
+
+
+  limitedItems.forEach(item => block.appendChild(item));
 }
-*/
+
+
