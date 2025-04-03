@@ -61,10 +61,11 @@ export default function decorate(block) {
             // add title and description on the same row else print only title or description
             if(title && description){
                 if(link){
-                    itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>` + " " + `<span class="list-item-description">${description}</span>`;
+                    itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>`;
                 } else {
-                    itemContent += `<span class="list-item-title">${title}</span>` + " " + `<span class="list-item-description">${description}</span>`;
+                    itemContent += `<span class="list-item-title">${title}</span>`;
                 }
+                itemContent += `<span class="list-item-description">${description}</span>`;
             } else if(title && !description){
                 // check if the link is present
                 console.log("controlling link", link);
