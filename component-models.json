@@ -498,39 +498,6 @@
         ]
       },
       {
-        "id": "list-item",
-        "fields": [
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "title",
-            "label": "Title",
-            "value": ""
-          },
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "description",
-            "label": "Description",
-            "value": ""
-          },
-          {
-            "component": "aem-content",
-            "valueType": "string",
-            "name": "link",
-            "label": "Link",
-            "value": ""
-          },
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "icon",
-            "label": "Icon",
-            "value": ""
-          }
-        ]
-      },
-      {
         "component": "container",
         "name": "fixedListDialog",
         "label": "Fixed List",
@@ -568,8 +535,6 @@
           }
         ]
       },
-
-
       {
         "component": "container",
         "name": "searchDialog",
@@ -596,7 +561,6 @@
           }
         ]
       },
-
       {
         "component": "container",
         "name": "tagsDialog",
@@ -637,7 +601,6 @@
           }
         ]
       },
-
       {
         "component": "select",
         "name": "orderBy",
@@ -704,12 +667,39 @@
       }
     ]
   },
-
-
-
-
-
-
+  {
+    "id": "list-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Link",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "icon",
+        "label": "Icon",
+        "value": ""
+      }
+    ]
+  },
   {
     "id": "map-locator",
     "fields": [
