@@ -488,7 +488,10 @@
         "name": "maxItems",
         "label": "Max Items",
         "valueType": "number",
-        "numberMin": 0,
+        "placeholder": null,
+        "validation": {
+          "numberMin": 0
+        },
         "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
       },
       {
