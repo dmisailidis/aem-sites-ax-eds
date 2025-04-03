@@ -458,6 +458,7 @@
       }
     ]
   },
+
   {
     "id": "lists",
     "fields": [
@@ -467,154 +468,163 @@
         "name": "buildList",
         "label": "Build List Using",
         "options": [
-          {
-            "name": "Child Pages",
-            "value": "childPages"
-          },
-          {
-            "name": "Fixed list",
-            "value": "fixedList"
-          },
-          {
-            "name": "Search",
-            "value": "search"
-          },
-          {
-            "name": "Tags",
-            "value": "tags"
-          }
+          { "name": "Child Pages", "value": "childPages" },
+          { "name": "Fixed list", "value": "fixedList" },
+          { "name": "Search", "value": "search" },
+          { "name": "Tags", "value": "tags" }
         ]
       },
       {
-        "component": "aem-content",
+        "component": "container",
+        "name": "childPagesDialog",
+        "label": "Child Pages",
+        "collapsible": false,
         "valueType": "string",
-        "name": "parentPage",
-        "label": "Parent Page",
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "childPages"
-          ]
-        }
+        "condition": {"===": [{"var": "buildList"}, "childPages"]},
+        "fields": [
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "parentPage",
+            "label": "Parent Page"
+          },
+          {
+            "component": "number",
+            "valueType": "number",
+            "name": "childDepth",
+            "label": "Child Depth",
+            "numberMin": 1
+          }
+        ]
       },
+
       {
-        "component": "number",
-        "valueType": "number",
-        "name": "childDepth",
-        "label": "Child Depth",
-        "numberMin": 1,
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "childPages"
-          ]
-        }
-      },
-      {
-        "component": "text",
-        "name": "searchQuery",
-        "label": "Search Query",
+        "component": "container",
+        "name": "fixedListDialog",
+        "label": "Fixed List",
+        "collapsible": false,
         "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "search"
-          ]
-        }
+        "condition": {"===": [{"var": "buildList"}, "fixedList"]},
+        "fields": [
+          {
+            "component": "aem-content",
+            "name": "referenceLink",
+            "value": "",
+            "label": "Link",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
+          },
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "description",
+            "label": "Description",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "icon",
+            "label": "Icon",
+            "valueType": "string"
+          }
+        ]
       },
+
+
       {
-        "component": "aem-content",
-        "name": "referenceParentPage",
-        "value": "",
-        "label": "Parent Page",
+        "component": "container",
+        "name": "searchDialog",
+        "label": "Search",
+        "collapsible": false,
         "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "tags"
-          ]
-        }
+        "condition": {"===": [{"var": "buildList"}, "search"]},
+        "fields": [
+          {
+            "component": "text",
+            "name": "searcQuery",
+            "label": "Search Query",
+            "valueType": "string"
+          },
+          {
+            "component": "aem-content",
+            "name": "referenceSearchQuery",
+            "value": "",
+            "label": "Search Query",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
+          }
+        ]
       },
+
       {
-        "component": "aem-content",
-        "name": "referenceTags",
+        "component": "container",
+        "name": "tagsDialog",
         "label": "Tags",
-        "value": "",
+        "collapsible": false,
         "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "tags"
-          ]
-        }
-      },
-      {
-        "component": "select",
-        "name": "match",
-        "label": "Match",
-        "valueType": "string",
-        "condition": {
-          "===": [
-            {
-              "var": "buildList"
-            },
-            "tags"
-          ]
-        },
-        "options": [
+        "condition": {"===": [{"var": "buildList"}, "tags"]},
+        "fields": [
           {
-            "name": "Any tag",
-            "value": "anyTag"
+            "component": "aem-content",
+            "name": "referenceParentPage",
+            "value": "",
+            "label": "Parent Page",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
           },
           {
-            "name": "All tags",
-            "value": "allTags"
+            "component": "aem-content",
+            "name": "referenceTags",
+            "label": "Tags",
+            "value": "",
+            "valueType": "string",
+            "validation": {
+              "rootPath": "/"
+            }
+          },
+          {
+            "component": "select",
+            "name": "match",
+            "label": "Match",
+            "valueType": "string",
+            "options": [
+              {"name": "Any tag", "value": "anyTag" },
+              {"name": "All tags", "value": "allTags"}
+            ]
           }
         ]
       },
+
       {
         "component": "select",
         "name": "orderBy",
         "label": "Order By",
         "value": "title",
+        "fieldDescription": "Enter a property like \"jcr:created\"",
         "options": [
-          {
-            "name": "Title",
-            "value": "title"
-          },
-          {
-            "name": "Description",
-            "value": "description"
-          },
-          {
-            "name": "Last Modified",
-            "value": "lastModified"
-          }
+          { "name": "Title", "value": "title" },
+          { "name": "Description", "value": "description" }
         ]
       },
       {
         "component": "select",
         "name": "sortOrder",
         "label": "Sort Order",
+        "fieldDescription": "Sort order as ascending or descending",
         "options": [
-          {
-            "name": "Ascending",
-            "value": "ascending"
-          },
-          {
-            "name": "Descending",
-            "value": "descending"
-          }
+          { "name": "Ascending", "value": "ascending" },
+          { "name": "Descending", "value": "descending" }
         ]
       },
       {
@@ -622,128 +632,52 @@
         "name": "maxItems",
         "label": "Max Items",
         "valueType": "number",
-        "numberMin": 0
+        "numberMin": 0,
+        "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "id",
-        "label": "ID"
+        "label": "ID",
+        "fieldDescription": "HTML ID attribute to apply to the component"
       },
       {
         "component": "boolean",
         "name": "linkItems",
         "label": "Link Items",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Links item to the corresponding page"
       },
       {
         "component": "boolean",
         "name": "showDescription",
         "label": "Show Description",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Show descriptions of the link item"
       },
       {
         "component": "boolean",
         "name": "showDate",
         "label": "Show Date",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Show modification date of the link item"
       },
       {
         "component": "boolean",
         "name": "displayAsTeaser",
         "label": "Display As Teaser",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "When checked, the item is displayed as a teaser item"
       }
     ]
   },
-  {
-    "id": "list-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "value": ""
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link",
-        "label": "Link",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "icon",
-        "label": "Icon",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "cookieNotice",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "btnLabel",
-        "label": "Button Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "version",
-        "label": "Version",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "progressBar",
-    "fields": [
-      {
-        "component": "text-input",
-        "valueType": "number",
-        "label": "Completion",
-        "name": "completion",
-        "value": ""
-      },
-      {
-        "component": "select",
-        "name": "type",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Static",
-            "value": "static"
-          },
-          {
-            "name": "Dynamic",
-            "value": "dynamic"
-          }
-        ]
-      }
-    ]
-  },
+
+
+
+
+
+
   {
     "id": "map-locator",
     "fields": [
