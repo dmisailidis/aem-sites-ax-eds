@@ -1,3 +1,4 @@
+/*
 export default function decorate(block){
     const items = [...block.children];
     const ul = document.getElementByClassName('list-item')
@@ -17,4 +18,4 @@ export default function decorate(block){
         ul.appendChild(li);
     });
 
-}
+}*/
