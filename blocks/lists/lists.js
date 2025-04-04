@@ -1,6 +1,7 @@
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
+        console.log("item", item);
         if (item.children.length === 1 &&
             item.children[0].tagName === 'DIV' &&
             item.children[0].children.length === 0 &&
@@ -17,20 +18,17 @@ export default function decorate(block) {
     items.forEach((item) => {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
-
-
         const components = [...item.children];
+        let title = '';
         let title = '';
         let description = '';
         let icon = null;
         let link = null;
 
-const iconElement = item.querySelector('img, .icon, [class*="icon"]');
+        const iconElement = item.querySelector('img, .icon, [class*="icon"]');
         if (iconElement) {
             icon = iconElement.cloneNode(true);
-        }*//*
-
-
+        }
 
         const linkElement = item.querySelector('a');
         let linkContent = '';
@@ -83,7 +81,7 @@ const iconElement = item.querySelector('img, .icon, [class*="icon"]');
             itemContent += '</span>';
         }
 
-        // Verifica se ha contenuto e non è già stato aggiunto
+        // check if the item content is not empty and if the item is not already added
         const itemKey = title + description + (link ? link.href : '');
         if (itemContent && !addedItems.has(itemKey)) {
             listItem.innerHTML = itemContent;
