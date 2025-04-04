@@ -5,6 +5,7 @@ module.exports = {
   ],
   env: {
     browser: true,
+    jest: true,
   },
   parser: '@babel/eslint-parser',
   parserOptions: {
@@ -17,5 +18,6 @@ module.exports = {
     'linebreak-style': ['off', 'unix'], // enforce unix linebreaks
     'import/extensions': ['error', { js: 'always' }], // require js file extensions in imports
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
+    'global-require': 'off', // allow requiring modules conditionally
   },
 };
