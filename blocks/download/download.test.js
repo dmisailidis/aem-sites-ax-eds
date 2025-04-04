@@ -2,12 +2,11 @@
  * @jest-environment jsdom
  */
 
-// Mock the getFileSize function
-const mockGetFileSize = jest.fn();
+// Properly mock the module
 jest.mock('./download.js', () => ({
   __esModule: true,
   default: jest.fn(),
-  getFileSize: mockGetFileSize,
+  getFileSize: jest.fn().mockResolvedValue('1.25'),
 }));
 
 // Mock fetch for getFileSize
@@ -15,10 +14,18 @@ global.fetch = jest.fn();
 
 beforeEach(() => {
   // Reset mocks
+  jest.clearAllMocks();
   fetch.mockReset();
-  mockGetFileSize.mockReset();
 
-  // Set up the mocked HTML block
+  // Get the mocked function from the module
+  const { getFileSize } = require('./download.js');
+  // Reset the mock implementation
+  getFileSize.mockClear();
+  getFileSize.mockResolvedValue('1.25');
+});
+
+test('decorates download block correctly', async () => {
+  // Set up the mocked HTML block with proper structure
   document.body.innerHTML = `
     <div id="download-test" class="download block" data-block-name="download" data-block-status="loading">
       <div>
@@ -29,21 +36,28 @@ beforeEach(() => {
       </div>
     </div>
   `;
-});
-
-test('decorates download block correctly', async () => {
-  // Mock file size fetch to return 1.25MB
-  mockGetFileSize.mockResolvedValue('1.25');
 
   const block = document.getElementById('download-test');
+
+  // Verify the initial structure first
+  expect(block).not.toBeNull();
 
   // Manually extract the data like the component would
   const [titleDiv, assetLinkDiv] = [...block.children];
 
-  const title = titleDiv.querySelector('p').innerText;
+  expect(titleDiv).not.toBeNull();
+  expect(assetLinkDiv).not.toBeNull();
+
+  const titleP = titleDiv.querySelector('p');
+  expect(titleP).not.toBeNull();
+
+  const title = titleP.textContent;
   expect(title).toBe('Sample PDF');
 
-  const assetLink = assetLinkDiv.querySelector('a').href;
+  const linkElement = assetLinkDiv.querySelector('a');
+  expect(linkElement).not.toBeNull();
+
+  const assetLink = linkElement.href;
   expect(assetLink).toContain('/path/to/document.pdf');
 
   // Simulate the transformation that happens in the component
@@ -81,19 +95,40 @@ test('decorates download block correctly', async () => {
 });
 
 test('handles file size fetch error gracefully', async () => {
-  // Mock getFileSize to throw an error
-  mockGetFileSize.mockRejectedValue(new Error('Failed to fetch file size'));
+  // Set up a proper HTML structure for this specific test
+  document.body.innerHTML = `
+    <div id="download-test" class="download block" data-block-name="download" data-block-status="loading">
+      <div>
+        <div><p>Sample PDF</p></div>
+      </div>
+      <div>
+        <div><a href="/path/to/document.pdf">Download PDF</a></div>
+      </div>
+    </div>
+  `;
 
   const block = document.getElementById('download-test');
 
+  // Get the mocked getFileSize from the module
+  const { getFileSize } = require('./download.js');
+
+  // Mock getFileSize to throw an error for this test
+  getFileSize.mockRejectedValueOnce(new Error('Failed to fetch file size'));
+
   // Manually extract the data like the component would
   const [assetLinkDiv] = [...block.children];
+  expect(assetLinkDiv).not.toBeNull();
 
-  const assetLink = assetLinkDiv.querySelector('a').href;
+  const linkElement = assetLinkDiv.querySelector('a');
+  expect(linkElement).not.toBeNull();
+
+  const assetLink = linkElement.href;
 
   // Check error handling
   try {
-    await mockGetFileSize(assetLink);
+    await getFileSize(assetLink);
+    // If we reach here, the test fails because we expect an error
+    expect('This should not be reached').toBe('Error should have been thrown');
   } catch (error) {
     expect(error.message).toBe('Failed to fetch file size');
   }
@@ -103,21 +138,23 @@ test('handles missing asset link gracefully', () => {
   // Set up a block without an asset link
   document.body.innerHTML = `
     <div id="download-test" class="download block" data-block-name="download" data-block-status="loading">
-      <div>
-        <div><p>Sample PDF</p></div>
-      </div>
-      <div>
-        <div></div>
-      </div>
+      <div><div><p>Sample PDF</p></div></div>
+      <div><div></div></div>
     </div>
   `;
 
   const block = document.getElementById('download-test');
+  expect(block).not.toBeNull();
 
   // Extract data
   const [titleDiv, assetLinkDiv] = [...block.children];
+  expect(titleDiv).not.toBeNull();
+  expect(assetLinkDiv).not.toBeNull();
 
-  const title = titleDiv.querySelector('p').innerText;
+  const titleP = titleDiv.querySelector('p');
+  expect(titleP).not.toBeNull();
+
+  const title = titleP.textContent;
   expect(title).toBe('Sample PDF');
 
   const assetLink = assetLinkDiv.querySelector('a');
