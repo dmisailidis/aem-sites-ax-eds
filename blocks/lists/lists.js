@@ -1,4 +1,3 @@
-
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
