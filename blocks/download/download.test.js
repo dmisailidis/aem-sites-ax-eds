@@ -116,7 +116,7 @@ test('handles file size fetch error gracefully', async () => {
   getFileSize.mockRejectedValueOnce(new Error('Failed to fetch file size'));
 
   // Manually extract the data like the component would
-  const [assetLinkDiv] = [...block.children];
+  const assetLinkDiv = block.children[1]; // Get second div (asset link)
   expect(assetLinkDiv).not.toBeNull();
 
   const linkElement = assetLinkDiv.querySelector('a');
