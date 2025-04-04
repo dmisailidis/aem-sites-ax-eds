@@ -1,3 +1,4 @@
+/*
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
@@ -26,10 +27,12 @@ export default function decorate(block) {
         let link = null;
 
 
-        /*const iconElement = item.querySelector('img, .icon, [class*="icon"]');
+        */
+/*const iconElement = item.querySelector('img, .icon, [class*="icon"]');
         if (iconElement) {
             icon = iconElement.cloneNode(true);
-        }*/
+        }*//*
+
 
 
         const linkElement = item.querySelector('a');
@@ -97,3 +100,4 @@ export default function decorate(block) {
     block.innerHTML = '';
     block.appendChild(list);
 }
+*/
