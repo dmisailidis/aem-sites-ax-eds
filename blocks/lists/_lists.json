@@ -38,67 +38,6 @@
       "fields": [
         {
           "component": "select",
-          "valueType": "string",
-          "name": "buildList",
-          "label": "Build List Using",
-          "options": [
-            { "name": "Child Pages", "value": "childPages" },
-            { "name": "Fixed list", "value": "fixedList" },
-            { "name": "Search", "value": "search" },
-            { "name": "Tags", "value": "tags" }
-          ]
-        },
-        {
-          "component": "aem-content",
-          "valueType": "string",
-          "name": "parentPage",
-          "label": "Parent Page",
-          "condition": {"===": [{"var": "buildList"}, "childPages"]}
-        },
-        {
-          "component": "number",
-          "valueType": "number",
-          "name": "childDepth",
-          "label": "Child Depth",
-          "numberMin": 1,
-          "condition": {"===": [{"var": "buildList"}, "childPages"]}
-        },
-        {
-          "component": "text",
-          "name": "searchQuery",
-          "label": "Search Query",
-          "valueType": "string",
-          "condition": {"===": [{"var": "buildList"}, "search"]}
-        },
-        {
-          "component": "aem-content",
-          "name": "referenceParentPage",
-          "value": "",
-          "label": "Parent Page",
-          "valueType": "string",
-          "condition": {"===": [{"var": "buildList"}, "tags"]}
-        },
-        {
-          "component": "aem-content",
-          "name": "referenceTags",
-          "label": "Tags",
-          "value": "",
-          "valueType": "string",
-          "condition": {"===": [{"var": "buildList"}, "tags"]}
-        },
-        {
-          "component": "select",
-          "name": "match",
-          "label": "Match",
-          "valueType": "string",
-          "condition": {"===": [{"var": "buildList"}, "tags"]},
-          "options": [
-            {"name": "Any tag", "value": "anyTag" },
-            {"name": "All tags", "value": "allTags"}
-          ]
-        },
-        {
-          "component": "select",
           "name": "orderBy",
           "label": "Order By",
           "value": "title",

@@ -13,48 +13,48 @@ export default function decorate(block) {
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set(); // keep track of added items
-    
+
     items.forEach((item) => {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
-        
-        // Analizza i componenti dell'elemento
+
+
         const components = [...item.children];
         let title = '';
         let description = '';
         let icon = null;
         let link = null;
-        
-        // Identifica icona se presente (immagine o elemento con classe contiene 'icon')
-        const iconElement = item.querySelector('img, .icon, [class*="icon"]');
+
+
+        /*const iconElement = item.querySelector('img, .icon, [class*="icon"]');
         if (iconElement) {
             icon = iconElement.cloneNode(true);
-        }
-        
-        // Identifica link se presente
+        }*/
+
+
         const linkElement = item.querySelector('a');
         let linkContent = '';
         if (linkElement) {
             link = linkElement.cloneNode(true);
             linkContent = linkElement.textContent.trim();
         }
-        
-        // Estrai titolo e descrizione
+
+        // extract title and description from the components if present
         if (components.length >= 1) {
             title = components[0].textContent.trim();
         }
-        
+
         if (components.length >= 2) {
             description = components[1].textContent.trim();
         }
-        
-        // Crea la struttura dell'elemento sulla stessa riga
+
+        // create the content of the list item
         let itemContent = '';
 
         if (icon) {
             itemContent += `<span class="list-item-icon">${icon.outerHTML}</span>`;
         }
-        
+
         if (title || description || link) {
             itemContent += '<span class="list-item-content">';
 
@@ -82,7 +82,7 @@ export default function decorate(block) {
             console.log("link", link);
             itemContent += '</span>';
         }
-        
+
         // Verifica se ha contenuto e non è già stato aggiunto
         const itemKey = title + description + (link ? link.href : '');
         if (itemContent && !addedItems.has(itemKey)) {
