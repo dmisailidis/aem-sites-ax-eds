@@ -467,18 +467,8 @@
         "label": "Order By",
         "value": "title",
         "options": [
-          {
-            "name": "Title",
-            "value": "title"
-          },
-          {
-            "name": "Description",
-            "value": "description"
-          },
-          {
-            "name": "Last Modified",
-            "value": "lastModified"
-          }
+          { "name": "Title", "value": "title" },
+          { "name": "Description", "value": "description" }
         ]
       },
       {
@@ -486,14 +476,8 @@
         "name": "sortOrder",
         "label": "Sort Order",
         "options": [
-          {
-            "name": "Ascending",
-            "value": "ascending"
-          },
-          {
-            "name": "Descending",
-            "value": "descending"
-          }
+          { "name": "Ascending", "value": "ascending" },
+          { "name": "Descending", "value": "descending" }
         ]
       },
       {
@@ -501,37 +485,46 @@
         "name": "maxItems",
         "label": "Max Items",
         "valueType": "number",
-        "numberMin": 0
+        "placeholder": null,
+        "validation": {
+          "numberMin": 0
+        },
+        "fieldDescription": "Maximum number of items displayed in list. Empty for all items"
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "id",
-        "label": "ID"
+        "label": "ID",
+        "fieldDescription": "HTML ID attribute to apply to the component"
       },
       {
         "component": "boolean",
         "name": "linkItems",
         "label": "Link Items",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Links item to the corresponding page"
       },
       {
         "component": "boolean",
         "name": "showDescription",
         "label": "Show Description",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Show descriptions of the link item"
       },
       {
         "component": "boolean",
         "name": "showDate",
         "label": "Show Date",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "Show modification date of the link item"
       },
       {
         "component": "boolean",
         "name": "displayAsTeaser",
         "label": "Display As Teaser",
-        "defaultValue": false
+        "defaultValue": false,
+        "fieldDescription": "When checked, the item is displayed as a teaser item"
       }
     ]
   },
