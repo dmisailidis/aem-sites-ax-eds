@@ -57,7 +57,7 @@ export default function decorate(block) {
         }
         return true;
     });
-
+    const orderBy = block.classList.contains('title');
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set(); // keep track of added items
@@ -66,7 +66,6 @@ export default function decorate(block) {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
         const components = [...item.children];
-        let title = '';
         let title = '';
         let description = '';
         let icon = null;

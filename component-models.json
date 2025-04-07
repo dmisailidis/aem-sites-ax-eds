@@ -463,7 +463,7 @@
     "fields": [
       {
         "component": "select",
-        "name": "orderBy",
+        "name": "classes",
         "label": "Order By",
         "value": "title",
         "options": [
@@ -563,61 +563,6 @@
         "name": "icon",
         "label": "Icon",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "cookieNotice",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "btnLabel",
-        "label": "Button Label",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "version",
-        "label": "Version",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "progressBar",
-    "fields": [
-      {
-        "component": "text-input",
-        "valueType": "number",
-        "label": "Completion",
-        "name": "completion",
-        "value": ""
-      },
-      {
-        "component": "select",
-        "name": "type",
-        "value": "",
-        "label": "Type",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Static",
-            "value": "static"
-          },
-          {
-            "name": "Dynamic",
-            "value": "dynamic"
-          }
-        ]
       }
     ]
   },
