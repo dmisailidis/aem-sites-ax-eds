@@ -1,0 +1,13 @@
+.progress-bar.block.dynamic {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+}
+
+.progress-bar.block .progress-bar__bar {
+    background-color: #42ad93;
+    border-radius: 0 4px 4px 0;
+    height: .25rem;
+    position: relative;
+}

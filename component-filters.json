@@ -31,8 +31,7 @@
       "socialShare",
       "authorInfo",
       "video",
-      "map-locator",
-      "pdfViewer"
+      "cookieNotice"
     ]
   },
   {
@@ -80,6 +79,12 @@
       "card",
       "socialShare",
       "authorInfo"
+    ]
+  },
+  {
+    "id": "lists",
+    "components": [
+      "list-item"
     ]
   },
   {
