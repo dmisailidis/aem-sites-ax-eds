@@ -1,3 +1,4 @@
+/*
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
@@ -10,8 +11,6 @@ export default function decorate(block) {
         }
         return true;
     });
-
-
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set(); // keep track of added items
@@ -95,3 +94,4 @@ export default function decorate(block) {
     block.innerHTML = '';
     block.appendChild(list);
 }
+*/
