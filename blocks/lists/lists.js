@@ -4,11 +4,11 @@ export default function decorate(block) {
   list.classList.add('list');
 
   [...block.children].forEach((row) => {
-    /*// Estrai titolo e descrizione dalle colonne della riga
+    // Estrai titolo e descrizione dalle colonne della riga
     const title = row.children[0]?.textContent.trim() || '';
     const description = row.children[1]?.textContent.trim() || '';
 
-    // Crea l'elemento della lista
+    /*// Crea l'elemento della lista
     const listItem = document.createElement('li');
     listItem.classList.add('list-item');
 
@@ -29,10 +29,10 @@ export default function decorate(block) {
     }
 
     // Aggiungi l'elemento alla lista
-    list.appendChild(listItem);
+    list.appendChild(listItem);*/
   });
 
   // Sostituisci il contenuto del blocco con la lista creata
   block.textContent = '';
-  block.appendChild(list);*/
+  block.appendChild(list);
 }
