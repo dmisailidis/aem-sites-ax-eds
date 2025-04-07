@@ -690,6 +690,61 @@
     ]
   },
   {
+    "id": "cookieNotice",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "btnLabel",
+        "label": "Button Label",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "version",
+        "label": "Version",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "progressBar",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "number",
+        "label": "Completion",
+        "name": "completion",
+        "value": ""
+      },
+      {
+        "component": "select",
+        "name": "type",
+        "value": "",
+        "label": "Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Static",
+            "value": "static"
+          },
+          {
+            "name": "Dynamic",
+            "value": "dynamic"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "map-locator",
     "fields": [
       {
@@ -851,6 +906,41 @@
         "name": "selectInit",
         "label": "Select Filters Initial Text",
         "fieldDescription": "Select Filters Initial Text"
+      }
+    ]
+  },
+  {
+    "id": "pdfViewer",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "fileReference",
+        "label": "PDF File",
+        "multi": false
+      },
+      {
+        "component": "select",
+        "name": "embedMode",
+        "label": "Embed Mode",
+        "options": [
+          {
+            "name": "Full Window",
+            "value": "FULL_WINDOW"
+          },
+          {
+            "name": "Sized Container",
+            "value": "SIZED_CONTAINER"
+          },
+          {
+            "name": "In Line",
+            "value": "IN_LINE"
+          },
+          {
+            "name": "Light Box",
+            "value": "LIGHT_BOX"
+          }
+        ]
       }
     ]
   },

@@ -31,7 +31,11 @@
       "socialShare",
       "authorInfo",
       "video",
-      "cookieNotice"
+      "cookieNotice",
+      "map-locator",
+      "progressBar",
+      "lists",
+      "pdfViewer"
     ]
   },
   {
