@@ -1,4 +1,3 @@
-/*
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
@@ -20,7 +19,6 @@ export default function decorate(block) {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
         const components = [...item.children];
-        let title = '';
         let title = '';
         let description = '';
         let icon = null;
@@ -97,4 +95,3 @@ export default function decorate(block) {
     block.appendChild(list);
 }
 
-*/
