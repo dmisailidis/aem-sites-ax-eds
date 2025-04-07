@@ -48,7 +48,7 @@
         },
         {
           "component": "select",
-          "name": "classes",
+          "name": "sortOrder",
           "label": "Sort Order",
           "options": [
             { "name": "Ascending", "value": "ascending" },
