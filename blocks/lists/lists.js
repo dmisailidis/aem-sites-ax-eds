@@ -10,11 +10,11 @@ export default function decorate(block) {
                 }
                 return true;
             });
-
+            /*
             const list = document.createElement('ul');
             list.className = 'list';
             const addedItems = new Set();
-            /*
+
             items.forEach((item) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-item';
