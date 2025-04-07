@@ -1,5 +1,8 @@
 export default function decorate(block) {
 
+const = [...block.children];
+
+/*
 
     const listElements = [...block.children];
     const list = document.createElement('ul');
@@ -16,10 +19,10 @@ export default function decorate(block) {
         let icon = null;
         let link = null;
 
-        const iconElement = item.querySelector('img, .icon, [class*="icon"]');
+        *//*const iconElement = item.querySelector('img, .icon, [class*="icon"]');
         if (iconElement) {
             icon = iconElement.cloneNode(true);
-        }
+        }*//*
 
         const linkElement = item.querySelector('a');
         if (linkElement) {
@@ -36,9 +39,9 @@ export default function decorate(block) {
 
         let itemContent = '';
 
-        if (icon && icon.outerHTML) {
+        *//*if (icon && icon.outerHTML) {
             itemContent += `<span class="list-item-icon">${icon.outerHTML}</span>`;
-        }
+        }*//*
 
         if (title || description || (link && link.href)) {
             itemContent += '<span class="list-item-content">';
@@ -72,5 +75,5 @@ export default function decorate(block) {
     });
 
     block.innerHTML = '';
-    block.appendChild(list);
+    block.appendChild(list);*/
 }
