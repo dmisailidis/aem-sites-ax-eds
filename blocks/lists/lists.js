@@ -1,24 +1,6 @@
 export default function decorate(block) {
-    let items;
-    try {
-        items = [...block.children].filter(item => {
-            // Mantieni qualsiasi elemento che abbia contenuto visibile o elementi interattivi
-            return item.textContent.trim() !== '' ||
-                   item.querySelector('img, a, .icon') !== null;
-        });
 
-        console.log(`Filtrati ${block.children.length - items.length} elementi vuoti`);
-    } catch (error) {
-        console.error('Errore durante il filtraggio:', error);
-        // In caso di qualsiasi errore, usa tutti gli elementi senza filtrare
-        items = [...block.children];
-    }
-
-    // Se il filtro ha rimosso tutti gli elementi, ripristina l'originale
-    if (!items || items.length === 0) {
-        console.warn('Filtro troppo restrittivo: nessun elemento rimasto');
-        items = [...block.children];
-    }
+    const items = [...block.children];
 
     const list = document.createElement('ul');
     list.className = 'list';
