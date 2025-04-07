@@ -1,5 +1,6 @@
 export default function decorate(block) {
 
+    let items = [...block.children];
 
     const list = document.createElement('ul');
     list.className = 'list';
