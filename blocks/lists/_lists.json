@@ -43,8 +43,7 @@
           "value": "title",
           "options": [
             { "name": "Title", "value": "title" },
-            { "name": "Description", "value": "description" },
-            { "name": "Last Modified", "value": "lastModified" }
+            { "name": "Description", "value": "description" }
           ]
         },
         {
@@ -61,7 +60,9 @@
           "name": "maxItems",
           "label": "Max Items",
           "valueType": "number",
-          "numberMin": 0
+          "validation": {
+            "numberMin": 0
+          }
         },
         {
           "component": "text",
