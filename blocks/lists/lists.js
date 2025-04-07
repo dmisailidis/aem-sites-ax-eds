@@ -1,13 +1,13 @@
 export default function decorate(block) {
 
 
-
+    const listElements = [...block.children];
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set();
 
     // Resto del codice invariato
-    [...block.children].forEach((item) => {
+    listElements.forEach((item) => {
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
         const components = [...item.children];
