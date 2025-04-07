@@ -57,7 +57,7 @@ export default function decorate(block) {
         }
         return true;
     });
-    const orderBy = block.classList.contains('title');
+    console.log("orderBy: ",orderBy)
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set(); // keep track of added items
