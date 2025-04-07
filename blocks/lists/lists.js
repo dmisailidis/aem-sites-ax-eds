@@ -21,7 +21,7 @@ export default function decorate(block) {
             const addedItems = new Set();
 
             // Elabora ogni elemento della lista
-            listElements.forEach((item) => {
+            /*listElements.forEach((item) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-item';
                 const components = [...item.children];
@@ -78,7 +78,7 @@ export default function decorate(block) {
                     addedItems.add(itemKey);
                 }
             });
-
+*/
             // Sostituisci il contenuto del blocco
             block.innerHTML = '';
             block.appendChild(list);
