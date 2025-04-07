@@ -1,6 +1,6 @@
 export default function decorate(block) {
 
-            // Rimuovi div vuoti
+            /*// Rimuovi div vuoti
             const items = [...block.children].filter((item) => {
                 if (item.children.length === 1 &&
                     item.children[0].tagName === 'DIV' &&
@@ -9,8 +9,8 @@ export default function decorate(block) {
                     return false;
                 }
                 return true;
-            });
-            /*
+            });*/
+
             const list = document.createElement('ul');
             list.className = 'list';
             const addedItems = new Set();
@@ -79,7 +79,7 @@ export default function decorate(block) {
                     list.appendChild(listItem);
                     addedItems.add(itemKey);
                 }
-            });*/
+            });
 
             block.innerHTML = '';
             block.appendChild(list);
