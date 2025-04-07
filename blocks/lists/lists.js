@@ -1,3 +1,4 @@
+/*
 export default function decorate(block) {
     // remove empty divs
     const items = [...block.children].filter((item) => {
@@ -96,3 +97,4 @@ export default function decorate(block) {
     block.appendChild(list);
 }
 
+*/
