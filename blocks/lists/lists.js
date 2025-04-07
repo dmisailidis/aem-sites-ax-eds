@@ -4,7 +4,7 @@ export default function decorate(block) {
   list.classList.add('list');
 
   [...block.children].forEach((row) => {
-    // Estrai titolo e descrizione dalle colonne della riga
+    /*// Estrai titolo e descrizione dalle colonne della riga
     const title = row.children[0]?.textContent.trim() || '';
     const description = row.children[1]?.textContent.trim() || '';
 
@@ -34,5 +34,5 @@ export default function decorate(block) {
 
   // Sostituisci il contenuto del blocco con la lista creata
   block.textContent = '';
-  block.appendChild(list);
+  block.appendChild(list);*/
 }
