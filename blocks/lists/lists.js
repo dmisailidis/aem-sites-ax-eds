@@ -5,6 +5,8 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     // Estrai titolo e descrizione dalle colonne della riga
+    const [title, description, link, icon] = row.children;
+    console.log(`Title: ${title}, Description: ${description}`);
 
     /*// Crea l'elemento della lista
     const listItem = document.createElement('li');
@@ -31,6 +33,6 @@ export default function decorate(block) {
   });
 
   // Sostituisci il contenuto del blocco con la lista creata
-  block.textContent = '';
-  block.appendChild(list);
+/*  block.textContent = '';
+  block.appendChild(list);*/
 }
