@@ -1,14 +1,14 @@
 export default function decorate(block) {
 
-    let items = [...block.children];
+
 
     const list = document.createElement('ul');
     list.className = 'list';
     const addedItems = new Set();
 
     // Resto del codice invariato
-    items.forEach((item) => {
-        /*const listItem = document.createElement('li');
+    [...block.children].forEach((item) => {
+        const listItem = document.createElement('li');
         listItem.className = 'list-item';
         const components = [...item.children];
         let title = '';
@@ -68,7 +68,7 @@ export default function decorate(block) {
             listItem.classList.add('list-item-row');
             list.appendChild(listItem);
             addedItems.add(itemKey);
-        }*/
+        }
     });
 
     block.innerHTML = '';
