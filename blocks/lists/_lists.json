@@ -38,7 +38,7 @@
       "fields": [
         {
           "component": "select",
-          "name": "order",
+          "name": "orderBy",
           "label": "Order By",
           "value": "title",
           "options": [
