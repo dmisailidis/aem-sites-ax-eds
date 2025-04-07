@@ -1,15 +1,29 @@
 export default function decorate(block) {
 
-            /*// Rimuovi div vuoti
+            // Inizializza items con tutti i figli del blocco
             const items = [...block.children].filter((item) => {
-                if (item.children.length === 1 &&
-                    item.children[0].tagName === 'DIV' &&
-                    item.children[0].children.length === 0 &&
-                    !item.children[0].textContent.trim()) {
+                // Verifica se l'elemento è un contenitore vuoto
+                try {
+                    // Logica meno aggressiva: conserva gli elementi che hanno contenuto
+                    if (item.children.length > 0 &&
+                        (item.textContent.trim() !== '' ||
+                         item.querySelector('img, a, .icon') !== null)) {
+                        return true;
+                    }
                     return false;
+                } catch (e) {
+                    console.error('Errore durante filtro:', e);
+                    // In caso di errore, mantieni l'elemento
+                    return true;
                 }
-                return true;
-            });*/
+            });
+
+            // Controlla se items contiene elementi
+            if (!items || items.length === 0) {
+                console.warn('Nessun elemento trovato dopo il filtro');
+                // Fallback: usa tutti i figli senza filtro
+                items = [...block.children];
+            }
 
             const list = document.createElement('ul');
             list.className = 'list';
