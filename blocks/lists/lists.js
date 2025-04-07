@@ -1,5 +1,5 @@
 export default function decorate(block) {
-            console.log("Block properties:", block.dataset);
+           /* console.log("Block properties:", block.dataset);
 
             // Accedi al valore orderBy configurato nel modello
             const orderBy = block.dataset.orderBy || 'title';
@@ -19,7 +19,7 @@ export default function decorate(block) {
             list.className = 'list';
             const addedItems = new Set();
 
-            /*items.forEach((item) => {
+            items.forEach((item) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-item';
                 const components = [...item.children];
@@ -83,8 +83,8 @@ export default function decorate(block) {
                     list.appendChild(listItem);
                     addedItems.add(itemKey);
                 }
-            });*/
+            });
 
             block.innerHTML = '';
-            block.appendChild(list);
+            block.appendChild(list);*/
         }
