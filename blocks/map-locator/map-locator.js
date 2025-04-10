@@ -109,44 +109,42 @@ function getBlockConfig(block) {
 
   // Parse the block rows to extract configuration
   blockRows.forEach((row) => {
-    if (row.children.length >= 2) {
-      const propertyName = row.children[0].textContent.trim();
-      const propertyValue = row.children[1].textContent.trim();
+    const propertyName = row.children[0].children[0].dataset.aueLabel.trim();
+    const propertyValue = row.children[0].textContent.trim();
 
-      console.log('Property name', propertyName);
-      console.log('Property value', propertyValue);
+    console.log('Property name', propertyName);
+    console.log('Property value', propertyValue);
 
-      if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
-        config.contentFragmentPath = propertyValue;
-      } else if (propertyName === 'Default Zoom Level') {
-        config.defaultZoomLevel = parseInt(propertyValue, 10) || 7;
-      } else if (propertyName === 'Default Latitude') {
-        config.defaultLatitude = parseFloat(propertyValue) || 40.7128;
-      } else if (propertyName === 'Default Longitude') {
-        config.defaultLongitude = parseFloat(propertyValue) || -74.0060;
-      } else if (propertyName === 'Marker Type') {
-        config.markerType = propertyValue || 'googleMapsCustomizable';
-      } else if (propertyName === 'Custom Tooltip') {
-        config.customTooltip = propertyValue === 'true';
-      } else if (propertyName === 'Show Filters') {
-        config.showFilters = propertyValue === 'true';
-      } else if (propertyName === 'Enable Search Filter') {
-        config.enableSearchFilter = propertyValue === 'true';
-      } else if (propertyName === 'Search Filter Title') {
-        config.searchFilterTitle = propertyValue || 'Search';
-      } else if (propertyName === 'Search Filter Initial Text') {
-        config.searchFilterInitText = propertyValue || 'Search locations...';
-      } else if (propertyName === 'Proximity Radius (meters)') {
-        config.proximityRadius = propertyValue || '1000';
-      } else if (propertyName === 'Country Code') {
-        config.countryCode = propertyValue || 'US';
-      } else if (propertyName === 'Show Results Label') {
-        config.showResults = propertyValue || 'Show Results';
-      } else if (propertyName === 'Clear Filters Label') {
-        config.clearFilters = propertyValue || 'Clear Filters';
-      } else if (propertyName === 'Custom SVG Marker Upload') {
-        config.svgUpload = propertyValue || '';
-      }
+    if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
+      config.contentFragmentPath = propertyValue;
+    } else if (propertyName === 'Default Zoom Level') {
+      config.defaultZoomLevel = parseInt(propertyValue, 10) || 7;
+    } else if (propertyName === 'Default Latitude') {
+      config.defaultLatitude = parseFloat(propertyValue) || 40.7128;
+    } else if (propertyName === 'Default Longitude') {
+      config.defaultLongitude = parseFloat(propertyValue) || -74.0060;
+    } else if (propertyName === 'Marker Type') {
+      config.markerType = propertyValue || 'googleMapsCustomizable';
+    } else if (propertyName === 'Custom Tooltip') {
+      config.customTooltip = propertyValue === 'true';
+    } else if (propertyName === 'Show Filters') {
+      config.showFilters = propertyValue === 'true';
+    } else if (propertyName === 'Enable Search Filter') {
+      config.enableSearchFilter = propertyValue === 'true';
+    } else if (propertyName === 'Search Filter Title') {
+      config.searchFilterTitle = propertyValue || 'Search';
+    } else if (propertyName === 'Search Filter Initial Text') {
+      config.searchFilterInitText = propertyValue || 'Search locations...';
+    } else if (propertyName === 'Proximity Radius (meters)') {
+      config.proximityRadius = propertyValue || '1000';
+    } else if (propertyName === 'Country Code') {
+      config.countryCode = propertyValue || 'US';
+    } else if (propertyName === 'Show Results Label') {
+      config.showResults = propertyValue || 'Show Results';
+    } else if (propertyName === 'Clear Filters Label') {
+      config.clearFilters = propertyValue || 'Clear Filters';
+    } else if (propertyName === 'Custom SVG Marker Upload') {
+      config.svgUpload = propertyValue || '';
     }
   });
 
