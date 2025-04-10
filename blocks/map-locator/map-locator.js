@@ -109,6 +109,9 @@ function getBlockConfig(block) {
       const propertyName = row.children[0].textContent.trim();
       const propertyValue = row.children[1].textContent.trim();
 
+      console.log('Property name', propertyName);
+      console.log('Property value', propertyValue);
+
       if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
         config.contentFragmentPath = propertyValue;
       } else if (propertyName === 'Default Zoom Level') {
