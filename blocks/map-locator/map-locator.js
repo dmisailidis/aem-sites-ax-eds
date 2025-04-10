@@ -338,102 +338,73 @@ async function fetchLocationData(contentFragmentPath) {
     let cleanPath = contentFragmentPath;
     cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
 
-    // Define endpoint patterns to try
-    const endpointPatterns = [
-      // `${cleanPath}.json`,
-      `${cleanPath}.1.json`,
-      `${cleanPath}/jcr:content.json`,
-      `${cleanPath}/jcr:content/data.json`,
-    ];
+    // First, get the folder structure
+    const folderEndpoint = `${cleanPath}.1.json`;
+    console.log(`Fetching folder structure from: ${folderEndpoint}`);
 
-    // Try endpoints sequentially using reduce() instead of a for loop
-    const result = await endpointPatterns.reduce(async (promiseAcc, endpoint) => {
-      // Wait for the previous attempt
-      const acc = await promiseAcc;
-
-      // If we already have data, return it
-      if (acc.data) return acc;
-
-      try {
-        console.log(`Trying endpoint: ${endpoint}`);
-        const response = await fetch(endpoint);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(`Successfully fetched data from: ${endpoint}`);
-          return { data, endpoint };
-        }
-        console.log(`Endpoint ${endpoint} failed with status: ${response.status}`);
-        return acc;
-      } catch (err) {
-        console.log(`Error with endpoint ${endpoint}:`, err.message);
-        return acc;
-      }
-    }, Promise.resolve({ data: null, endpoint: null }));
-
-    const { data, endpoint: successfulEndpoint } = result;
-
-    if (!data) {
-      throw new Error('All endpoint patterns failed');
+    const folderResponse = await fetch(folderEndpoint);
+    if (!folderResponse.ok) {
+      throw new Error(`Failed to fetch folder structure: ${folderResponse.status} ${folderResponse.statusText}`);
     }
 
-    console.log(`Using data from: ${successfulEndpoint}`);
-    console.log('Data structure:', Object.keys(data));
+    const folderData = await folderResponse.json();
+    console.log('Folder structure retrieved:', Object.keys(folderData));
 
-    // Extract locations based on the returned data structure
+    // Extract content fragment paths
+    const fragmentPaths = [];
+
+    Object.keys(folderData).forEach((key) => {
+      // Skip metadata properties and jcr:content
+      if (key.startsWith('jcr:') || key === 'jcr:content') {
+        return;
+      }
+
+      // Check if it's a content fragment (dam:Asset)
+      const item = folderData[key];
+      if (item && item['jcr:primaryType'] === 'dam:Asset') {
+        fragmentPaths.push(key);
+        console.log(`Found content fragment: ${key}`);
+      }
+    });
+
+    // Now fetch each content fragment's data
     const locations = [];
 
-    // If we have direct fragment data (multiple fragments in a folder)
-    if (data && typeof data === 'object') {
-      // Use Object.entries and forEach instead of for...in
-      Object.entries(data).forEach(([key, value]) => {
-        // Skip metadata properties
-        if (key.startsWith(':') || key === 'jcr:primaryType') {
+    // Use Promise.all to fetch all fragments in parallel
+    await Promise.all(fragmentPaths.map(async (fragmentPath) => {
+      try {
+        // Construct the path to the master data
+        const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
+        console.log(`Fetching content fragment data from: ${fragmentEndpoint}`);
+
+        const fragmentResponse = await fetch(fragmentEndpoint);
+        if (!fragmentResponse.ok) {
+          console.warn(`Failed to fetch fragment ${fragmentPath}: ${fragmentResponse.status}`);
           return;
         }
 
-        // Process potential content fragment
-        if (value && typeof value === 'object') {
-          try {
-            // Extract data from various possible structures
-            let fragmentData = value;
+        const fragmentData = await fragmentResponse.json();
+        console.log(`Fragment data retrieved for: ${fragmentPath}`);
 
-            // Check for content fragment structure
-            if (fragmentData['jcr:content']) {
-              fragmentData = fragmentData['jcr:content'];
-            }
+        // Extract location data
+        const location = {
+          name: fragmentData.name || fragmentData.title || fragmentPath,
+          address: fragmentData.address || '',
+          latitude: parseFloat(fragmentData.latitude || 0),
+          longitude: parseFloat(fragmentData.longitude || 0),
+          phone: fragmentData.phone || '',
+          website: fragmentData.website || '',
+          categories: Array.isArray(fragmentData.categories) ? fragmentData.categories : [],
+        };
 
-            // Check for data property
-            if (fragmentData.data) {
-              fragmentData = fragmentData.data;
-            }
-
-            // Check for master variation
-            if (fragmentData.master) {
-              fragmentData = fragmentData.master;
-            }
-
-            // Extract location properties
-            const location = {
-              name: extractPropertyValue(fragmentData, 'name'),
-              address: extractPropertyValue(fragmentData, 'address'),
-              latitude: parseFloat(extractPropertyValue(fragmentData, 'latitude') || 0),
-              longitude: parseFloat(extractPropertyValue(fragmentData, 'longitude') || 0),
-              phone: extractPropertyValue(fragmentData, 'phone'),
-              website: extractPropertyValue(fragmentData, 'website'),
-              categories: extractPropertyArray(fragmentData, 'categories'),
-            };
-
-            if (location.latitude && location.longitude) {
-              locations.push(location);
-              console.log(`Added location: ${location.name}`);
-            }
-          } catch (err) {
-            console.log(`Error processing potential fragment ${key}:`, err.message);
-          }
+        if (location.latitude && location.longitude) {
+          locations.push(location);
+          console.log(`Added location: ${location.name} (${location.latitude}, ${location.longitude})`);
         }
-      });
-    }
+      } catch (err) {
+        console.warn(`Error processing fragment ${fragmentPath}:`, err.message);
+      }
+    }));
 
     if (locations.length === 0) {
       console.warn('No valid locations found - using fallback data');
@@ -447,31 +418,6 @@ async function fetchLocationData(contentFragmentPath) {
   }
 }
 
-// Helper to extract property values from various content fragment structures
-function extractPropertyValue(obj, propName) {
-  // Direct property
-  if (obj[propName] !== undefined) {
-    return obj[propName];
-  }
-
-  // Property inside elements structure
-  if (obj.elements && obj.elements[propName]) {
-    return obj.elements[propName].value;
-  }
-
-  // Property value structure
-  if (obj[propName] && obj[propName].value !== undefined) {
-    return obj[propName].value;
-  }
-
-  return '';
-}
-
-// Helper to extract array values
-function extractPropertyArray(obj, propName) {
-  const value = extractPropertyValue(obj, propName);
-  return Array.isArray(value) ? value : [];
-}
 /**
  * Get fallback location data
  * @returns {Array} - Array of fallback location objects
