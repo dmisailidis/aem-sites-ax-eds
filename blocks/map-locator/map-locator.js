@@ -34,11 +34,19 @@ export default async function decorate(block) {
       }
     }
 
-    // Use a hardcoded API key for now to simplify testing
-    const API_KEY = 'AIzaSyBNzPgPh2Zbp2wM-1DHctUVHXt_pkXAnrc'; // Replace with your actual API key or API endpoint
+    const response = await fetch('http://localhost:3001/maps-key');
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch API key: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.key) {
+      throw new Error('API key not found in response');
+    }
 
     // Use the API key
-    blockConfig.googleMapApiKey = API_KEY;
+    blockConfig.googleMapApiKey = data.key;
 
     // Load Google Maps API
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
