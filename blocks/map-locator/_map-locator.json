@@ -28,7 +28,7 @@
           "fieldDescription": "HTML ID attribute to apply to the component"
         },
         {
-          "component": "aem-content",
+          "component": "aem-content-fragment",
           "valueType": "string",
           "name": "contentFragmentPath",
           "label": "Location Content Fragments Root Path",
