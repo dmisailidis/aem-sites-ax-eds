@@ -103,6 +103,10 @@ function getBlockConfig(block) {
   const blockRows = [...block.children];
   const config = {};
 
+  console.log('Block', block);
+
+  console.log('Block rows', blockRows);
+
   // Parse the block rows to extract configuration
   blockRows.forEach((row) => {
     if (row.children.length >= 2) {
