@@ -43,9 +43,9 @@ export default async function decorate(block) {
     // Only proceed if Google Maps API loaded successfully
     if (window.google && window.google.maps) {
       // Parse the latitude, longitude, and zoom from the config
-      const defaultLatitude = parseFloat(blockConfig.defaultLatitude) || 40.7128;
-      const defaultLongitude = parseFloat(blockConfig.defaultLongitude) || -74.0060;
-      const defaultZoomLevel = parseInt(blockConfig.defaultZoomLevel, 10) || 7;
+      const defaultLatitude = parseFloat(blockConfig.defaultLatitude);
+      const defaultLongitude = parseFloat(blockConfig.defaultLongitude);
+      const defaultZoomLevel = parseInt(blockConfig.defaultZoomLevel, 10);
 
       console.log('Initializing map with:', {
         lat: defaultLatitude,
@@ -149,11 +149,11 @@ function getBlockConfig(block) {
       if (propName === 'contentFragmentPath') {
         config.contentFragmentPath = propValue;
       } else if (propName === 'defaultZoomLevel') {
-        config.defaultZoomLevel = parseInt(propValue, 10) || 7;
+        config.defaultZoomLevel = parseInt(propValue, 10);
       } else if (propName === 'defaultLatitude') {
-        config.defaultLatitude = parseFloat(propValue) || 40.7128;
+        config.defaultLatitude = parseFloat(propValue);
       } else if (propName === 'defaultLongitude') {
-        config.defaultLongitude = parseFloat(propValue) || -74.0060;
+        config.defaultLongitude = parseFloat(propValue);
       } else if (propName === 'markerType') {
         config.markerType = propValue || 'googleMapsCustomizable';
       } else if (propName === 'customTooltip') {
