@@ -18,7 +18,7 @@ export default async function decorate(block) {
 
   try {
     // Fetch the API key from our endpoint
-    const response = await fetch('/api/maps-key.json');
+    const response = await fetch('http://localhost:3001/maps-key');
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
     }
@@ -53,7 +53,7 @@ export default async function decorate(block) {
       }
 
       // Load location data from Content Fragments
-      const locations = await fetchLocationData();
+      const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
       // Create markers for locations
       if (locations && locations.length > 0) {
@@ -323,69 +323,58 @@ function initMap(container, lat, lng, zoom) {
  * @param {string} contentFragmentPath - Path to the content fragments
  * @returns {Promise<Array>} - Array of location objects
  */
-async function fetchLocationData() {
+async function fetchLocationData(contentFragmentPath) {
   try {
-    // GraphQL endpoint
-    const graphqlEndpoint = '/content/cq:graphql/eds-map-locator/endpoint.json';
-
-    // Authentication headers
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-
-    const authMethod = 'basic'; // Options: 'basic', 'dev-token', 'service-token'
-
-    if (authMethod === 'basic') {
-      const username = 'admin';
-      const password = 'admin';
-      headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
-    } else if (authMethod === 'dev-token') {
-      // Replace with your actual dev token
-      const devToken = 'your-dev-token-here';
-      headers.Authorization = `Bearer ${devToken}`;
-    } else if (authMethod === 'service-token') {
-      // In a real implementation, you'd fetch or retrieve this token
-      // Service tokens typically require a server-side component
-      const serviceToken = 'your-service-token-here';
-      headers.Authorization = `Bearer ${serviceToken}`;
+    // Check if path exists
+    if (!contentFragmentPath) {
+      throw new Error('Content Fragment Path is not specified');
     }
 
-    // GraphQL query
-    const query = `{
-      locationList {
-        items {
-          name
-          address
-          latitude
-          longitude
-          phone
-          website
-          categories
-        }
-      }
-    }`;
+    console.log(`Fetching location data from: ${contentFragmentPath}`);
 
-    // Make the GraphQL request
-    const response = await fetch(graphqlEndpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query }),
-    });
+    // Use AEM's content fragment JSON endpoint
+    const endpoint = `${contentFragmentPath}.json`;
+
+    const response = await fetch(endpoint);
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('GraphQL response:', data);
+    console.log('Content fragments response:', data);
 
-    if (!data?.data?.locationList?.items) {
-      throw new Error('Invalid GraphQL response format');
+    // Transform the content fragment data to location objects
+    // This structure will depend on your specific content fragment model
+    const locations = [];
+
+    // Process each location content fragment
+    // Adjust this logic based on your actual content fragment structure
+    if (data && data.items) {
+      data.items.forEach((item) => {
+        // Extract location data from the content fragment
+        const location = {
+          name: item.elements?.name?.value || '',
+          address: item.elements?.address?.value || '',
+          latitude: item.elements?.latitude?.value || '',
+          longitude: item.elements?.longitude?.value || '',
+          phone: item.elements?.phone?.value || '',
+          website: item.elements?.website?.value || '',
+          categories: item.elements?.categories?.value || [],
+        };
+
+        // Only add valid locations with coordinates
+        if (location.latitude && location.longitude) {
+          locations.push(location);
+        }
+      });
     }
 
-    return data.data.locationList.items;
+    if (locations.length === 0) {
+      throw new Error('No valid locations found in content fragments');
+    }
+
+    return locations;
   } catch (error) {
     console.error('Error fetching locations:', error);
     // Return fallback data
