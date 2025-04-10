@@ -340,10 +340,10 @@ async function fetchLocationData(contentFragmentPath) {
 
     // Define endpoint patterns to try
     const endpointPatterns = [
-      `${cleanPath}.json`, // Simple .json
-      `${cleanPath}.1.json`, // Depth 1
-      `${cleanPath}/jcr:content.json`, // JCR content node
-      `${cleanPath}/jcr:content/data.json`, // Common content fragment pattern
+      // `${cleanPath}.json`,
+      `${cleanPath}.1.json`,
+      `${cleanPath}/jcr:content.json`,
+      `${cleanPath}/jcr:content/data.json`,
     ];
 
     // Try endpoints sequentially using reduce() instead of a for loop
