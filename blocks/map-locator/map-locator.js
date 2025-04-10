@@ -53,6 +53,11 @@ export default async function decorate(block) {
       }
 
       // Load location data from Content Fragments
+      if (!blockConfig.contentFragmentPath) {
+        console.error('Content Fragment Path is not specified in component properties');
+      } else {
+        console.log('Using Content Fragment Path:', blockConfig.contentFragmentPath);
+      }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
       // Create markers for locations
@@ -94,77 +99,70 @@ export default async function decorate(block) {
  * @returns {Object} - Configuration object
  */
 function getBlockConfig(block) {
-  // Default configuration
-  const config = {
-    googleMapApiKey: '', // This should come from a CA Config or environment variable
-    proximityRadius:
-      block.querySelector('[data-proximityRadius]')?.dataset.proximityRadius
-      || '1000',
-    countryCode:
-      block.querySelector('[data-countryCode]')?.dataset.countryCode || 'US',
-    defaultZoomLevel: parseInt(
-      block.querySelector('[data-defaultZoomLevel]')?.dataset
-        .defaultZoomLevel || '7',
-      10,
-    ),
-    defaultLatitude: parseFloat(
-      block.querySelector('[data-defaultLatitude]')?.dataset.defaultLatitude
-        || '40.7128',
-    ),
-    defaultLongitude: parseFloat(
-      block.querySelector('[data-defaultLongitude]')?.dataset
-        .defaultLongitude || '-74.0060',
-    ),
-    markerType:
-      block.querySelector('[data-markerType]')?.dataset.markerType
-      || 'googleMapsCustomizable',
-    customTooltip:
-      block.querySelector('[data-customTooltip]')?.dataset.customTooltip
-      === 'true',
-    showFilters:
-      block.querySelector('[data-showFilters]')?.dataset.showFilters === 'true',
-    enableSearchFilter:
-      block.querySelector('[data-enableSearchFilter]')?.dataset
-        .enableSearchFilter === 'true',
-    searchFilterTitle:
-      block.querySelector('[data-searchFilterTitle]')?.dataset
-        .searchFilterTitle || 'Search',
-    searchFilterInitText:
-      block.querySelector('[data-searchFilterInitText]')?.dataset
-        .searchFilterInitText || 'Search locations...',
-    clearFilters:
-      block.querySelector('[data-clearFilters]')?.dataset.clearFilters
-      || 'Clear Filters',
-    showResults:
-      block.querySelector('[data-showResults]')?.dataset.showResults
-      || 'Show Results',
-    svgUpload: block.querySelector('[data-svgUpload]')?.dataset.svgUpload || '',
-    contentFragmentPath: block.getAttribute('data-content-fragment-path') || '',
-    filterCategories: [],
-  };
+  // Get all content from the block
+  const blockRows = [...block.children];
+  const config = {};
 
-  // Extract filter categories if they exist
-  const filterCategoriesElements = block.querySelectorAll(
-    '[data-filter-category]',
-  );
-  filterCategoriesElements.forEach((element) => {
-    const categoryTitle = element.dataset.filterCategoryTitle;
-    const filterTagsStr = element.dataset.filterCategoryTags;
+  // Parse the block rows to extract configuration
+  blockRows.forEach((row) => {
+    if (row.children.length >= 2) {
+      const propertyName = row.children[0].textContent.trim();
+      const propertyValue = row.children[1].textContent.trim();
 
-    if (categoryTitle && filterTagsStr) {
-      try {
-        const filterTags = JSON.parse(filterTagsStr);
-        config.filterCategories.push({
-          title: categoryTitle,
-          filterTags,
-        });
-      } catch (e) {
-        console.error('Failed to parse filter category tags:', e);
+      if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
+        config.contentFragmentPath = propertyValue;
+      } else if (propertyName === 'Default Zoom Level') {
+        config.defaultZoomLevel = parseInt(propertyValue, 10) || 7;
+      } else if (propertyName === 'Default Latitude') {
+        config.defaultLatitude = parseFloat(propertyValue) || 40.7128;
+      } else if (propertyName === 'Default Longitude') {
+        config.defaultLongitude = parseFloat(propertyValue) || -74.0060;
+      } else if (propertyName === 'Marker Type') {
+        config.markerType = propertyValue || 'googleMapsCustomizable';
+      } else if (propertyName === 'Custom Tooltip') {
+        config.customTooltip = propertyValue === 'true';
+      } else if (propertyName === 'Show Filters') {
+        config.showFilters = propertyValue === 'true';
+      } else if (propertyName === 'Enable Search Filter') {
+        config.enableSearchFilter = propertyValue === 'true';
+      } else if (propertyName === 'Search Filter Title') {
+        config.searchFilterTitle = propertyValue || 'Search';
+      } else if (propertyName === 'Search Filter Initial Text') {
+        config.searchFilterInitText = propertyValue || 'Search locations...';
+      } else if (propertyName === 'Proximity Radius (meters)') {
+        config.proximityRadius = propertyValue || '1000';
+      } else if (propertyName === 'Country Code') {
+        config.countryCode = propertyValue || 'US';
+      } else if (propertyName === 'Show Results Label') {
+        config.showResults = propertyValue || 'Show Results';
+      } else if (propertyName === 'Clear Filters Label') {
+        config.clearFilters = propertyValue || 'Clear Filters';
+      } else if (propertyName === 'Custom SVG Marker Upload') {
+        config.svgUpload = propertyValue || '';
       }
     }
   });
 
-  return config;
+  // Set default values for any missing properties
+  return {
+    googleMapApiKey: '', // Will be fetched from API
+    proximityRadius: config.proximityRadius || '1000',
+    countryCode: config.countryCode || 'US',
+    defaultZoomLevel: config.defaultZoomLevel || 7,
+    defaultLatitude: config.defaultLatitude || 40.7128,
+    defaultLongitude: config.defaultLongitude || -74.0060,
+    markerType: config.markerType || 'googleMapsCustomizable',
+    customTooltip: config.customTooltip || false,
+    showFilters: config.showFilters || false,
+    enableSearchFilter: config.enableSearchFilter || false,
+    searchFilterTitle: config.searchFilterTitle || 'Search',
+    searchFilterInitText: config.searchFilterInitText || 'Search locations...',
+    clearFilters: config.clearFilters || 'Clear Filters',
+    showResults: config.showResults || 'Show Results',
+    svgUpload: config.svgUpload || '',
+    contentFragmentPath: config.contentFragmentPath || '',
+    filterCategories: [],
+  };
 }
 
 /**
@@ -332,7 +330,7 @@ async function fetchLocationData(contentFragmentPath) {
 
     console.log(`Fetching location data from: ${contentFragmentPath}`);
 
-    // Use AEM's content fragment JSON endpoint
+    // Format for AEM Content Fragment JSON API
     const endpoint = `${contentFragmentPath}.json`;
 
     const response = await fetch(endpoint);
@@ -345,19 +343,17 @@ async function fetchLocationData(contentFragmentPath) {
     console.log('Content fragments response:', data);
 
     // Transform the content fragment data to location objects
-    // This structure will depend on your specific content fragment model
     const locations = [];
 
-    // Process each location content fragment
-    // Adjust this logic based on your actual content fragment structure
+    // Process the data based on the structure returned by AEM
+    // This may need adjustment based on the actual structure of your content fragments
     if (data && data.items) {
       data.items.forEach((item) => {
-        // Extract location data from the content fragment
         const location = {
           name: item.elements?.name?.value || '',
           address: item.elements?.address?.value || '',
-          latitude: item.elements?.latitude?.value || '',
-          longitude: item.elements?.longitude?.value || '',
+          latitude: parseFloat(item.elements?.latitude?.value) || 0,
+          longitude: parseFloat(item.elements?.longitude?.value) || 0,
           phone: item.elements?.phone?.value || '',
           website: item.elements?.website?.value || '',
           categories: item.elements?.categories?.value || [],
@@ -368,37 +364,62 @@ async function fetchLocationData(contentFragmentPath) {
           locations.push(location);
         }
       });
+    } else if (data && Array.isArray(data)) {
+      // Alternative structure - direct array of content fragments
+      data.forEach((item) => {
+        const location = {
+          name: item.name || '',
+          address: item.address || '',
+          latitude: parseFloat(item.latitude) || 0,
+          longitude: parseFloat(item.longitude) || 0,
+          phone: item.phone || '',
+          website: item.website || '',
+          categories: item.categories || [],
+        };
+
+        if (location.latitude && location.longitude) {
+          locations.push(location);
+        }
+      });
     }
 
     if (locations.length === 0) {
-      throw new Error('No valid locations found in content fragments');
+      console.warn('No valid locations found in content fragments - using fallback data');
+      return getFallbackLocations();
     }
 
     return locations;
   } catch (error) {
     console.error('Error fetching locations:', error);
-    // Return fallback data
-    return [
-      {
-        name: 'New York Office (Fallback)',
-        address: '123 Broadway, New York, NY 10001',
-        latitude: '40.7128',
-        longitude: '-74.0060',
-        phone: '+1 (212) 555-1234',
-        website: 'https://example.com/ny',
-        categories: ['headquarters', 'sales'],
-      },
-      {
-        name: 'Los Angeles Office (Fallback)',
-        address: '456 Wilshire Blvd, Los Angeles, CA 90036',
-        latitude: '34.0522',
-        longitude: '-118.2437',
-        phone: '+1 (310) 555-5678',
-        website: 'https://example.com/la',
-        categories: ['branch', 'customer-service'],
-      },
-    ];
+    return getFallbackLocations();
   }
+}
+
+/**
+ * Get fallback location data
+ * @returns {Array} - Array of fallback location objects
+ */
+function getFallbackLocations() {
+  return [
+    {
+      name: 'New York Office (Fallback)',
+      address: '123 Broadway, New York, NY 10001',
+      latitude: 40.7128,
+      longitude: -74.0060,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ny',
+      categories: ['headquarters', 'sales'],
+    },
+    {
+      name: 'Los Angeles Office (Fallback)',
+      address: '456 Wilshire Blvd, Los Angeles, CA 90036',
+      latitude: 34.0522,
+      longitude: -118.2437,
+      phone: '+1 (310) 555-5678',
+      website: 'https://example.com/la',
+      categories: ['branch', 'customer-service'],
+    },
+  ];
 }
 
 /**
