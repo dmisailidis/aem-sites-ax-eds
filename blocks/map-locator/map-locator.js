@@ -327,63 +327,49 @@ function initMap(container, lat, lng, zoom) {
  */
 async function fetchLocationData(contentFragmentPath) {
   try {
-    // Check if path exists
-    if (!contentFragmentPath) {
-      throw new Error('Content Fragment Path is not specified');
-    }
+    // GraphQL endpoint
+    const graphqlEndpoint = '/content/cq:graphql/eds-map-locator/endpoint';
 
-    console.log(`Fetching location data from: ${contentFragmentPath}`);
+    console.log(`Using GraphQL endpoint: ${graphqlEndpoint}`);
 
-    // Clean up the path
-    let cleanPath = contentFragmentPath;
+    // Construct a simple GraphQL query for location content fragments
+    // Adjust the fragment name and fields based on your content fragment model
+    const query = `{
+      locationList {
+        items {
+          _path
+          name
+          address
+          latitude
+          longitude
+          phone
+          website
+          categories
+        }
+      }
+    }`;
 
-    // Remove any file extensions
-    cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
-
-    // Ensure the path starts with / if it's a relative path
-    if (!cleanPath.startsWith('/') && !cleanPath.startsWith('http')) {
-      cleanPath = `/${cleanPath}`;
-    }
-
-    console.log('Clean path', cleanPath);
-
-    // For AEM content fragments in a folder, we need to use models.json endpoint
-    const endpoint = `${cleanPath}.model.json`;
-
-    const response = await fetch(endpoint);
+    // Make the GraphQL request
+    const response = await fetch(graphqlEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
+      throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('Content fragments response:', data);
+    console.log('GraphQL response:', data);
 
-    // Transform the content fragment data to location objects
+    // Extract locations from the GraphQL response
     const locations = [];
 
-    // Process the data based on the structure returned by AEM
-    // This may need adjustment based on the actual structure of your content fragments
-    if (data && data.items) {
-      data.items.forEach((item) => {
-        const location = {
-          name: item.elements?.name?.value || '',
-          address: item.elements?.address?.value || '',
-          latitude: parseFloat(item.elements?.latitude?.value) || 0,
-          longitude: parseFloat(item.elements?.longitude?.value) || 0,
-          phone: item.elements?.phone?.value || '',
-          website: item.elements?.website?.value || '',
-          categories: item.elements?.categories?.value || [],
-        };
-
-        // Only add valid locations with coordinates
-        if (location.latitude && location.longitude) {
-          locations.push(location);
-        }
-      });
-    } else if (data && Array.isArray(data)) {
-      // Alternative structure - direct array of content fragments
-      data.forEach((item) => {
+    if (data.data && data.data.locationList && data.data.locationList.items) {
+      data.data.locationList.items.forEach((item) => {
         const location = {
           name: item.name || '',
           address: item.address || '',
@@ -394,11 +380,85 @@ async function fetchLocationData(contentFragmentPath) {
           categories: item.categories || [],
         };
 
+        // Only add valid locations with coordinates
         if (location.latitude && location.longitude) {
           locations.push(location);
+          console.log(`Added location from GraphQL: ${location.name}`);
         }
       });
     }
+    // // Check if path exists
+    // if (!contentFragmentPath) {
+    //   throw new Error('Content Fragment Path is not specified');
+    // }
+
+    // console.log(`Fetching location data from: ${contentFragmentPath}`);
+
+    // // Clean up the path
+    // let cleanPath = contentFragmentPath;
+
+    // // Remove any file extensions
+    // cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
+
+    // // Ensure the path starts with / if it's a relative path
+    // if (!cleanPath.startsWith('/') && !cleanPath.startsWith('http')) {
+    //   cleanPath = `/${cleanPath}`;
+    // }
+
+    // console.log('Clean path', cleanPath);
+
+    // // For AEM content fragments in a folder, we need to use models.json endpoint
+    // const endpoint = `${cleanPath}.model.json`;
+
+    // const response = await fetch(endpoint);
+
+    // if (!response.ok) {
+    //   throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
+    // }
+
+    // const data = await response.json();
+    // console.log('Content fragments response:', data);
+
+    // // Transform the content fragment data to location objects
+    // const locations = [];
+
+    // // Process the data based on the structure returned by AEM
+    // // This may need adjustment based on the actual structure of your content fragments
+    // if (data && data.items) {
+    //   data.items.forEach((item) => {
+    //     const location = {
+    //       name: item.elements?.name?.value || '',
+    //       address: item.elements?.address?.value || '',
+    //       latitude: parseFloat(item.elements?.latitude?.value) || 0,
+    //       longitude: parseFloat(item.elements?.longitude?.value) || 0,
+    //       phone: item.elements?.phone?.value || '',
+    //       website: item.elements?.website?.value || '',
+    //       categories: item.elements?.categories?.value || [],
+    //     };
+
+    //     // Only add valid locations with coordinates
+    //     if (location.latitude && location.longitude) {
+    //       locations.push(location);
+    //     }
+    //   });
+    // } else if (data && Array.isArray(data)) {
+    //   // Alternative structure - direct array of content fragments
+    //   data.forEach((item) => {
+    //     const location = {
+    //       name: item.name || '',
+    //       address: item.address || '',
+    //       latitude: parseFloat(item.latitude) || 0,
+    //       longitude: parseFloat(item.longitude) || 0,
+    //       phone: item.phone || '',
+    //       website: item.website || '',
+    //       categories: item.categories || [],
+    //     };
+
+    //     if (location.latitude && location.longitude) {
+    //       locations.push(location);
+    //     }
+    //   });
+    // }
 
     if (locations.length === 0) {
       console.warn('No valid locations found in content fragments - using fallback data');
