@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-use-before-define */
 /* global google */
 export default async function decorate(block) {
@@ -30,6 +31,7 @@ export default async function decorate(block) {
 
     // Use the fetched API key
     blockConfig.googleMapApiKey = data.key;
+
     // Load Google Maps API (using API key from CA Config)
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
 
@@ -40,12 +42,17 @@ export default async function decorate(block) {
 
     // Only proceed if Google Maps API loaded successfully
     if (window.google && window.google.maps) {
-      // Initialize map
+      // Parse the latitude, longitude, and zoom from the config
+      const defaultLatitude = parseFloat(blockConfig.defaultLatitude);
+      const defaultLongitude = parseFloat(blockConfig.defaultLongitude);
+      const defaultZoomLevel = parseInt(blockConfig.defaultZoomLevel, 10);
+
+      // Initialize map with the parsed values
       const map = initMap(
         mapContainer,
-        blockConfig.defaultLatitude,
-        blockConfig.defaultLongitude,
-        blockConfig.defaultZoomLevel,
+        defaultLatitude,
+        defaultLongitude,
+        defaultZoomLevel,
       );
 
       if (!map) {
@@ -55,8 +62,6 @@ export default async function decorate(block) {
       // Load location data from Content Fragments
       if (!blockConfig.contentFragmentPath) {
         console.error('Content Fragment Path is not specified in component properties');
-      } else {
-        console.log('Using Content Fragment Path:', blockConfig.contentFragmentPath);
       }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
@@ -105,8 +110,8 @@ function getBlockConfig(block) {
     proximityRadius: '1000',
     countryCode: 'US',
     defaultZoomLevel: 7,
-    defaultLatitude: 40.7128,
-    defaultLongitude: -74.0060,
+    defaultLatitude: 50.7128,
+    defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
     customTooltip: false,
     showFilters: false,
@@ -125,37 +130,42 @@ function getBlockConfig(block) {
     const propElements = block.querySelectorAll('[data-aue-prop]');
 
     propElements.forEach((propElement) => {
+      propElement.style.display = 'none'; // Hide the element
       const propName = propElement.dataset.aueProp;
-      const propLabel = propElement.dataset.aueLabel;
       const propValue = propElement.textContent.trim();
-
-      console.log(`Found property: ${propLabel} (${propName}) = ${propValue}`);
 
       // Handle specific properties
       if (propName === 'contentFragmentPath') {
         config.contentFragmentPath = propValue;
       } else if (propName === 'defaultZoomLevel') {
-        config.defaultZoomLevel = parseInt(propValue, 10) || 7;
+        config.defaultZoomLevel = parseInt(propValue, 10);
       } else if (propName === 'defaultLatitude') {
-        config.defaultLatitude = parseFloat(propValue) || 40.7128;
+        config.defaultLatitude = parseFloat(propValue);
       } else if (propName === 'defaultLongitude') {
-        config.defaultLongitude = parseFloat(propValue) || -74.0060;
+        config.defaultLongitude = parseFloat(propValue);
+      } else if (propName === 'markerType') {
+        config.markerType = propValue || 'googleMapsCustomizable';
+      } else if (propName === 'customTooltip') {
+        config.customTooltip = propValue === 'true';
+      } else if (propName === 'showFilters') {
+        config.showFilters = propValue === 'true';
+      } else if (propName === 'enableSearchFilter') {
+        config.enableSearchFilter = propValue === 'true';
+      } else if (propName === 'svgUpload') {
+        config.svgUpload = propValue;
       }
-      // Add other properties as needed
     });
 
     // Specifically look for content fragment path
     const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
     if (contentFragmentInput) {
       config.contentFragmentPath = contentFragmentInput.textContent.trim();
-      console.log('Found content fragment path:', config.contentFragmentPath);
     }
 
     // Also look for direct links to content fragments
     const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
     if (contentFragmentLinks.length > 0) {
       config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
-      console.log('Found content fragment link:', config.contentFragmentPath);
 
       // Hide these links in the UI
       contentFragmentLinks.forEach((link) => {
@@ -332,15 +342,12 @@ async function fetchLocationData(contentFragmentPath) {
       throw new Error('Content Fragment Path is not specified');
     }
 
-    console.log(`Original path: ${contentFragmentPath}`);
-
     // Clean up the path
     let cleanPath = contentFragmentPath;
     cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
 
     // First, get the folder structure
     const folderEndpoint = `${cleanPath}.1.json`;
-    console.log(`Fetching folder structure from: ${folderEndpoint}`);
 
     const folderResponse = await fetch(folderEndpoint);
     if (!folderResponse.ok) {
@@ -348,7 +355,6 @@ async function fetchLocationData(contentFragmentPath) {
     }
 
     const folderData = await folderResponse.json();
-    console.log('Folder structure retrieved:', Object.keys(folderData));
 
     // Extract content fragment paths
     const fragmentPaths = [];
@@ -363,7 +369,6 @@ async function fetchLocationData(contentFragmentPath) {
       const item = folderData[key];
       if (item && item['jcr:primaryType'] === 'dam:Asset') {
         fragmentPaths.push(key);
-        console.log(`Found content fragment: ${key}`);
       }
     });
 
@@ -375,7 +380,6 @@ async function fetchLocationData(contentFragmentPath) {
       try {
         // Construct the path to the master data
         const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
-        console.log(`Fetching content fragment data from: ${fragmentEndpoint}`);
 
         const fragmentResponse = await fetch(fragmentEndpoint);
         if (!fragmentResponse.ok) {
@@ -384,7 +388,6 @@ async function fetchLocationData(contentFragmentPath) {
         }
 
         const fragmentData = await fragmentResponse.json();
-        console.log(`Fragment data retrieved for: ${fragmentPath}`);
 
         // Extract location data
         const location = {
@@ -399,7 +402,6 @@ async function fetchLocationData(contentFragmentPath) {
 
         if (location.latitude && location.longitude) {
           locations.push(location);
-          console.log(`Added location: ${location.name} (${location.latitude}, ${location.longitude})`);
         }
       } catch (err) {
         console.warn(`Error processing fragment ${fragmentPath}:`, err.message);
@@ -608,33 +610,27 @@ function addCustomTooltip(map, marker, location) {
       });
 
       // Position and show this tooltip
-      // Safe access to projection
-      if (map.getProjection) {
-        const markerPosition = marker.getPosition();
-        const point = map.getProjection().fromLatLngToPoint(markerPosition);
+      const scale = 2 ** map.getZoom();
+      const nw = new google.maps.LatLng(
+        map.getBounds().getNorthEast().lat(),
+        map.getBounds().getSouthWest().lng(),
+      );
+      const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
+      const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
+      const pixelOffset = new google.maps.Point(
+        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale),
+      );
 
-        if (point) {
-          const tooltipLeft = `${point.x + 10}px`;
-          const tooltipTop = `${point.y - 30}px`;
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = `${pixelOffset.x + 10}px`;
+      tooltip.style.top = `${pixelOffset.y - 30}px`;
+      tooltip.style.display = 'block';
 
-          tooltip.style.position = 'absolute';
-          tooltip.style.left = tooltipLeft;
-          tooltip.style.top = tooltipTop;
-          tooltip.style.display = 'block';
-        }
-      } else {
-        // Fallback positioning if projection isn't available
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = '50%';
-        tooltip.style.left = '50%';
-        tooltip.style.transform = 'translate(-50%, -50%)';
-        tooltip.style.display = 'block';
-      }
-    });
-
-    // Close tooltip when clicking elsewhere on the map
-    map.addListener('click', () => {
-      tooltip.style.display = 'none';
+      // Close tooltip when clicking elsewhere on the map
+      map.addListener('click', () => {
+        tooltip.style.display = 'none';
+      });
     });
   } catch (error) {
     console.error('Error creating custom tooltip:', error);
