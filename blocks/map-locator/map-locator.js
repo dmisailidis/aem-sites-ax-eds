@@ -334,8 +334,21 @@ async function fetchLocationData(contentFragmentPath) {
 
     console.log(`Fetching location data from: ${contentFragmentPath}`);
 
-    // Format for AEM Content Fragment JSON API
-    const endpoint = `${contentFragmentPath}.json`;
+    // Clean up the path
+    let cleanPath = contentFragmentPath;
+
+    // Remove any file extensions
+    cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
+
+    // Ensure the path starts with / if it's a relative path
+    if (!cleanPath.startsWith('/') && !cleanPath.startsWith('http')) {
+      cleanPath = `/${cleanPath}`;
+    }
+
+    console.log('Clean path', cleanPath);
+
+    // For AEM content fragments in a folder, we need to use models.json endpoint
+    const endpoint = `${cleanPath}.model.json`;
 
     const response = await fetch(endpoint);
 
