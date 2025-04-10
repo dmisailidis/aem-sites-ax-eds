@@ -327,141 +327,116 @@ function initMap(container, lat, lng, zoom) {
  */
 async function fetchLocationData(contentFragmentPath) {
   try {
-    // GraphQL endpoint
-    const graphqlEndpoint = '/content/cq:graphql/eds-map-locator/endpoint';
-
-    console.log(`Using GraphQL endpoint: ${graphqlEndpoint}`);
-
-    // Construct a simple GraphQL query for location content fragments
-    // Adjust the fragment name and fields based on your content fragment model
-    const query = `{
-      locationList {
-        items {
-          _path
-          name
-          address
-          latitude
-          longitude
-          phone
-          website
-          categories
-        }
-      }
-    }`;
-
-    // Make the GraphQL request
-    const response = await fetch(graphqlEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`GraphQL request failed: ${response.status} ${response.statusText}`);
+    // Check if path exists
+    if (!contentFragmentPath) {
+      throw new Error('Content Fragment Path is not specified');
     }
 
-    const data = await response.json();
-    console.log('GraphQL response:', data);
+    console.log(`Original path: ${contentFragmentPath}`);
 
-    // Extract locations from the GraphQL response
+    // Clean up the path
+    let cleanPath = contentFragmentPath;
+    cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
+
+    // Define endpoint patterns to try
+    const endpointPatterns = [
+      `${cleanPath}.json`, // Simple .json
+      `${cleanPath}.1.json`, // Depth 1
+      `${cleanPath}/jcr:content.json`, // JCR content node
+      `${cleanPath}/jcr:content/data.json`, // Common content fragment pattern
+    ];
+
+    // Try endpoints sequentially using reduce() instead of a for loop
+    const result = await endpointPatterns.reduce(async (promiseAcc, endpoint) => {
+      // Wait for the previous attempt
+      const acc = await promiseAcc;
+
+      // If we already have data, return it
+      if (acc.data) return acc;
+
+      try {
+        console.log(`Trying endpoint: ${endpoint}`);
+        const response = await fetch(endpoint);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`Successfully fetched data from: ${endpoint}`);
+          return { data, endpoint };
+        }
+        console.log(`Endpoint ${endpoint} failed with status: ${response.status}`);
+        return acc;
+      } catch (err) {
+        console.log(`Error with endpoint ${endpoint}:`, err.message);
+        return acc;
+      }
+    }, Promise.resolve({ data: null, endpoint: null }));
+
+    const { data, endpoint: successfulEndpoint } = result;
+
+    if (!data) {
+      throw new Error('All endpoint patterns failed');
+    }
+
+    console.log(`Using data from: ${successfulEndpoint}`);
+    console.log('Data structure:', Object.keys(data));
+
+    // Extract locations based on the returned data structure
     const locations = [];
 
-    if (data.data && data.data.locationList && data.data.locationList.items) {
-      data.data.locationList.items.forEach((item) => {
-        const location = {
-          name: item.name || '',
-          address: item.address || '',
-          latitude: parseFloat(item.latitude) || 0,
-          longitude: parseFloat(item.longitude) || 0,
-          phone: item.phone || '',
-          website: item.website || '',
-          categories: item.categories || [],
-        };
+    // If we have direct fragment data (multiple fragments in a folder)
+    if (data && typeof data === 'object') {
+      // Use Object.entries and forEach instead of for...in
+      Object.entries(data).forEach(([key, value]) => {
+        // Skip metadata properties
+        if (key.startsWith(':') || key === 'jcr:primaryType') {
+          return;
+        }
 
-        // Only add valid locations with coordinates
-        if (location.latitude && location.longitude) {
-          locations.push(location);
-          console.log(`Added location from GraphQL: ${location.name}`);
+        // Process potential content fragment
+        if (value && typeof value === 'object') {
+          try {
+            // Extract data from various possible structures
+            let fragmentData = value;
+
+            // Check for content fragment structure
+            if (fragmentData['jcr:content']) {
+              fragmentData = fragmentData['jcr:content'];
+            }
+
+            // Check for data property
+            if (fragmentData.data) {
+              fragmentData = fragmentData.data;
+            }
+
+            // Check for master variation
+            if (fragmentData.master) {
+              fragmentData = fragmentData.master;
+            }
+
+            // Extract location properties
+            const location = {
+              name: extractPropertyValue(fragmentData, 'name'),
+              address: extractPropertyValue(fragmentData, 'address'),
+              latitude: parseFloat(extractPropertyValue(fragmentData, 'latitude') || 0),
+              longitude: parseFloat(extractPropertyValue(fragmentData, 'longitude') || 0),
+              phone: extractPropertyValue(fragmentData, 'phone'),
+              website: extractPropertyValue(fragmentData, 'website'),
+              categories: extractPropertyArray(fragmentData, 'categories'),
+            };
+
+            if (location.latitude && location.longitude) {
+              locations.push(location);
+              console.log(`Added location: ${location.name}`);
+            }
+          } catch (err) {
+            console.log(`Error processing potential fragment ${key}:`, err.message);
+          }
         }
       });
     }
-    // // Check if path exists
-    // if (!contentFragmentPath) {
-    //   throw new Error('Content Fragment Path is not specified');
-    // }
-
-    // console.log(`Fetching location data from: ${contentFragmentPath}`);
-
-    // // Clean up the path
-    // let cleanPath = contentFragmentPath;
-
-    // // Remove any file extensions
-    // cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
-
-    // // Ensure the path starts with / if it's a relative path
-    // if (!cleanPath.startsWith('/') && !cleanPath.startsWith('http')) {
-    //   cleanPath = `/${cleanPath}`;
-    // }
-
-    // console.log('Clean path', cleanPath);
-
-    // // For AEM content fragments in a folder, we need to use models.json endpoint
-    // const endpoint = `${cleanPath}.model.json`;
-
-    // const response = await fetch(endpoint);
-
-    // if (!response.ok) {
-    //   throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
-    // }
-
-    // const data = await response.json();
-    // console.log('Content fragments response:', data);
-
-    // // Transform the content fragment data to location objects
-    // const locations = [];
-
-    // // Process the data based on the structure returned by AEM
-    // // This may need adjustment based on the actual structure of your content fragments
-    // if (data && data.items) {
-    //   data.items.forEach((item) => {
-    //     const location = {
-    //       name: item.elements?.name?.value || '',
-    //       address: item.elements?.address?.value || '',
-    //       latitude: parseFloat(item.elements?.latitude?.value) || 0,
-    //       longitude: parseFloat(item.elements?.longitude?.value) || 0,
-    //       phone: item.elements?.phone?.value || '',
-    //       website: item.elements?.website?.value || '',
-    //       categories: item.elements?.categories?.value || [],
-    //     };
-
-    //     // Only add valid locations with coordinates
-    //     if (location.latitude && location.longitude) {
-    //       locations.push(location);
-    //     }
-    //   });
-    // } else if (data && Array.isArray(data)) {
-    //   // Alternative structure - direct array of content fragments
-    //   data.forEach((item) => {
-    //     const location = {
-    //       name: item.name || '',
-    //       address: item.address || '',
-    //       latitude: parseFloat(item.latitude) || 0,
-    //       longitude: parseFloat(item.longitude) || 0,
-    //       phone: item.phone || '',
-    //       website: item.website || '',
-    //       categories: item.categories || [],
-    //     };
-
-    //     if (location.latitude && location.longitude) {
-    //       locations.push(location);
-    //     }
-    //   });
-    // }
 
     if (locations.length === 0) {
-      console.warn('No valid locations found in content fragments - using fallback data');
+      console.warn('No valid locations found - using fallback data');
       return getFallbackLocations();
     }
 
@@ -472,6 +447,31 @@ async function fetchLocationData(contentFragmentPath) {
   }
 }
 
+// Helper to extract property values from various content fragment structures
+function extractPropertyValue(obj, propName) {
+  // Direct property
+  if (obj[propName] !== undefined) {
+    return obj[propName];
+  }
+
+  // Property inside elements structure
+  if (obj.elements && obj.elements[propName]) {
+    return obj.elements[propName].value;
+  }
+
+  // Property value structure
+  if (obj[propName] && obj[propName].value !== undefined) {
+    return obj[propName].value;
+  }
+
+  return '';
+}
+
+// Helper to extract array values
+function extractPropertyArray(obj, propName) {
+  const value = extractPropertyValue(obj, propName);
+  return Array.isArray(value) ? value : [];
+}
 /**
  * Get fallback location data
  * @returns {Array} - Array of fallback location objects
