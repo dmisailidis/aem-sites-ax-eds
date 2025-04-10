@@ -1,6 +1,11 @@
 /* eslint-disable no-use-before-define */
 /* global google */
 export default async function decorate(block) {
+  // First, hide any content fragment path links to prevent them from showing
+  block.querySelectorAll('a[href^="/content/dam/"]').forEach((link) => {
+    link.style.display = 'none';
+  });
+
   // Extract configuration from block properties
   const blockConfig = getBlockConfig(block);
 
@@ -17,20 +22,25 @@ export default async function decorate(block) {
   }
 
   try {
-    // Fetch the API key from our endpoint
-    const response = await fetch('http://localhost:3001/maps-key');
-    if (!response.ok) {
-      throw new Error(`Failed to fetch API key: ${response.status}`);
+    // Check content fragment path right away
+    if (!blockConfig.contentFragmentPath) {
+      // Try to find it another way - direct DOM inspection
+      const links = block.querySelectorAll('a[href^="/content/dam/"]');
+      if (links.length > 0) {
+        blockConfig.contentFragmentPath = links[0].getAttribute('href');
+        console.log('Found content fragment path from link:', blockConfig.contentFragmentPath);
+      } else {
+        throw new Error('Content Fragment Path is not specified and could not be found');
+      }
     }
 
-    const data = await response.json();
-    if (!data.key) {
-      throw new Error('API key not found in response');
-    }
+    // Use a hardcoded API key for now to simplify testing
+    const API_KEY = 'AIzaSyBNzPgPh2Zbp2wM-1DHctUVHXt_pkXAnrc'; // Replace with your actual API key or API endpoint
 
-    // Use the fetched API key
-    blockConfig.googleMapApiKey = data.key;
-    // Load Google Maps API (using API key from CA Config)
+    // Use the API key
+    blockConfig.googleMapApiKey = API_KEY;
+
+    // Load Google Maps API
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
 
     // Add a small delay to ensure API is fully initialized
@@ -52,12 +62,9 @@ export default async function decorate(block) {
         throw new Error('Failed to initialize Google Map');
       }
 
+      console.log('Using Content Fragment Path:', blockConfig.contentFragmentPath);
+
       // Load location data from Content Fragments
-      if (!blockConfig.contentFragmentPath) {
-        console.error('Content Fragment Path is not specified in component properties');
-      } else {
-        console.log('Using Content Fragment Path:', blockConfig.contentFragmentPath);
-      }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
       // Create markers for locations
@@ -69,6 +76,8 @@ export default async function decorate(block) {
           blockConfig.customTooltip,
           blockConfig.svgUpload,
         );
+
+        console.log(`Added ${locations.length} markers to map`);
       }
 
       // Initialize filters
@@ -89,7 +98,7 @@ export default async function decorate(block) {
   } catch (error) {
     console.error('Map Locator: Error initializing map', error);
     // Add an error message to the container
-    mapContainer.innerHTML = '<div class="cmp-map-locator__error">Map could not be loaded. Please try again later.</div>';
+    mapContainer.innerHTML = `<div class="cmp-map-locator__error">Map could not be loaded: ${error.message}</div>`;
   }
 }
 
@@ -99,70 +108,139 @@ export default async function decorate(block) {
  * @returns {Object} - Configuration object
  */
 function getBlockConfig(block) {
-  // Get all content from the block
-  const blockRows = [...block.children];
-  const config = {};
-
-  // Parse the block rows to extract configuration
-  blockRows.forEach((row) => {
-    if (row.children.length >= 2) {
-      const propertyName = row.children[0].textContent.trim();
-      const propertyValue = row.children[1].textContent.trim();
-
-      if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
-        config.contentFragmentPath = propertyValue;
-      } else if (propertyName === 'Default Zoom Level') {
-        config.defaultZoomLevel = parseInt(propertyValue, 10) || 7;
-      } else if (propertyName === 'Default Latitude') {
-        config.defaultLatitude = parseFloat(propertyValue) || 40.7128;
-      } else if (propertyName === 'Default Longitude') {
-        config.defaultLongitude = parseFloat(propertyValue) || -74.0060;
-      } else if (propertyName === 'Marker Type') {
-        config.markerType = propertyValue || 'googleMapsCustomizable';
-      } else if (propertyName === 'Custom Tooltip') {
-        config.customTooltip = propertyValue === 'true';
-      } else if (propertyName === 'Show Filters') {
-        config.showFilters = propertyValue === 'true';
-      } else if (propertyName === 'Enable Search Filter') {
-        config.enableSearchFilter = propertyValue === 'true';
-      } else if (propertyName === 'Search Filter Title') {
-        config.searchFilterTitle = propertyValue || 'Search';
-      } else if (propertyName === 'Search Filter Initial Text') {
-        config.searchFilterInitText = propertyValue || 'Search locations...';
-      } else if (propertyName === 'Proximity Radius (meters)') {
-        config.proximityRadius = propertyValue || '1000';
-      } else if (propertyName === 'Country Code') {
-        config.countryCode = propertyValue || 'US';
-      } else if (propertyName === 'Show Results Label') {
-        config.showResults = propertyValue || 'Show Results';
-      } else if (propertyName === 'Clear Filters Label') {
-        config.clearFilters = propertyValue || 'Clear Filters';
-      } else if (propertyName === 'Custom SVG Marker Upload') {
-        config.svgUpload = propertyValue || '';
-      }
-    }
-  });
-
-  // Set default values for any missing properties
-  return {
+  // Create a default config object
+  const config = {
     googleMapApiKey: '', // Will be fetched from API
-    proximityRadius: config.proximityRadius || '1000',
-    countryCode: config.countryCode || 'US',
-    defaultZoomLevel: config.defaultZoomLevel || 7,
-    defaultLatitude: config.defaultLatitude || 40.7128,
-    defaultLongitude: config.defaultLongitude || -74.0060,
-    markerType: config.markerType || 'googleMapsCustomizable',
-    customTooltip: config.customTooltip || false,
-    showFilters: config.showFilters || false,
-    enableSearchFilter: config.enableSearchFilter || false,
-    searchFilterTitle: config.searchFilterTitle || 'Search',
-    searchFilterInitText: config.searchFilterInitText || 'Search locations...',
-    clearFilters: config.clearFilters || 'Clear Filters',
-    showResults: config.showResults || 'Show Results',
-    svgUpload: config.svgUpload || '',
-    contentFragmentPath: config.contentFragmentPath || '',
+    proximityRadius: '1000',
+    countryCode: 'US',
+    defaultZoomLevel: 7,
+    defaultLatitude: 40.7128,
+    defaultLongitude: -74.0060,
+    markerType: 'googleMapsCustomizable',
+    customTooltip: false,
+    showFilters: false,
+    enableSearchFilter: false,
+    searchFilterTitle: 'Search',
+    searchFilterInitText: 'Search locations...',
+    clearFilters: 'Clear Filters',
+    showResults: 'Show Results',
+    svgUpload: '',
+    contentFragmentPath: '',
     filterCategories: [],
   };
+
+  try {
+    // First, look for the contentFragmentPath specifically
+    // This is the most critical field
+    const contentFragmentPathRow = [...block.children].find((row) => {
+      if (row.children.length < 2) return false;
+      const label = row.children[0].textContent.trim();
+      return label === 'Location Content Fragments Root Path'
+             || label === 'Content Fragment Path'
+             || label === 'contentFragmentPath';
+    });
+
+    if (contentFragmentPathRow) {
+      // For aem-content fields, the value could be in a link or just text
+      const valueCell = contentFragmentPathRow.children[1];
+      const link = valueCell.querySelector('a');
+
+      if (link) {
+        config.contentFragmentPath = link.getAttribute('href') || link.textContent.trim();
+        // Hide the link to prevent it from showing on the page
+        link.style.display = 'none';
+      } else {
+        config.contentFragmentPath = valueCell.textContent.trim();
+      }
+
+      console.log('Found Content Fragment Path:', config.contentFragmentPath);
+    } else {
+      console.warn('Content Fragment Path row not found in component properties');
+    }
+
+    // Now process all other properties
+    [...block.children].forEach((row) => {
+      if (row.children.length < 2) return;
+
+      const label = row.children[0].textContent.trim();
+      const valueCell = row.children[1];
+      const value = valueCell.textContent.trim();
+
+      // Skip the content fragment path as we've already processed it
+      if (label === 'Location Content Fragments Root Path'
+          || label === 'Content Fragment Path'
+          || label === 'contentFragmentPath') {
+        return;
+      }
+
+      // Process other properties
+      switch (label) {
+        case 'Default Zoom Level':
+        case 'defaultZoomLevel':
+          config.defaultZoomLevel = parseInt(value, 10) || 7;
+          break;
+        case 'Default Latitude':
+        case 'defaultLatitude':
+          config.defaultLatitude = parseFloat(value) || 40.7128;
+          break;
+        case 'Default Longitude':
+        case 'defaultLongitude':
+          config.defaultLongitude = parseFloat(value) || -74.0060;
+          break;
+        case 'Marker Type':
+        case 'markerType':
+          config.markerType = value || 'googleMapsCustomizable';
+          break;
+        case 'Custom Tooltip':
+        case 'customTooltip':
+          config.customTooltip = value === 'true';
+          break;
+        case 'Show Filters':
+        case 'showFilters':
+          config.showFilters = value === 'true';
+          break;
+        case 'Enable Search Filter':
+        case 'enableSearchFilter':
+          config.enableSearchFilter = value === 'true';
+          break;
+        case 'Search Filter Title':
+        case 'searchFilterTitle':
+          config.searchFilterTitle = value || 'Search';
+          break;
+        case 'Search Filter Initial Text':
+        case 'searchFilterInitText':
+          config.searchFilterInitText = value || 'Search locations...';
+          break;
+        case 'Proximity Radius (meters)':
+        case 'proximityRadius':
+          config.proximityRadius = value || '1000';
+          break;
+        case 'Country Code':
+        case 'countryCode':
+          config.countryCode = value || 'US';
+          break;
+        case 'Show Results Label':
+        case 'showResults':
+          config.showResults = value || 'Show Results';
+          break;
+        case 'Clear Filters Label':
+        case 'clearFilters':
+          config.clearFilters = value || 'Clear Filters';
+          break;
+        case 'Custom SVG Marker Upload':
+        case 'svgUpload':
+          config.svgUpload = value || '';
+          break;
+        default:
+          console.warn(`Unknown configuration label: ${label}`);
+          break;
+      }
+    });
+  } catch (error) {
+    console.error('Error extracting configuration from block:', error);
+  }
+
+  return config;
 }
 
 /**
@@ -330,8 +408,13 @@ async function fetchLocationData(contentFragmentPath) {
 
     console.log(`Fetching location data from: ${contentFragmentPath}`);
 
-    // Format for AEM Content Fragment JSON API
-    const endpoint = `${contentFragmentPath}.json`;
+    // Determine if we need to add .json extension
+    let endpoint = contentFragmentPath;
+    if (!endpoint.endsWith('.json')) {
+      endpoint = `${endpoint}.json`;
+    }
+
+    console.log(`Using endpoint: ${endpoint}`);
 
     const response = await fetch(endpoint);
 
@@ -340,32 +423,45 @@ async function fetchLocationData(contentFragmentPath) {
     }
 
     const data = await response.json();
-    console.log('Content fragments response:', data);
+    console.log(
+      'Content fragments response structure:',
+      Object.keys(data),
+      data.items ? `Found ${data.items.length} items` : 'No items property',
+    );
 
     // Transform the content fragment data to location objects
     const locations = [];
 
-    // Process the data based on the structure returned by AEM
-    // This may need adjustment based on the actual structure of your content fragments
-    if (data && data.items) {
-      data.items.forEach((item) => {
-        const location = {
-          name: item.elements?.name?.value || '',
-          address: item.elements?.address?.value || '',
-          latitude: parseFloat(item.elements?.latitude?.value) || 0,
-          longitude: parseFloat(item.elements?.longitude?.value) || 0,
-          phone: item.elements?.phone?.value || '',
-          website: item.elements?.website?.value || '',
-          categories: item.elements?.categories?.value || [],
-        };
+    // Try different possible structures for AEM Content Fragments JSON
 
-        // Only add valid locations with coordinates
-        if (location.latitude && location.longitude) {
-          locations.push(location);
+    // Structure 1: Items array with elements property containing fields
+    if (data && data.items && Array.isArray(data.items)) {
+      console.log('Processing structure with items array');
+      data.items.forEach((item) => {
+        if (item.elements) {
+          const location = {
+            name: item.elements.name?.value || '',
+            address: item.elements.address?.value || '',
+            latitude: parseFloat(item.elements.latitude?.value) || 0,
+            longitude: parseFloat(item.elements.longitude?.value) || 0,
+            phone: item.elements.phone?.value || '',
+            website: item.elements.website?.value || '',
+            categories: Array.isArray(item.elements.categories?.value)
+              ? item.elements.categories.value
+              : [],
+          };
+
+          // Only add valid locations with coordinates
+          if (location.latitude && location.longitude) {
+            locations.push(location);
+            console.log('Added location:', location.name);
+          }
         }
       });
-    } else if (data && Array.isArray(data)) {
-      // Alternative structure - direct array of content fragments
+    }
+    // Structure 2: Direct array of content fragments
+    else if (data && Array.isArray(data)) {
+      console.log('Processing direct array structure');
       data.forEach((item) => {
         const location = {
           name: item.name || '',
@@ -374,13 +470,59 @@ async function fetchLocationData(contentFragmentPath) {
           longitude: parseFloat(item.longitude) || 0,
           phone: item.phone || '',
           website: item.website || '',
-          categories: item.categories || [],
+          categories: Array.isArray(item.categories) ? item.categories : [],
         };
 
         if (location.latitude && location.longitude) {
           locations.push(location);
+          console.log('Added location:', location.name);
         }
       });
+    }
+    // Structure 3: Children property containing content fragments
+    else if (data && data.children && Array.isArray(data.children)) {
+      console.log('Processing structure with children property');
+      data.children.forEach((child) => {
+        if (child.elements) {
+          const location = {
+            name: child.elements.name?.value || '',
+            address: child.elements.address?.value || '',
+            latitude: parseFloat(child.elements.latitude?.value) || 0,
+            longitude: parseFloat(child.elements.longitude?.value) || 0,
+            phone: child.elements.phone?.value || '',
+            website: child.elements.website?.value || '',
+            categories: Array.isArray(child.elements.categories?.value)
+              ? child.elements.categories.value
+              : [],
+          };
+
+          if (location.latitude && location.longitude) {
+            locations.push(location);
+            console.log('Added location from children:', location.name);
+          }
+        }
+      });
+    }
+    // Structure 4: Directly examining the data object for properties
+    else {
+      console.log('Examining raw data for location properties');
+      // Attempt to extract a single content fragment directly
+      const location = {
+        name: data.name || data.elements?.name?.value || '',
+        address: data.address || data.elements?.address?.value || '',
+        latitude: parseFloat(data.latitude || data.elements?.latitude?.value || 0),
+        longitude: parseFloat(data.longitude || data.elements?.longitude?.value || 0),
+        phone: data.phone || data.elements?.phone?.value || '',
+        website: data.website || data.elements?.website?.value || '',
+        categories: Array.isArray(data.categories || data.elements?.categories?.value)
+          ? (data.categories || data.elements?.categories?.value)
+          : [],
+      };
+
+      if (location.latitude && location.longitude) {
+        locations.push(location);
+        console.log('Added single location from data:', location.name);
+      }
     }
 
     if (locations.length === 0) {
@@ -388,6 +530,7 @@ async function fetchLocationData(contentFragmentPath) {
       return getFallbackLocations();
     }
 
+    console.log(`Found ${locations.length} valid locations`);
     return locations;
   } catch (error) {
     console.error('Error fetching locations:', error);
