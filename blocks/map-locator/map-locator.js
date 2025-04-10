@@ -99,75 +99,74 @@ export default async function decorate(block) {
  * @returns {Object} - Configuration object
  */
 function getBlockConfig(block) {
-  // Get all content from the block
-  const blockRows = [...block.children];
-  const config = {};
-
-  console.log('Block', block);
-
-  console.log('Block rows', blockRows);
-
-  // Parse the block rows to extract configuration
-  blockRows.forEach((row) => {
-    const propertyName = row.children[0].children[0].dataset.aueLabel.trim();
-    const propertyValue = row.children[0].textContent.trim();
-
-    console.log('Property name', propertyName);
-    console.log('Property value', propertyValue);
-
-    if (propertyName === 'Content Fragment Path' || propertyName === 'Location Content Fragments Root Path') {
-      config.contentFragmentPath = propertyValue;
-    } else if (propertyName === 'Default Zoom Level') {
-      config.defaultZoomLevel = parseInt(propertyValue, 10) || 7;
-    } else if (propertyName === 'Default Latitude') {
-      config.defaultLatitude = parseFloat(propertyValue) || 40.7128;
-    } else if (propertyName === 'Default Longitude') {
-      config.defaultLongitude = parseFloat(propertyValue) || -74.0060;
-    } else if (propertyName === 'Marker Type') {
-      config.markerType = propertyValue || 'googleMapsCustomizable';
-    } else if (propertyName === 'Custom Tooltip') {
-      config.customTooltip = propertyValue === 'true';
-    } else if (propertyName === 'Show Filters') {
-      config.showFilters = propertyValue === 'true';
-    } else if (propertyName === 'Enable Search Filter') {
-      config.enableSearchFilter = propertyValue === 'true';
-    } else if (propertyName === 'Search Filter Title') {
-      config.searchFilterTitle = propertyValue || 'Search';
-    } else if (propertyName === 'Search Filter Initial Text') {
-      config.searchFilterInitText = propertyValue || 'Search locations...';
-    } else if (propertyName === 'Proximity Radius (meters)') {
-      config.proximityRadius = propertyValue || '1000';
-    } else if (propertyName === 'Country Code') {
-      config.countryCode = propertyValue || 'US';
-    } else if (propertyName === 'Show Results Label') {
-      config.showResults = propertyValue || 'Show Results';
-    } else if (propertyName === 'Clear Filters Label') {
-      config.clearFilters = propertyValue || 'Clear Filters';
-    } else if (propertyName === 'Custom SVG Marker Upload') {
-      config.svgUpload = propertyValue || '';
-    }
-  });
-
-  // Set default values for any missing properties
-  return {
+  // Create a default config object
+  const config = {
     googleMapApiKey: '', // Will be fetched from API
-    proximityRadius: config.proximityRadius || '1000',
-    countryCode: config.countryCode || 'US',
-    defaultZoomLevel: config.defaultZoomLevel || 7,
-    defaultLatitude: config.defaultLatitude || 40.7128,
-    defaultLongitude: config.defaultLongitude || -74.0060,
-    markerType: config.markerType || 'googleMapsCustomizable',
-    customTooltip: config.customTooltip || false,
-    showFilters: config.showFilters || false,
-    enableSearchFilter: config.enableSearchFilter || false,
-    searchFilterTitle: config.searchFilterTitle || 'Search',
-    searchFilterInitText: config.searchFilterInitText || 'Search locations...',
-    clearFilters: config.clearFilters || 'Clear Filters',
-    showResults: config.showResults || 'Show Results',
-    svgUpload: config.svgUpload || '',
-    contentFragmentPath: config.contentFragmentPath || '',
+    proximityRadius: '1000',
+    countryCode: 'US',
+    defaultZoomLevel: 7,
+    defaultLatitude: 40.7128,
+    defaultLongitude: -74.0060,
+    markerType: 'googleMapsCustomizable',
+    customTooltip: false,
+    showFilters: false,
+    enableSearchFilter: false,
+    searchFilterTitle: 'Search',
+    searchFilterInitText: 'Search locations...',
+    clearFilters: 'Clear Filters',
+    showResults: 'Show Results',
+    svgUpload: '',
+    contentFragmentPath: '',
     filterCategories: [],
   };
+
+  try {
+    // Look for paragraphs with data-aue attributes
+    const propElements = block.querySelectorAll('[data-aue-prop]');
+
+    propElements.forEach((propElement) => {
+      const propName = propElement.dataset.aueProp;
+      const propLabel = propElement.dataset.aueLabel;
+      const propValue = propElement.textContent.trim();
+
+      console.log(`Found property: ${propLabel} (${propName}) = ${propValue}`);
+
+      // Handle specific properties
+      if (propName === 'contentFragmentPath') {
+        config.contentFragmentPath = propValue;
+      } else if (propName === 'defaultZoomLevel') {
+        config.defaultZoomLevel = parseInt(propValue, 10) || 7;
+      } else if (propName === 'defaultLatitude') {
+        config.defaultLatitude = parseFloat(propValue) || 40.7128;
+      } else if (propName === 'defaultLongitude') {
+        config.defaultLongitude = parseFloat(propValue) || -74.0060;
+      }
+      // Add other properties as needed
+    });
+
+    // Specifically look for content fragment path
+    const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
+    if (contentFragmentInput) {
+      config.contentFragmentPath = contentFragmentInput.textContent.trim();
+      console.log('Found content fragment path:', config.contentFragmentPath);
+    }
+
+    // Also look for direct links to content fragments
+    const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
+    if (contentFragmentLinks.length > 0) {
+      config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
+      console.log('Found content fragment link:', config.contentFragmentPath);
+
+      // Hide these links in the UI
+      contentFragmentLinks.forEach((link) => {
+        link.style.display = 'none';
+      });
+    }
+  } catch (error) {
+    console.error('Error extracting configuration:', error);
+  }
+
+  return config;
 }
 
 /**
