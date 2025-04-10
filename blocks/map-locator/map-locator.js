@@ -18,7 +18,7 @@ export default async function decorate(block) {
 
   try {
     // Fetch the API key from our endpoint
-    const response = await fetch('/api/maps-key.json');
+    const response = await fetch('http://localhost:3001/maps-key');
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
     }
