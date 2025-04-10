@@ -125,6 +125,7 @@ function getBlockConfig(block) {
     const propElements = block.querySelectorAll('[data-aue-prop]');
 
     propElements.forEach((propElement) => {
+      propElement.style.display = 'none'; // Hide the element
       const propName = propElement.dataset.aueProp;
       const propLabel = propElement.dataset.aueLabel;
       const propValue = propElement.textContent.trim();
