@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-use-before-define */
 /* global google */
 export default async function decorate(block) {
@@ -333,15 +334,12 @@ async function fetchLocationData(contentFragmentPath) {
       throw new Error('Content Fragment Path is not specified');
     }
 
-    console.log(`Original path: ${contentFragmentPath}`);
-
     // Clean up the path
     let cleanPath = contentFragmentPath;
     cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
 
     // First, get the folder structure
     const folderEndpoint = `${cleanPath}.1.json`;
-    console.log(`Fetching folder structure from: ${folderEndpoint}`);
 
     const folderResponse = await fetch(folderEndpoint);
     if (!folderResponse.ok) {
@@ -349,7 +347,6 @@ async function fetchLocationData(contentFragmentPath) {
     }
 
     const folderData = await folderResponse.json();
-    console.log('Folder structure retrieved:', Object.keys(folderData));
 
     // Extract content fragment paths
     const fragmentPaths = [];
@@ -364,7 +361,6 @@ async function fetchLocationData(contentFragmentPath) {
       const item = folderData[key];
       if (item && item['jcr:primaryType'] === 'dam:Asset') {
         fragmentPaths.push(key);
-        console.log(`Found content fragment: ${key}`);
       }
     });
 
@@ -376,7 +372,6 @@ async function fetchLocationData(contentFragmentPath) {
       try {
         // Construct the path to the master data
         const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
-        console.log(`Fetching content fragment data from: ${fragmentEndpoint}`);
 
         const fragmentResponse = await fetch(fragmentEndpoint);
         if (!fragmentResponse.ok) {
@@ -385,7 +380,6 @@ async function fetchLocationData(contentFragmentPath) {
         }
 
         const fragmentData = await fragmentResponse.json();
-        console.log(`Fragment data retrieved for: ${fragmentPath}`);
 
         // Extract location data
         const location = {
@@ -400,7 +394,6 @@ async function fetchLocationData(contentFragmentPath) {
 
         if (location.latitude && location.longitude) {
           locations.push(location);
-          console.log(`Added location: ${location.name} (${location.latitude}, ${location.longitude})`);
         }
       } catch (err) {
         console.warn(`Error processing fragment ${fragmentPath}:`, err.message);
