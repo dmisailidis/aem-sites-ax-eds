@@ -511,11 +511,7 @@ function createMarkers(map, locations, markerType, customTooltip, svgPath) {
       bounds.extend(position);
 
       // Add info window or custom tooltip
-      if (customTooltip) {
-        addCustomTooltip(map, marker, location);
-      } else {
-        addInfoWindow(map, marker, location);
-      }
+      addInfoWindow(map, marker, location);
     });
 
     // Auto-center map to show all markers
@@ -566,74 +562,6 @@ function addInfoWindow(map, marker, location) {
     });
   } catch (error) {
     console.error('Error creating info window:', error);
-  }
-}
-
-/**
- * Add custom tooltip to marker
- * @param {Object} map - Google Maps instance
- * @param {Object} marker - Marker instance
- * @param {Object} location - Location data
- */
-function addCustomTooltip(map, marker, location) {
-  // Make sure Google Maps API is loaded
-  if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-    console.error('Map Locator: Google Maps API not loaded');
-    return;
-  }
-
-  try {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'map-marker-tooltip';
-    tooltip.innerHTML = `
-      <div class="map-marker-tooltip__title">${location.name || ''}</div>
-      <div class="map-marker-tooltip__address">${location.address || ''}</div>
-      ${
-  location.phone
-    ? `<div class="map-marker-tooltip__phone">${location.phone}</div>`
-    : ''
-}
-      ${
-  location.website
-    ? `<a href="${location.website}" class="map-marker-tooltip__link" target="_blank">Visit website</a>`
-    : ''
-}
-    `;
-
-    tooltip.style.display = 'none';
-    document.body.appendChild(tooltip);
-
-    marker.addListener('click', () => {
-      // Hide all other tooltips
-      document.querySelectorAll('.map-marker-tooltip').forEach((el) => {
-        el.style.display = 'none';
-      });
-
-      // Position and show this tooltip
-      const scale = 2 ** map.getZoom();
-      const nw = new google.maps.LatLng(
-        map.getBounds().getNorthEast().lat(),
-        map.getBounds().getSouthWest().lng(),
-      );
-      const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
-      const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
-      const pixelOffset = new google.maps.Point(
-        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
-        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale),
-      );
-
-      tooltip.style.position = 'absolute';
-      tooltip.style.left = `${pixelOffset.x + 10}px`;
-      tooltip.style.top = `${pixelOffset.y - 30}px`;
-      tooltip.style.display = 'block';
-
-      // Close tooltip when clicking elsewhere on the map
-      map.addListener('click', () => {
-        tooltip.style.display = 'none';
-      });
-    });
-  } catch (error) {
-    console.error('Error creating custom tooltip:', error);
   }
 }
 
