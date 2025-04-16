@@ -76,6 +76,7 @@
 .carousel-slide-content {
   max-width: 50%;
   text-align: left;
+  font-size: 1rem;
 }
 
 .carousel-slide-content h1,
@@ -194,7 +195,7 @@
 .carousel-slide-title h2 {
   color: white;
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 4rem;
   line-height: 1.2;
 }
 
@@ -222,13 +223,13 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .carousel-slide-title h2 {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 }
 
 @media (max-width: 480px) {
   .carousel-slide-title h2 {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
   
   .carousel-slide-button a {

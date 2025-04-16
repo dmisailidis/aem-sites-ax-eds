@@ -162,6 +162,7 @@ function createSlide(row, slideIndex, carouselId) {
     }
 
     // Try to identify button text and link
+    const buttonText = row.children[3].children[0].textContent;
     const buttonTextColumn = row.querySelector('[data-aue-prop="buttonText"], .button, a[role="button"], a.button');
     const buttonLinkColumn = buttonTextColumn && buttonTextColumn.tagName === 'A'
       ? buttonTextColumn : row.querySelector('[data-aue-prop="buttonLink"], a');
@@ -224,9 +225,9 @@ function createSlide(row, slideIndex, carouselId) {
 
       // Use button text from appropriate source
       if (buttonTextColumn.tagName === 'A') {
-        link.textContent = buttonTextColumn.textContent.trim();
+        link.textContent = buttonText.trim();
       } else {
-        link.textContent = buttonTextColumn.textContent.trim() || 'Learn More';
+        link.textContent = buttonText.trim() || 'Learn More';
       }
 
       link.setAttribute('role', 'button');
