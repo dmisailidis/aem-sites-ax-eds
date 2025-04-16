@@ -135,12 +135,8 @@ function createSlide(row, slideIndex, carouselId) {
     || !!row.closest('[data-block-name="carousel"]')
   );
 
-  console.log(`Slide ${slideIndex} isCarouselItem:`, isCarouselItem);
-
   if (isCarouselItem) {
     // Extract content from the slide
-    console.log(`Processing slide ${slideIndex} as carousel item`);
-
     const imageColumn = row.querySelector('[data-aue-prop="image"], .carousel-slide-image, picture, img');
 
     // Find text content that might be title, button text, etc.
@@ -166,15 +162,6 @@ function createSlide(row, slideIndex, carouselId) {
     const buttonTextColumn = row.querySelector('[data-aue-prop="buttonText"], .button, a[role="button"], a.button');
     const buttonLinkColumn = buttonTextColumn && buttonTextColumn.tagName === 'A'
       ? buttonTextColumn : row.querySelector('[data-aue-prop="buttonLink"], a');
-
-    // Log what we found for debugging
-    console.log(`Slide ${slideIndex} components:`, {
-      imageColumn,
-      titleColumn: titleColumn ? titleColumn.textContent : null,
-      contentColumn: contentColumn ? contentColumn.textContent : null,
-      buttonTextColumn: buttonTextColumn ? buttonTextColumn.textContent : null,
-      buttonLinkColumn: buttonLinkColumn ? buttonLinkColumn.tagName : null,
-    });
 
     // Create a container for the content to position it above the image
     const contentContainer = document.createElement('div');
@@ -206,8 +193,6 @@ function createSlide(row, slideIndex, carouselId) {
 
       contentContainer.appendChild(contentWrapper);
     }
-
-    console.log('Button text columns:', buttonTextColumn);
 
     // Add button if we found one
     if (buttonTextColumn && buttonLinkColumn) {
