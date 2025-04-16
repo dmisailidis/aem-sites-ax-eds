@@ -126,20 +126,54 @@ function createSlide(row, slideIndex, carouselId) {
   slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
   slide.classList.add('carousel-slide');
 
-  // Check if this is a carousel-item component
   const isCarouselItem = row.dataset && (
     row.dataset.aueModel === 'carousel-item'
     || row.classList.contains('carousel-item')
+    || row.classList.contains('carousel-slide-content')
+    || row.hasAttribute('data-slide-index')
+    || !!row.querySelector('.carousel-slide-content')
+    || !!row.closest('[data-block-name="carousel"]')
   );
 
-  // Process differently based on if it's a carousel item or direct content
+  console.log(`Slide ${slideIndex} isCarouselItem:`, isCarouselItem);
+
   if (isCarouselItem) {
-    // For carousel items, we need to get the image and content sections
-    const imageColumn = row.querySelector('[data-aue-prop="image"], .carousel-slide-image');
-    const titleColumn = row.querySelector('[data-aue-prop="title"], .carousel-slide-title');
-    const contentColumn = row.querySelector('[data-aue-prop="text"], .carousel-slide-content');
-    const buttonTextColumn = row.querySelector('[data-aue-prop="buttonText"], .carousel-slide-button-text');
-    const buttonLinkColumn = row.querySelector('[data-aue-prop="buttonLink"], .carousel-slide-button-link');
+    // Extract content from the slide
+    console.log(`Processing slide ${slideIndex} as carousel item`);
+
+    const imageColumn = row.querySelector('[data-aue-prop="image"], .carousel-slide-image, picture, img');
+
+    // Find text content that might be title, button text, etc.
+    const textElements = [...row.querySelectorAll('p, h1, h2, h3, h4, h5, h6, [data-aue-prop]')];
+
+    // Use the first paragraph/heading as title if it's not too long
+    let titleColumn = row.querySelector('[data-aue-prop="title"], .carousel-slide-title, h1, h2, h3');
+    // If no explicit title found, try to find a short paragraph that could be a title
+    if (!titleColumn) {
+      titleColumn = textElements.find((el) => el.textContent.trim().length < 100
+        && (el.tagName === 'P' || el.tagName.startsWith('H')));
+    }
+
+    // Get main content - anything that's not the title, image, or button
+    let contentColumn = row.querySelector('[data-aue-prop="text"], .carousel-slide-content');
+    if (!contentColumn && textElements.length > 1) {
+      // If no explicit content, use paragraphs that aren't the title
+      contentColumn = textElements.find((el) => el !== titleColumn);
+    }
+
+    // Try to identify button text and link
+    const buttonTextColumn = row.querySelector('[data-aue-prop="buttonText"], .button, a[role="button"], a.button');
+    const buttonLinkColumn = buttonTextColumn && buttonTextColumn.tagName === 'A'
+      ? buttonTextColumn : row.querySelector('[data-aue-prop="buttonLink"], a');
+
+    // Log what we found for debugging
+    console.log(`Slide ${slideIndex} components:`, {
+      imageColumn,
+      titleColumn: titleColumn ? titleColumn.textContent : null,
+      contentColumn: contentColumn ? contentColumn.textContent : null,
+      buttonTextColumn: buttonTextColumn ? buttonTextColumn.textContent : null,
+      buttonLinkColumn: buttonLinkColumn ? buttonLinkColumn.tagName : null,
+    });
 
     // Create a container for the content to position it above the image
     const contentContainer = document.createElement('div');
@@ -155,24 +189,47 @@ function createSlide(row, slideIndex, carouselId) {
 
     // Add content text
     if (contentColumn) {
-      contentColumn.classList.add('carousel-slide-content');
-      contentContainer.appendChild(contentColumn);
-    } else {
-      // Create empty content column if none exists
-      const emptyContent = document.createElement('div');
-      emptyContent.classList.add('carousel-slide-content');
-      contentContainer.appendChild(emptyContent);
+      const contentWrapper = document.createElement('div');
+      contentWrapper.classList.add('carousel-slide-content');
+
+      // Check if the content already has HTML or is just text
+      if (contentColumn.innerHTML.includes('<')) {
+        // Clone the content with its structure
+        contentWrapper.innerHTML = contentColumn.innerHTML;
+      } else {
+        // Simple text, create paragraph
+        const p = document.createElement('p');
+        p.textContent = contentColumn.textContent;
+        contentWrapper.appendChild(p);
+      }
+
+      contentContainer.appendChild(contentWrapper);
     }
 
-    // Add button if both text and link are present
-    if (buttonTextColumn && buttonLinkColumn && buttonTextColumn.textContent
-      && buttonLinkColumn.textContent) {
+    console.log('Button text columns:', buttonTextColumn);
+
+    // Add button if we found one
+    if (buttonTextColumn && buttonLinkColumn) {
       const buttonElement = document.createElement('div');
       buttonElement.classList.add('carousel-slide-button');
 
       const link = document.createElement('a');
-      link.href = buttonLinkColumn.textContent.trim();
-      link.textContent = buttonTextColumn.textContent.trim();
+
+      // If buttonLinkColumn is an anchor, use its href
+      if (buttonLinkColumn.tagName === 'A') {
+        link.href = buttonLinkColumn.href || '#';
+      } else {
+        link.href = buttonLinkColumn.textContent.trim() || '#';
+      }
+
+      // Use button text from appropriate source
+      if (buttonTextColumn.tagName === 'A') {
+        link.textContent = buttonTextColumn.textContent.trim();
+      } else {
+        link.textContent = buttonTextColumn.textContent.trim() || 'Learn More';
+      }
+
+      link.setAttribute('role', 'button');
 
       buttonElement.appendChild(link);
       contentContainer.appendChild(buttonElement);
@@ -180,10 +237,25 @@ function createSlide(row, slideIndex, carouselId) {
 
     slide.appendChild(contentContainer);
 
+    // Add image if found
     if (imageColumn) {
       const imageWrapper = document.createElement('div');
       imageWrapper.classList.add('carousel-slide-image');
-      imageWrapper.appendChild(imageColumn);
+
+      // If it's already a picture or img element, clone it
+      if (imageColumn.tagName === 'PICTURE' || imageColumn.tagName === 'IMG') {
+        imageWrapper.appendChild(imageColumn.cloneNode(true));
+      } else {
+        // Otherwise, try to extract an image from the column
+        const image = imageColumn.querySelector('img, picture');
+        if (image) {
+          imageWrapper.appendChild(image.cloneNode(true));
+        } else {
+          // Just copy the content as-is if no explicit image found
+          imageWrapper.appendChild(imageColumn.cloneNode(true));
+        }
+      }
+
       slide.appendChild(imageWrapper);
     } else {
       // Create empty image column if none exists
@@ -191,29 +263,6 @@ function createSlide(row, slideIndex, carouselId) {
       emptyImage.classList.add('carousel-slide-image');
       slide.appendChild(emptyImage);
     }
-  } else {
-    // For direct content, process the columns as before
-    const columns = row.querySelectorAll(':scope > div');
-
-    // Create a container for the content
-    const contentContainer = document.createElement('div');
-    contentContainer.classList.add('carousel-slide-content-container');
-
-    columns.forEach((column, colIdx) => {
-      if (colIdx === 0) {
-        // Image column
-        const imageWrapper = document.createElement('div');
-        imageWrapper.classList.add('carousel-slide-image');
-        imageWrapper.appendChild(column);
-        slide.appendChild(imageWrapper);
-      } else {
-        // Content column
-        column.classList.add('carousel-slide-content');
-        contentContainer.appendChild(column);
-      }
-    });
-
-    slide.prepend(contentContainer);
   }
 
   // Set aria-labelledby if there's a heading

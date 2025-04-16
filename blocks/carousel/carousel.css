@@ -60,13 +60,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 75%;
   height: 100%;
   z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2rem;
+  gap: 2rem;
+  padding: 2rem 2rem 2rem 6rem;
   box-sizing: border-box;
   color: white;
   background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
@@ -85,10 +86,6 @@
 .carousel-slide-content h6 {
   color: white;
   margin-top: 0;
-}
-
-.carousel-slide-content p {
-  margin-bottom: 1.5rem;
 }
 
 .carousel-slide-content a {
@@ -194,21 +191,11 @@
   border-width: 0;
 }
 
-/* Title styling */
-.carousel-slide-title {
-  margin-bottom: 1rem;
-}
-
 .carousel-slide-title h2 {
   color: white;
   margin: 0;
   font-size: 2.5rem;
   line-height: 1.2;
-}
-
-/* Button styling */
-.carousel-slide-button {
-  margin-top: 1.5rem;
 }
 
 .carousel-slide-button a {
