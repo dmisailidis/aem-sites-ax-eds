@@ -163,12 +163,24 @@ function createSlide(row, slideIndex, carouselId) {
   if (isCarouselItem) {
     // For carousel items, we need to get the image and content sections
     const imageColumn = row.querySelector('[data-aue-prop="image"], .carousel-slide-image');
+    const titleColumn = row.querySelector('[data-aue-prop="title"], .carousel-slide-title');
     const contentColumn = row.querySelector('[data-aue-prop="text"], .carousel-slide-content');
+    const buttonTextColumn = row.querySelector('[data-aue-prop="buttonText"], .carousel-slide-button-text');
+    const buttonLinkColumn = row.querySelector('[data-aue-prop="buttonLink"], .carousel-slide-button-link');
 
     // Create a container for the content to position it above the image
     const contentContainer = document.createElement('div');
     contentContainer.classList.add('carousel-slide-content-container');
 
+    // Add title if present
+    if (titleColumn && titleColumn.textContent.trim()) {
+      const titleElement = document.createElement('div');
+      titleElement.classList.add('carousel-slide-title');
+      titleElement.innerHTML = `<h2>${titleColumn.textContent.trim()}</h2>`;
+      contentContainer.appendChild(titleElement);
+    }
+
+    // Add content text
     if (contentColumn) {
       contentColumn.classList.add('carousel-slide-content');
       contentContainer.appendChild(contentColumn);
@@ -177,6 +189,21 @@ function createSlide(row, slideIndex, carouselId) {
       const emptyContent = document.createElement('div');
       emptyContent.classList.add('carousel-slide-content');
       contentContainer.appendChild(emptyContent);
+    }
+
+    // Add button if both text and link are present
+    if (buttonTextColumn && buttonLinkColumn
+        && buttonTextColumn.textContent.trim()
+        && buttonLinkColumn.textContent.trim()) {
+      const buttonElement = document.createElement('div');
+      buttonElement.classList.add('carousel-slide-button');
+
+      const link = document.createElement('a');
+      link.href = buttonLinkColumn.textContent.trim();
+      link.textContent = buttonTextColumn.textContent.trim();
+
+      buttonElement.appendChild(link);
+      contentContainer.appendChild(buttonElement);
     }
 
     slide.appendChild(contentContainer);
