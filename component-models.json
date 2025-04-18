@@ -481,6 +481,7 @@
         "component": "select",
         "name": "sortOrder",
         "label": "Sort Order",
+        "value": "ascending",
         "options": [
           {
             "name": "Ascending",
