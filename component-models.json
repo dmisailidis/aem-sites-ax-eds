@@ -536,13 +536,6 @@
         "name": "link",
         "label": "Link",
         "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "icon",
-        "label": "Icon",
-        "value": ""
       }
     ]
   },
