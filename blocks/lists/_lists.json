@@ -57,15 +57,6 @@
           ]
         },
         {
-          "component": "number",
-          "name": "maxItems",
-          "label": "Max Items",
-          "valueType": "number",
-          "validation": {
-            "numberMin": 0
-          }
-        },
-        {
           "component": "text",
           "valueType": "string",
           "name": "id",
@@ -81,18 +72,6 @@
           "component": "boolean",
           "name": "showDescription",
           "label": "Show Description",
-          "defaultValue": false
-        },
-        {
-          "component": "boolean",
-          "name": "showDate",
-          "label": "Show Date",
-          "defaultValue": false
-        },
-        {
-          "component": "boolean",
-          "name": "displayAsTeaser",
-          "label": "Display As Teaser",
           "defaultValue": false
         }
       ]
