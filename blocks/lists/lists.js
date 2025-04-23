@@ -1,3 +1,4 @@
+/*
 export default function decorate(block) {
 
    // set the value of the checkbox to false as default
@@ -168,3 +169,4 @@ export default function decorate(block) {
 
 }
 
+*/
