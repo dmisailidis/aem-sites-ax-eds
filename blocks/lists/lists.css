@@ -1,21 +1,32 @@
+ul {
+    list-style: none;
+    padding: 0;
+    padding-left: 0;
+  }
 
-/* remove bullet points of the list and add spaces */
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    unicode-bidi: isolate;
+}
+
+a {
+    color: #42ad93;
+    text-decoration: none;
+}
+
+/* remove bullet points of the list and add spaces *//*
+
 .list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+
 .list-item {
   margin-bottom: 1.5rem;
   position: relative;
-}
-
-
-.list-item-icon {
-  margin-right: 0.75rem;
-  display: inline-block;
-  vertical-align: middle;
 }
 
 .list-item-title {
@@ -29,7 +40,9 @@
   text-decoration: none;
 }
 
-/* manage the hover a linked title */
+*/
+/* manage the hover a linked title *//*
+
 .list-item-title a:hover {
   text-decoration: underline;
   color: var(--color-base-link-hover, #2DA487);
@@ -42,7 +55,9 @@
   line-height: 1.5;
 }
 
-/* create an horizontal layout to align element on the same row */
+*/
+/* create an horizontal layout to align element on the same row *//*
+
 .list-item-row {
   display: flex;
   align-items: center;
@@ -56,7 +71,9 @@
   flex: 1;
 }
 
-/* add horizontal space between title and description */
+*/
+/* add horizontal space between title and description *//*
+
 .list-item-content .list-item-title {
   margin-right: 1rem;
   margin-bottom: 0;
@@ -66,20 +83,9 @@
   margin: 0;
 }
 
-/* Responsive adjustments
-@media (max-width: 768px) {
-  .list-item-row {
-    flex-wrap: wrap;
-  }
-  
-  .list-item-content {
-    margin-top: 0.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .list-item-content .list-item-title {
-    margin-right: 0;
-    margin-bottom: 0.25rem;
-  }
-}*/
+/* add a horizontal space between title and description*/
+.list-item-separator {
+    margin: 0 0.5rem;
+    display: inline-block;
+}
+

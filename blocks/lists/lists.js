@@ -1,24 +1,66 @@
-/*
-
 export default function decorate(block) {
-    // remove empty divs
-    const items = [...block.children].filter((item) => {
-        console.log("item", item);
+
+   // set the value of the checkbox to false as default
+   let linkItems = false;
+   let showDescription = false;
+   let id = '0';
+   if(block.children.length >= 2){
+        if(block.children[1].children.length > 0){
+            const IDtext = block.children[1].children[0].textContent.trim().toLowerCase();
+            //check if IDtext is a number
+            if(!isNaN(IDtext)){
+                id = IDtext;
+                console.log("ID", id);
+            }
+        }
+   }
+
+   if (block.children.length >= 4) {
+       //access to the intern div which contains "true" or "false"
+       if (block.children[2].children.length > 0) {
+           const linkItemsText = block.children[2].children[0].textContent.trim().toLowerCase();
+           console.log("linkItemsText value:", linkItemsText);
+           linkItems = linkItemsText === 'true';
+           console.log("linkItems value:", linkItems);
+       }
+   }
+
+   if (block.children.length >= 5) {
+       //access to the intern div which contains "true" or "false"
+       if (block.children[3].children.length > 0) {
+           const showDescriptionText = block.children[3].children[0].textContent.trim().toLowerCase();
+           showDescription = showDescriptionText === 'true';
+           console.log("showDescription value:", showDescription);
+       }
+   }
+    // remove the empty divs and the configuration divs
+    const items = [...block.children].filter((item, index) => {
+        // Escludi i div di configurazione (linkItems e showDescription)
+        if (index === 1 || index === 2 || index === 3) {
+            return false;
+        }
+
         if (item.children.length === 1 &&
             item.children[0].tagName === 'DIV' &&
-            item.children[0].children.length === 0 &&
             !item.children[0].textContent.trim()) {
             return false;
         }
+
         return true;
     });
-    const orderBy = block.dataset.classes;
-    const sortOrder = block.dataset.sortOrder;
-    block.classList.add(orderBy);
-    block.classList.add(sortOrder);
+
+    // get the value of orderBy from the block's data attribute
+    const orderBy = block.classList.contains('description') ? 'description' : 'title';
+
+    let sortOrder;
+
+    // crate the list tag
     const list = document.createElement('ul');
     list.className = 'list';
-    const addedItems = new Set(); // keep track of added items
+    list.id = `list-${id}`;
+
+    // Create an array to store list items and their data for sorting
+    const listItemsData = [];
 
     items.forEach((item) => {
         const listItem = document.createElement('li');
@@ -26,19 +68,11 @@ export default function decorate(block) {
         const components = [...item.children];
         let title = '';
         let description = '';
-        let icon = null;
         let link = null;
 
-        const iconElement = item.querySelector('img, .icon, [class*="icon"]');
-        if (iconElement) {
-            icon = iconElement.cloneNode(true);
-        }
-
         const linkElement = item.querySelector('a');
-        let linkContent = '';
         if (linkElement) {
             link = linkElement.cloneNode(true);
-            linkContent = linkElement.textContent.trim();
         }
 
         // extract title and description from the components if present
@@ -53,51 +87,84 @@ export default function decorate(block) {
         // create the content of the list item
         let itemContent = '';
 
-        if (icon) {
-            itemContent += `<span class="list-item-icon">${icon.outerHTML}</span>`;
-        }
-
-        if (title || description || link) {
+        if (title || description) {
             itemContent += '<span class="list-item-content">';
 
-            // add title and description on the same row else print only title or description
-            if(title && description){
-                if(link){
+            // add title and description on the same row else print only description
+            if(title) {
+                if(link && linkItems){
                     itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>`;
                 } else {
                     itemContent += `<span class="list-item-title">${title}</span>`;
                 }
-                itemContent += `<span class="list-item-description">${description}</span>`;
-            } else if(title && !description){
-                // check if the link is present
-                console.log("controlling link", link);
-                if(link){
-                    // add the title with the link on press
-                    console.log("title with link", title, link);
-                    itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>`;
-                } else {
-                    itemContent += `<span class="list-item-title">${title}</span>`;
+
+                // show description only if showDescription is true
+                if(showDescription && description) {
+                    // Aggiungiamo uno spazio o un separatore tra titolo e descrizione
+                    itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${description}</span>`;
                 }
-            } else if(!title && description){
+            } else if(description && showDescription) {
+                // Mostra solo la descrizione se non c'è titolo, ma solo se showDescription è true
                 itemContent += `<span class="list-item-description">${description}</span>`;
             }
-            console.log("link", link);
             itemContent += '</span>';
         }
 
-        // check if the item content is not empty and if the item is not already added
-        const itemKey = title + description + (link ? link.href : '');
-        if (itemContent && !addedItems.has(itemKey)) {
+        // check if the item content is not empty
+        if (itemContent) {
             listItem.innerHTML = itemContent;
-            listItem.classList.add('list-item-row'); // Classe per stile riga
-            list.appendChild(listItem);
-            addedItems.add(itemKey);
+            listItem.classList.add('list-item-row');
+
+            // Store the item and its data for sorting
+            listItemsData.push({
+                element: listItem,
+                title,
+                description
+            });
         }
     });
 
-    // Svuota il blocco e aggiungi la lista
+
+    const uniqueItems = [...listItemsData];
+    // if there is almost one element, get the value of sortOrder
+    if (uniqueItems.length > 0) {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = uniqueItems[0].element.innerHTML;
+        const titleElement = tempElement.querySelector('.list-item-title');
+        if (titleElement) {
+            sortOrder = titleElement.textContent.trim();
+            // Rimuovi l'intero elemento li dalla lista di uniqueItems
+            if(sortOrder === 'ascending' || sortOrder === 'descending'){
+                uniqueItems.splice(0, 1);
+            }
+        }
+    }
+    // set default value for sortOrder
+    if(sortOrder !== 'ascending' && sortOrder !== 'descending'){
+        sortOrder = 'ascending';
+    }
+    console.log("OrderBy value:", orderBy, "Sort order:", sortOrder);
+
+    // order second the value of orderBy
+    uniqueItems.sort((a, b) => {
+        const valueA = a[orderBy] ? a[orderBy].toLowerCase() : '';
+        const valueB = b[orderBy] ? b[orderBy].toLowerCase() : '';
+
+        // apply the sorting order
+        return sortOrder === 'descending'
+            ? valueB.localeCompare(valueA)
+            : valueA.localeCompare(valueB);
+    });
+
+    // add the items to the list
+    uniqueItems.forEach(item => {
+        list.appendChild(item.element);
+    });
+
+    //add the list to the block
     block.innerHTML = '';
     block.appendChild(list);
+
+
 }
 
-*/
