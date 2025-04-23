@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-use-before-define */
 /* global google */
 export default async function decorate(block) {
@@ -18,7 +19,7 @@ export default async function decorate(block) {
 
   try {
     // Fetch the API key from our endpoint
-    const response = await fetch('/api/maps-key.json');
+    const response = await fetch('http://localhost:3001/maps-key');
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
     }
@@ -30,6 +31,7 @@ export default async function decorate(block) {
 
     // Use the fetched API key
     blockConfig.googleMapApiKey = data.key;
+
     // Load Google Maps API (using API key from CA Config)
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
 
@@ -40,12 +42,17 @@ export default async function decorate(block) {
 
     // Only proceed if Google Maps API loaded successfully
     if (window.google && window.google.maps) {
-      // Initialize map
+      // Parse the latitude, longitude, and zoom from the config
+      const defaultLatitude = parseFloat(blockConfig.defaultLatitude);
+      const defaultLongitude = parseFloat(blockConfig.defaultLongitude);
+      const defaultZoomLevel = parseInt(blockConfig.defaultZoomLevel, 10);
+
+      // Initialize map with the parsed values
       const map = initMap(
         mapContainer,
-        blockConfig.defaultLatitude,
-        blockConfig.defaultLongitude,
-        blockConfig.defaultZoomLevel,
+        defaultLatitude,
+        defaultLongitude,
+        defaultZoomLevel,
       );
 
       if (!map) {
@@ -53,7 +60,10 @@ export default async function decorate(block) {
       }
 
       // Load location data from Content Fragments
-      const locations = await fetchLocationData();
+      if (!blockConfig.contentFragmentPath) {
+        console.error('Content Fragment Path is not specified in component properties');
+      }
+      const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
       // Create markers for locations
       if (locations && locations.length > 0) {
@@ -94,75 +104,77 @@ export default async function decorate(block) {
  * @returns {Object} - Configuration object
  */
 function getBlockConfig(block) {
-  // Default configuration
+  // Create a default config object
   const config = {
-    googleMapApiKey: '', // This should come from a CA Config or environment variable
-    proximityRadius:
-      block.querySelector('[data-proximityRadius]')?.dataset.proximityRadius
-      || '1000',
-    countryCode:
-      block.querySelector('[data-countryCode]')?.dataset.countryCode || 'US',
-    defaultZoomLevel: parseInt(
-      block.querySelector('[data-defaultZoomLevel]')?.dataset
-        .defaultZoomLevel || '7',
-      10,
-    ),
-    defaultLatitude: parseFloat(
-      block.querySelector('[data-defaultLatitude]')?.dataset.defaultLatitude
-        || '40.7128',
-    ),
-    defaultLongitude: parseFloat(
-      block.querySelector('[data-defaultLongitude]')?.dataset
-        .defaultLongitude || '-74.0060',
-    ),
-    markerType:
-      block.querySelector('[data-markerType]')?.dataset.markerType
-      || 'googleMapsCustomizable',
-    customTooltip:
-      block.querySelector('[data-customTooltip]')?.dataset.customTooltip
-      === 'true',
-    showFilters:
-      block.querySelector('[data-showFilters]')?.dataset.showFilters === 'true',
-    enableSearchFilter:
-      block.querySelector('[data-enableSearchFilter]')?.dataset
-        .enableSearchFilter === 'true',
-    searchFilterTitle:
-      block.querySelector('[data-searchFilterTitle]')?.dataset
-        .searchFilterTitle || 'Search',
-    searchFilterInitText:
-      block.querySelector('[data-searchFilterInitText]')?.dataset
-        .searchFilterInitText || 'Search locations...',
-    clearFilters:
-      block.querySelector('[data-clearFilters]')?.dataset.clearFilters
-      || 'Clear Filters',
-    showResults:
-      block.querySelector('[data-showResults]')?.dataset.showResults
-      || 'Show Results',
-    svgUpload: block.querySelector('[data-svgUpload]')?.dataset.svgUpload || '',
-    contentFragmentPath: block.getAttribute('data-content-fragment-path') || '',
+    googleMapApiKey: '', // Will be fetched from API
+    proximityRadius: '1000',
+    countryCode: 'US',
+    defaultZoomLevel: 7,
+    defaultLatitude: 50.7128,
+    defaultLongitude: -94.0060,
+    markerType: 'googleMapsCustomizable',
+    customTooltip: false,
+    showFilters: false,
+    enableSearchFilter: false,
+    searchFilterTitle: 'Search',
+    searchFilterInitText: 'Search locations...',
+    clearFilters: 'Clear Filters',
+    showResults: 'Show Results',
+    svgUpload: '',
+    contentFragmentPath: '',
     filterCategories: [],
   };
 
-  // Extract filter categories if they exist
-  const filterCategoriesElements = block.querySelectorAll(
-    '[data-filter-category]',
-  );
-  filterCategoriesElements.forEach((element) => {
-    const categoryTitle = element.dataset.filterCategoryTitle;
-    const filterTagsStr = element.dataset.filterCategoryTags;
+  try {
+    // Look for paragraphs with data-aue attributes
+    const propElements = block.querySelectorAll('[data-aue-prop]');
 
-    if (categoryTitle && filterTagsStr) {
-      try {
-        const filterTags = JSON.parse(filterTagsStr);
-        config.filterCategories.push({
-          title: categoryTitle,
-          filterTags,
-        });
-      } catch (e) {
-        console.error('Failed to parse filter category tags:', e);
+    propElements.forEach((propElement) => {
+      propElement.style.display = 'none'; // Hide the element
+      const propName = propElement.dataset.aueProp;
+      const propValue = propElement.textContent.trim();
+
+      // Handle specific properties
+      if (propName === 'contentFragmentPath') {
+        config.contentFragmentPath = propValue;
+      } else if (propName === 'defaultZoomLevel') {
+        config.defaultZoomLevel = parseInt(propValue, 10);
+      } else if (propName === 'defaultLatitude') {
+        config.defaultLatitude = parseFloat(propValue);
+      } else if (propName === 'defaultLongitude') {
+        config.defaultLongitude = parseFloat(propValue);
+      } else if (propName === 'markerType') {
+        config.markerType = propValue || 'googleMapsCustomizable';
+      } else if (propName === 'customTooltip') {
+        config.customTooltip = propValue === 'true';
+      } else if (propName === 'showFilters') {
+        config.showFilters = propValue === 'true';
+      } else if (propName === 'enableSearchFilter') {
+        config.enableSearchFilter = propValue === 'true';
+      } else if (propName === 'svgUpload') {
+        config.svgUpload = propValue;
       }
+    });
+
+    // Specifically look for content fragment path
+    const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
+    if (contentFragmentInput) {
+      config.contentFragmentPath = contentFragmentInput.textContent.trim();
     }
-  });
+
+    // Also look for direct links to content fragments
+    const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
+    if (contentFragmentLinks.length > 0) {
+      config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
+
+      // Hide these links in the UI
+      contentFragmentLinks.forEach((link) => {
+        link.style.display = 'none';
+      });
+    }
+  } catch (error) {
+    console.error('Error extracting configuration:', error);
+  }
 
   return config;
 }
@@ -323,93 +335,116 @@ function initMap(container, lat, lng, zoom) {
  * @param {string} contentFragmentPath - Path to the content fragments
  * @returns {Promise<Array>} - Array of location objects
  */
-async function fetchLocationData() {
+async function fetchLocationData(contentFragmentPath) {
   try {
-    // GraphQL endpoint
-    const graphqlEndpoint = '/content/cq:graphql/eds-map-locator/endpoint.json';
-
-    // Authentication headers
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-
-    const authMethod = 'basic'; // Options: 'basic', 'dev-token', 'service-token'
-
-    if (authMethod === 'basic') {
-      const username = 'admin';
-      const password = 'admin';
-      headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
-    } else if (authMethod === 'dev-token') {
-      // Replace with your actual dev token
-      const devToken = 'your-dev-token-here';
-      headers.Authorization = `Bearer ${devToken}`;
-    } else if (authMethod === 'service-token') {
-      // In a real implementation, you'd fetch or retrieve this token
-      // Service tokens typically require a server-side component
-      const serviceToken = 'your-service-token-here';
-      headers.Authorization = `Bearer ${serviceToken}`;
+    // Check if path exists
+    if (!contentFragmentPath) {
+      throw new Error('Content Fragment Path is not specified');
     }
 
-    // GraphQL query
-    const query = `{
-      locationList {
-        items {
-          name
-          address
-          latitude
-          longitude
-          phone
-          website
-          categories
-        }
-      }
-    }`;
+    // Clean up the path
+    let cleanPath = contentFragmentPath;
+    cleanPath = cleanPath.replace(/\.(html|json)$/g, '');
 
-    // Make the GraphQL request
-    const response = await fetch(graphqlEndpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query }),
+    // First, get the folder structure
+    const folderEndpoint = `${cleanPath}.1.json`;
+
+    const folderResponse = await fetch(folderEndpoint);
+    if (!folderResponse.ok) {
+      throw new Error(`Failed to fetch folder structure: ${folderResponse.status} ${folderResponse.statusText}`);
+    }
+
+    const folderData = await folderResponse.json();
+
+    // Extract content fragment paths
+    const fragmentPaths = [];
+
+    Object.keys(folderData).forEach((key) => {
+      // Skip metadata properties and jcr:content
+      if (key.startsWith('jcr:') || key === 'jcr:content') {
+        return;
+      }
+
+      // Check if it's a content fragment (dam:Asset)
+      const item = folderData[key];
+      if (item && item['jcr:primaryType'] === 'dam:Asset') {
+        fragmentPaths.push(key);
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`,
-      );
+    // Now fetch each content fragment's data
+    const locations = [];
+
+    // Use Promise.all to fetch all fragments in parallel
+    await Promise.all(fragmentPaths.map(async (fragmentPath) => {
+      try {
+        // Construct the path to the master data
+        const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
+
+        const fragmentResponse = await fetch(fragmentEndpoint);
+        if (!fragmentResponse.ok) {
+          console.warn(`Failed to fetch fragment ${fragmentPath}: ${fragmentResponse.status}`);
+          return;
+        }
+
+        const fragmentData = await fragmentResponse.json();
+
+        // Extract location data
+        const location = {
+          name: fragmentData.name || fragmentData.title || fragmentPath,
+          address: fragmentData.address || '',
+          latitude: parseFloat(fragmentData.latitude || 0),
+          longitude: parseFloat(fragmentData.longitude || 0),
+          phone: fragmentData.phone || '',
+          website: fragmentData.website || '',
+          categories: Array.isArray(fragmentData.categories) ? fragmentData.categories : [],
+        };
+
+        if (location.latitude && location.longitude) {
+          locations.push(location);
+        }
+      } catch (err) {
+        console.warn(`Error processing fragment ${fragmentPath}:`, err.message);
+      }
+    }));
+
+    if (locations.length === 0) {
+      console.warn('No valid locations found - using fallback data');
+      return getFallbackLocations();
     }
 
-    const data = await response.json();
-    console.log('GraphQL response:', data);
-
-    if (!data?.data?.locationList?.items) {
-      throw new Error('Invalid GraphQL response format');
-    }
-
-    return data.data.locationList.items;
+    return locations;
   } catch (error) {
     console.error('Error fetching locations:', error);
-    // Return fallback data
-    return [
-      {
-        name: 'New York Office (Fallback)',
-        address: '123 Broadway, New York, NY 10001',
-        latitude: '40.7128',
-        longitude: '-74.0060',
-        phone: '+1 (212) 555-1234',
-        website: 'https://example.com/ny',
-        categories: ['headquarters', 'sales'],
-      },
-      {
-        name: 'Los Angeles Office (Fallback)',
-        address: '456 Wilshire Blvd, Los Angeles, CA 90036',
-        latitude: '34.0522',
-        longitude: '-118.2437',
-        phone: '+1 (310) 555-5678',
-        website: 'https://example.com/la',
-        categories: ['branch', 'customer-service'],
-      },
-    ];
+    return getFallbackLocations();
   }
+}
+
+/**
+ * Get fallback location data
+ * @returns {Array} - Array of fallback location objects
+ */
+function getFallbackLocations() {
+  return [
+    {
+      name: 'New York Office (Fallback)',
+      address: '123 Broadway, New York, NY 10001',
+      latitude: 40.7128,
+      longitude: -74.0060,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ny',
+      categories: ['headquarters', 'sales'],
+    },
+    {
+      name: 'Los Angeles Office (Fallback)',
+      address: '456 Wilshire Blvd, Los Angeles, CA 90036',
+      latitude: 34.0522,
+      longitude: -118.2437,
+      phone: '+1 (310) 555-5678',
+      website: 'https://example.com/la',
+      categories: ['branch', 'customer-service'],
+    },
+  ];
 }
 
 /**
@@ -575,33 +610,27 @@ function addCustomTooltip(map, marker, location) {
       });
 
       // Position and show this tooltip
-      // Safe access to projection
-      if (map.getProjection) {
-        const markerPosition = marker.getPosition();
-        const point = map.getProjection().fromLatLngToPoint(markerPosition);
+      const scale = 2 ** map.getZoom();
+      const nw = new google.maps.LatLng(
+        map.getBounds().getNorthEast().lat(),
+        map.getBounds().getSouthWest().lng(),
+      );
+      const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
+      const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
+      const pixelOffset = new google.maps.Point(
+        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale),
+      );
 
-        if (point) {
-          const tooltipLeft = `${point.x + 10}px`;
-          const tooltipTop = `${point.y - 30}px`;
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = `${pixelOffset.x + 10}px`;
+      tooltip.style.top = `${pixelOffset.y - 30}px`;
+      tooltip.style.display = 'block';
 
-          tooltip.style.position = 'absolute';
-          tooltip.style.left = tooltipLeft;
-          tooltip.style.top = tooltipTop;
-          tooltip.style.display = 'block';
-        }
-      } else {
-        // Fallback positioning if projection isn't available
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = '50%';
-        tooltip.style.left = '50%';
-        tooltip.style.transform = 'translate(-50%, -50%)';
-        tooltip.style.display = 'block';
-      }
-    });
-
-    // Close tooltip when clicking elsewhere on the map
-    map.addListener('click', () => {
-      tooltip.style.display = 'none';
+      // Close tooltip when clicking elsewhere on the map
+      map.addListener('click', () => {
+        tooltip.style.display = 'none';
+      });
     });
   } catch (error) {
     console.error('Error creating custom tooltip:', error);
