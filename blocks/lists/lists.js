@@ -1,12 +1,12 @@
 
 export default function decorate(block) {
-// Rilevamento dell'Universal Editor
+// detection of the universal editor
     const isInEditor = window.location.hostname.includes('adobeaemcloud.com') &&
                        (window.location.href.includes('/universal-editor/') ||
                         window.location.search.includes('universal-editor') ||
                         document.body.classList.contains('universal-editor-page'));
 
-    // In modalità editor, applica solo modifiche minime
+    // in editor mode, hide the configuration divs
     if (isInEditor) {
         console.log("Universal Editor rilevato - limitazione decorazione");
         // Nascondi solo le righe di configurazione
@@ -176,15 +176,11 @@ export default function decorate(block) {
         list.appendChild(item.element);
     });
 
-    //add the list to the block
-    //block.innerHTML = '';
-
-    // Nascondi gli elementi originali invece di rimuoverli
+    // hide the original elements
         [...block.children].forEach(child => {
             child.style.display = 'none';
         });
 
     block.appendChild(list);
-
 
 }
