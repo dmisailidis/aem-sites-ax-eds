@@ -4,7 +4,7 @@ export default function decorate(block) {
     const isInEditor = document.body.classList.contains('editor') ||
                        window.location.href.includes('/editor.html') ||
                        window.location.pathname.includes('/universal-editor/');
-
+    console.log('isInEditor:', isInEditor);
     // Se siamo nell'editor, non manipolare il DOM per consentire l'aggiunta di elementi
     if (isInEditor) {
         console.log('Editor mode detected: disabling list manipulation');
