@@ -1,3 +1,4 @@
+/*
 export default function decorate(block) {
     // Controlla se siamo nell'Universal Editor (modalità di editing)
     const isInEditor = document.body.classList.contains('editor') ||
@@ -177,3 +178,4 @@ export default function decorate(block) {
 
 
 }
+*/
