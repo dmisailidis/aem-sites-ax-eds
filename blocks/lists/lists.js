@@ -1,172 +1,140 @@
-/*
-
 export default function decorate(block) {
-    // set the value of the checkbox to false as default
+    // Rilevamento più robusto dell'editor
+    const isInEditor = document.body.classList.contains('editor') || 
+                       document.body.classList.contains('universal-editor-page') ||
+                       window.location.href.includes('/editor.html') || 
+                       window.location.pathname.includes('/universal-editor/') ||
+                       document.querySelector('.universal-editor-container') !== null;
+
+    // Estrazione delle configurazioni
     let linkItems = false;
     let showDescription = false;
     let id = '0';
-    if(block.children.length >= 2){
-        if(block.children[1].children.length > 0){
-            const IDtext = block.children[1].children[0].textContent.trim().toLowerCase();
-            //check if IDtext is a number
-            if(!isNaN(IDtext)){
-                id = IDtext;
-                console.log("ID", id);
-            }
-        }
-   }
+    let sortOrder = 'ascending';
+    
+    // Leggi ID
+    if (block.children.length >= 2 && block.children[1].children.length > 0) {
+        const IDtext = block.children[1].children[0].textContent.trim();
+        if (!isNaN(IDtext)) id = IDtext;
+    }
+    
+    // Leggi linkItems
+    if (block.children.length >= 4 && block.children[2].children.length > 0) {
+        linkItems = block.children[2].children[0].textContent.trim().toLowerCase() === 'true';
+    }
+    
+    // Leggi showDescription
+    if (block.children.length >= 5 && block.children[3].children.length > 0) {
+        showDescription = block.children[3].children[0].textContent.trim().toLowerCase() === 'true';
+    }
 
-   if (block.children.length >= 4) {
-       //access to the intern div which contains "true" or "false"
-       if (block.children[2].children.length > 0) {
-           const linkItemsText = block.children[2].children[0].textContent.trim().toLowerCase();
-           console.log("linkItemsText value:", linkItemsText);
-           linkItems = linkItemsText === 'true';
-           console.log("linkItems value:", linkItems);
-       }
-   }
+    // Se siamo nell'editor, non manipolare profondamente il DOM
+    if (isInEditor) {
+        // Nascondi solo i div di configurazione
+        if (block.children.length >= 2) block.children[1].style.display = 'none';
+        if (block.children.length >= 3) block.children[2].style.display = 'none';
+        if (block.children.length >= 4) block.children[3].style.display = 'none';
+        return;
+    }
 
-   if (block.children.length >= 5) {
-       //access to the intern div which contains "true" or "false"
-       if (block.children[3].children.length > 0) {
-           const showDescriptionText = block.children[3].children[0].textContent.trim().toLowerCase();
-           showDescription = showDescriptionText === 'true';
-           console.log("showDescription value:", showDescription);
-       }
-   }
-    // remove the empty divs and the configuration divs
+    // Filtra gli elementi validi
     const items = [...block.children].filter((item, index) => {
-        // Escludi i div di configurazione (linkItems e showDescription)
-        if (index === 1 || index === 2 || index === 3) {
-            return false;
-        }
-
-        if (item.children.length === 1 &&
-            item.children[0].tagName === 'DIV' &&
-            !item.children[0].textContent.trim()) {
-            return false;
-        }
-
-        return true;
+        return !(index === 1 || index === 2 || index === 3 || 
+                (item.children.length === 1 && 
+                 item.children[0].tagName === 'DIV' && 
+                 !item.children[0].textContent.trim()));
     });
 
-    // get the value of orderBy from the block's data attribute
+    // Determina l'ordinamento
     const orderBy = block.classList.contains('description') ? 'description' : 'title';
 
-    let sortOrder;
-
-    // crate the list tag
-    const list = document.createElement('ul');
-    list.className = 'list';
-    list.id = `list-${id}`;
-
-    // Create an array to store list items and their data for sorting
+    // Ottieni gli elementi e i loro dati per l'ordinamento
     const listItemsData = [];
-
     items.forEach((item) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-item';
         const components = [...item.children];
         let title = '';
         let description = '';
         let link = null;
 
+        if (components.length >= 1) title = components[0].textContent.trim();
+        if (components.length >= 2) description = components[1].textContent.trim();
+
         const linkElement = item.querySelector('a');
-        if (linkElement) {
-            link = linkElement.cloneNode(true);
+        if (linkElement) link = linkElement.cloneNode(true);
+
+        if (title === 'ascending' || title === 'descending') {
+            sortOrder = title;
+            return;
         }
 
-        // extract title and description from the components if present
-        if (components.length >= 1) {
-            title = components[0].textContent.trim();
-        }
-
-        if (components.length >= 2) {
-            description = components[1].textContent.trim();
-        }
-
-        // create the content of the list item
-        let itemContent = '';
-
-        if (title || description) {
-            itemContent += '<span class="list-item-content">';
-
-            // add title and description on the same row else print only description
-            if(title) {
-                if(link && linkItems){
-                    itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>`;
-                } else {
-                    itemContent += `<span class="list-item-title">${title}</span>`;
-                }
-
-                // show description only if showDescription is true
-                if(showDescription && description) {
-                    // Aggiungiamo uno spazio o un separatore tra titolo e descrizione
-                    itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${description}</span>`;
-                }
-            } else if(description && showDescription) {
-                // Mostra solo la descrizione se non c'è titolo, ma solo se showDescription è true
-                itemContent += `<span class="list-item-description">${description}</span>`;
-            }
-            itemContent += '</span>';
-        }
-
-        // check if the item content is not empty
-        if (itemContent) {
-            listItem.innerHTML = itemContent;
-            listItem.classList.add('list-item-row');
-
-            // Store the item and its data for sorting
+        if (title || (description && showDescription)) {
             listItemsData.push({
-                element: listItem,
+                originalItem: item,
                 title,
-                description
+                description,
+                link
             });
         }
     });
 
-
-    const uniqueItems = [...listItemsData];
-    // if there is almost one element, get the value of sortOrder
-    if (uniqueItems.length > 0) {
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = uniqueItems[0].element.innerHTML;
-        const titleElement = tempElement.querySelector('.list-item-title');
-        if (titleElement) {
-            sortOrder = titleElement.textContent.trim();
-            // Rimuovi l'intero elemento li dalla lista di uniqueItems
-            if(sortOrder === 'ascending' || sortOrder === 'descending'){
-                uniqueItems.splice(0, 1);
-            }
-        }
-    }
-    // set default value for sortOrder
-    if(sortOrder !== 'ascending' && sortOrder !== 'descending'){
-        sortOrder = 'ascending';
-    }
-    console.log("OrderBy value:", orderBy, "Sort order:", sortOrder);
-
-    // order second the value of orderBy
-    uniqueItems.sort((a, b) => {
+    // Ordina gli elementi
+    listItemsData.sort((a, b) => {
         const valueA = a[orderBy] ? a[orderBy].toLowerCase() : '';
         const valueB = b[orderBy] ? b[orderBy].toLowerCase() : '';
-
-        // apply the sorting order
-        return sortOrder === 'descending'
-            ? valueB.localeCompare(valueA)
+        return sortOrder === 'descending' 
+            ? valueB.localeCompare(valueA) 
             : valueA.localeCompare(valueB);
     });
 
-    // add the items to the list
-    uniqueItems.forEach(item => {
-        list.appendChild(item.element);
+    // Crea una lista preservando gli elementi esistenti
+    const existingList = block.querySelector('ul') || document.createElement('ul');
+    existingList.className = 'list';
+    existingList.id = `list-${id}`;
+    
+    // Svuota la lista esistente in modo sicuro
+    while (existingList.firstChild) {
+        existingList.removeChild(existingList.firstChild);
+    }
+
+    // Aggiungi gli elementi alla lista
+    listItemsData.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-item list-item-row';
+        
+        let itemContent = '<span class="list-item-content">';
+        
+        if (item.title) {
+            if (item.link && linkItems) {
+                itemContent += `<span class="list-item-title"><a href="${item.link.href}" ${item.link.target ? `target="${item.link.target}"` : ''}>${item.title}</a></span>`;
+            } else {
+                itemContent += `<span class="list-item-title">${item.title}</span>`;
+            }
+            
+            if (showDescription && item.description) {
+                itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${item.description}</span>`;
+            }
+        } else if (item.description && showDescription) {
+            itemContent += `<span class="list-item-description">${item.description}</span>`;
+        }
+        
+        itemContent += '</span>';
+        listItem.innerHTML = itemContent;
+        existingList.appendChild(listItem);
     });
 
-    //add the list to the block
-    block.innerHTML = '';
-    block.appendChild(list);
-
-
+    // Modifica in modo non distruttivo il contenuto del blocco
+    // Rimuovi solo i div di configurazione e gli elementi vuoti
+    [...block.children].forEach((child, index) => {
+        if (index === 1 || index === 2 || index === 3 || 
+            (child.children.length === 1 && 
+             child.children[0].tagName === 'DIV' && 
+             !child.children[0].textContent.trim())) {
+            block.removeChild(child);
+        }
+    });
+    
+    // Assicurati che la lista sia nel blocco
+    if (!block.contains(existingList)) {
+        block.appendChild(existingList);
+    }
 }
-
-*/
