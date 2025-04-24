@@ -1,5 +1,20 @@
-/*
+
 export default function decorate(block) {
+// Rilevamento dell'Universal Editor
+    const isInEditor = window.location.hostname.includes('adobeaemcloud.com') &&
+                       (window.location.href.includes('/universal-editor/') ||
+                        window.location.search.includes('universal-editor') ||
+                        document.body.classList.contains('universal-editor-page'));
+
+    // In modalità editor, applica solo modifiche minime
+    if (isInEditor) {
+        console.log("Universal Editor rilevato - limitazione decorazione");
+        // Nascondi solo le righe di configurazione
+        if (block.children.length >= 2) block.children[1].style.display = 'none';
+        if (block.children.length >= 3) block.children[2].style.display = 'none';
+        if (block.children.length >= 4) block.children[3].style.display = 'none';
+        return;
+    }
     // set the value of the checkbox to false as default
     let linkItems = false;
     let showDescription = false;
@@ -162,11 +177,14 @@ export default function decorate(block) {
     });
 
     //add the list to the block
-    block.innerHTML = '';
+    //block.innerHTML = '';
+
+    // Nascondi gli elementi originali invece di rimuoverli
+        [...block.children].forEach(child => {
+            child.style.display = 'none';
+        });
+
     block.appendChild(list);
 
 
 }
-
-
-*/
