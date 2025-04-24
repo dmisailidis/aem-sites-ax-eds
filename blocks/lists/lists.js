@@ -1,128 +1,124 @@
 export default function decorate(block) {
-    // Detection più precisa dell'Universal Editor
-    const isInEditor = window.location.hostname === 'localhost'
-                     || window.location.href.includes('/editor.html')
-                     || window.location.pathname.includes('/universal-editor/')
-                     || window.location.search.includes('universal-editor')
-                     || document.body.classList.contains('universal-editor-page')
-                     || document.body.hasAttribute('data-universal-editor-active');
+    // Detection migliorata per l'editor
+    const isInEditor = document.body.classList.contains('editor') ||
+                      document.body.dataset.universaleditoractive === 'true' ||
+                      document.body.classList.contains('universal-editor-page') ||
+                      window.location.href.includes('/editor.html') ||
+                      window.location.pathname.includes('/universal-editor/') ||
+                      document.querySelector('[data-universal-editor]') !== null;
 
-    // In modalità editor, non facciamo nessuna manipolazione
+    // Se siamo nell'editor, nascondi solo i div di configurazione
     if (isInEditor) {
-        console.log('Editor mode detected: disabling lists.js functionality');
+        // Nascondi i div di configurazione
+        if (block.children.length >= 2) block.children[1].style.display = 'none';
+        if (block.children.length >= 3) block.children[2].style.display = 'none';
+        if (block.children.length >= 4) block.children[3].style.display = 'none';
         return;
     }
 
-    // Solo in modalità runtime (non editor) applichiamo le trasformazioni
-
-    // Estrazione configurazioni
-    const configRows = [...block.children].filter((row, index) => index >= 1 && index <= 3);
-    let sortOrder = 'ascending';
-    let id = '0';
+    // Estrai la configurazione e procedi con la decorazione
     let linkItems = false;
     let showDescription = false;
+    let id = '0';
+    let sortOrder = 'ascending';
 
-    // Estrai ID
-    if (configRows[0] && configRows[0].children[0]) {
-        const idText = configRows[0].children[0].textContent.trim();
-        if (!isNaN(idText)) id = idText;
+    // Estrai ID e altre impostazioni...
+    if (block.children.length >= 2 && block.children[1].children.length > 0) {
+        const IDtext = block.children[1].children[0].textContent.trim();
+        if (!isNaN(IDtext)) id = IDtext;
     }
 
-    // Estrai linkItems
-    if (configRows[1] && configRows[1].children[0]) {
-        linkItems = configRows[1].children[0].textContent.trim().toLowerCase() === 'true';
+    if (block.children.length >= 4 && block.children[2].children.length > 0) {
+        linkItems = block.children[2].children[0].textContent.trim().toLowerCase() === 'true';
     }
 
-    // Estrai showDescription
-    if (configRows[2] && configRows[2].children[0]) {
-        showDescription = configRows[2].children[0].textContent.trim().toLowerCase() === 'true';
+    if (block.children.length >= 5 && block.children[3].children.length > 0) {
+        showDescription = block.children[3].children[0].textContent.trim().toLowerCase() === 'true';
     }
 
-    // Identifica elementi lista (escludendo config rows)
-    const itemRows = [...block.children].filter((row, index) =>
-        !(index >= 1 && index <= 3) &&
-        row.hasAttribute('data-block-name') &&
-        row.getAttribute('data-block-name') === 'list-item'
-    );
+    // Crea una copia di lavoro degli elementi originali, escludendo le configurazioni
+    const listItems = [];
+    const configIndices = [1, 2, 3]; // Indici dei div di configurazione
 
-    // Nascondi righe di configurazione
-    configRows.forEach(row => row.style.display = 'none');
+    [...block.children].forEach((child, index) => {
+        if (!configIndices.includes(index) && child.dataset && child.dataset.blockName === 'list-item') {
+            listItems.push(child);
+        }
+    });
 
     // Determina l'ordinamento
     const orderBy = block.classList.contains('description') ? 'description' : 'title';
 
-    // Prepara dati per ordinamento
-    const itemsData = itemRows.map(row => {
-        const cols = [...row.children];
-        const title = cols[0]?.textContent.trim() || '';
-        const description = cols[1]?.textContent.trim() || '';
-        const link = row.querySelector('a');
+    // Ottieni i dati degli elementi
+    const listItemsData = listItems.map(item => {
+        const components = [...item.children];
+        let title = '';
+        let description = '';
+        let link = null;
 
-        // Salva riferimento all'elemento originale
-        return { row, title, description, link };
+        if (components.length >= 1) title = components[0].textContent.trim();
+        if (components.length >= 2) description = components[1].textContent.trim();
+
+        const linkElement = item.querySelector('a');
+        if (linkElement) link = linkElement;
+
+        return {
+            originalItem: item,
+            title,
+            description,
+            link
+        };
     });
 
-    // Ordina elementi
-    itemsData.sort((a, b) => {
-        const valueA = a[orderBy]?.toLowerCase() || '';
-        const valueB = b[orderBy]?.toLowerCase() || '';
-        return sortOrder === 'descending'
-            ? valueB.localeCompare(valueA)
-            : valueA.localeCompare(valueB);
+    // Crea un contenitore per gli elementi formattati
+    const formattedList = document.createElement('ul');
+    formattedList.className = 'list';
+    formattedList.id = `list-${id}`;
+
+    // Nascondi gli elementi originali ma mantienili nel DOM
+    listItems.forEach(item => {
+        item.style.display = 'none';
     });
 
-    // Crea lista formattata
-    const list = document.createElement('ul');
-    list.className = 'list';
-    list.id = `list-${id}`;
+    // Ordina e aggiungi elementi formattati
+    [...listItemsData]
+        .sort((a, b) => {
+            const valueA = a[orderBy] ? a[orderBy].toLowerCase() : '';
+            const valueB = b[orderBy] ? b[orderBy].toLowerCase() : '';
+            return sortOrder === 'descending'
+                ? valueB.localeCompare(valueA)
+                : valueA.localeCompare(valueB);
+        })
+        .forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-item list-item-row';
 
-    // Riordina elementi nel DOM
-    itemsData.forEach(data => {
-        // Nascondi elemento originale
-        data.row.style.display = 'none';
+            let itemContent = '<span class="list-item-content">';
 
-        // Crea versione formattata
-        const li = document.createElement('li');
-        li.className = 'list-item list-item-row';
+            if (item.title) {
+                if (item.link && linkItems) {
+                    itemContent += `<span class="list-item-title"><a href="${item.link.href}" ${item.link.target ? `target="${item.link.target}"` : ''}>${item.title}</a></span>`;
+                } else {
+                    itemContent += `<span class="list-item-title">${item.title}</span>`;
+                }
 
-        const content = document.createElement('span');
-        content.className = 'list-item-content';
-
-        if (data.title) {
-            const titleSpan = document.createElement('span');
-            titleSpan.className = 'list-item-title';
-
-            if (data.link && linkItems) {
-                const a = data.link.cloneNode(true);
-                a.textContent = data.title;
-                titleSpan.appendChild(a);
-            } else {
-                titleSpan.textContent = data.title;
+                if (showDescription && item.description) {
+                    itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${item.description}</span>`;
+                }
+            } else if (item.description && showDescription) {
+                itemContent += `<span class="list-item-description">${item.description}</span>`;
             }
 
-            content.appendChild(titleSpan);
+            itemContent += '</span>';
+            listItem.innerHTML = itemContent;
+            formattedList.appendChild(listItem);
+        });
 
-            if (showDescription && data.description) {
-                const separator = document.createElement('span');
-                separator.className = 'list-item-separator';
-                content.appendChild(separator);
+    // Aggiungi la lista formattata al blocco
+    block.appendChild(formattedList);
 
-                const descSpan = document.createElement('span');
-                descSpan.className = 'list-item-description';
-                descSpan.textContent = data.description;
-                content.appendChild(descSpan);
-            }
-        } else if (data.description && showDescription) {
-            const descSpan = document.createElement('span');
-            descSpan.className = 'list-item-description';
-            descSpan.textContent = data.description;
-            content.appendChild(descSpan);
-        }
-
-        li.appendChild(content);
-        list.appendChild(li);
-    });
-
-    // Aggiungi lista al blocco
-    block.appendChild(list);
+    // Nascondi i div di configurazione
+    if (block.children.length >= 2) block.children[1].style.display = 'none';
+    if (block.children.length >= 3) block.children[2].style.display = 'none';
+    if (block.children.length >= 4) block.children[3].style.display = 'none';
 }
