@@ -1,16 +1,6 @@
+/*
 
 export default function decorate(block) {
-    // Controlla se siamo nell'Universal Editor (modalità di editing)
-    const isInEditor = document.body.classList.contains('editor') ||
-                       window.location.href.includes('/editor.html') ||
-                       window.location.pathname.includes('/universal-editor/');
-    console.log('isInEditor:', isInEditor);
-    // Se siamo nell'editor, non manipolare il DOM per consentire l'aggiunta di elementi
-    if (isInEditor) {
-        console.log('Editor mode detected: disabling list manipulation');
-        return;
-    }
-
     // set the value of the checkbox to false as default
     let linkItems = false;
     let showDescription = false;
@@ -179,3 +169,4 @@ export default function decorate(block) {
 
 }
 
+*/
