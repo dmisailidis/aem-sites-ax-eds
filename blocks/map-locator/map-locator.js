@@ -581,7 +581,15 @@ function addInfoWindow(map, marker, location) {
  * @param {Array} filterCategories - Array of filter category objects
  * @param {boolean} enableSearchFilter - Whether search filter is enabled
  */
-function initFilters(block, map, locations, filterCategories) {
+function initFilters(block, map, locations, filterName, filterCategories, filterCountry) {
+  // Make sure Google Maps API is loaded
+  console.log('--------Filter functionality--------');
+  console.log('Map:', map);
+  console.log('Locations:', locations);
+  console.log('Filter name:', filterName);
+  console.log('Filter categories:', filterCategories);
+  console.log('Filter country:', filterCountry);
+
   const filtersContainer = block.querySelector('.cmp-map-locator__filters');
   if (!filtersContainer) return;
 
