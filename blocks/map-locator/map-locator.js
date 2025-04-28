@@ -625,9 +625,15 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
     console.log('Visible marker:', visibleMarker.getPosition());
     console.log('Visible marker name:', visibleMarker.locationData.name);
 
+    const singleMarkerLatitude = visibleMarker.locationData.latitude;
+    const singleMarkerLongitude = visibleMarker.locationData.longitude;
+    const singleMarkerPosition = {
+      lat: parseFloat(singleMarkerLatitude),
+      lng: parseFloat(singleMarkerLongitude),
+    };
+
     if (visibleMarker) {
-      map.setCenter(visibleMarker.getPosition());
-      map.setZoom(7);
+      map.setCenter(singleMarkerPosition.lng, singleMarkerPosition.lat, 7);
     }
   } else if (visibleMarkersCount > 1) {
     // For multiple markers, fit bounds
