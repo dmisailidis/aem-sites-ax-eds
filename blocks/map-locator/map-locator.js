@@ -80,7 +80,7 @@ export default async function decorate(block) {
         );
       }
 
-      const checkName = blockConfig.filterName && blockConfig.filterName !== '';
+      const checkName = !!blockConfig.filterName.trim();
       const checkCategories = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
       const checkCountry = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
       console.log('Check name', checkName);
