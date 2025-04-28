@@ -364,24 +364,56 @@ async function fetchLocationData(contentFragmentPath) {
 function getFallbackLocations() {
   return [
     {
-      name: 'New York Office (Fallback)',
-      address: '123 Broadway, New York, NY 10001',
-      latitude: 40.7128,
-      longitude: -74.0060,
+      name: 'Chicago Office',
+      address: '522-534 W Roosevelt Rd',
+      latitude: 41.8713239,
+      longitude: -87.6342781,
       phone: '+1 (212) 555-1234',
-      website: 'https://example.com/ny',
-      categories: ['headquarters', 'sales'],
-      countryCode: 'us',
+      website: 'https://example.com/ch',
+      categories: [
+        'branch',
+        'sales',
+      ],
+      country: 'us',
     },
     {
-      name: 'Los Angeles Office (Fallback)',
+      name: 'Milan Office',
+      address: 'Via Tortona, 25, 20144 Milano MI, Italy',
+      latitude: 45.4524723,
+      longitude: 9.1560075,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ml',
+      categories: [
+        'headquarters',
+        'customer-service',
+      ],
+      country: 'it',
+    },
+    {
+      name: 'New York Office',
+      address: '123 Broadway, New York, NY 10001',
+      latitude: 40.7128,
+      longitude: -74.006,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ny',
+      categories: [
+        'headquarters',
+        'sales',
+      ],
+      country: 'us',
+    },
+    {
+      name: 'Los Angeles Office',
       address: '456 Wilshire Blvd, Los Angeles, CA 90036',
       latitude: 34.0522,
       longitude: -118.2437,
       phone: '+1 (310) 555-5678',
       website: 'https://example.com/la',
-      categories: ['branch', 'customer-service'],
-      countryCode: 'us',
+      categories: [
+        'branch',
+        'customer-service',
+      ],
+      country: 'us',
     },
   ];
 }
