@@ -80,17 +80,18 @@ export default async function decorate(block) {
         );
       }
 
-      const checkName = !!blockConfig.filterName.trim();
-      const checkCategories = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
-      const checkCountry = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
-      console.log('Check name', checkName);
-      console.log('Check categories', checkCategories);
-      console.log('Check country', checkCountry);
+      // Check if any of the filtering fields has been set
+      const hasNameFilter = !!blockConfig.filterName.trim();
+      const hasCategoryFilter = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
+      const hasCountryFilter = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
 
-      // Initialize filters
-      if (checkName || checkCategories || checkCountry) {
-        initFilters(
-          block,
+      console.log('Check name', hasNameFilter);
+      console.log('Check categories', hasCategoryFilter);
+      console.log('Check country', hasCountryFilter);
+
+      // Apply initial filtering if filters are set
+      if (hasNameFilter || hasCategoryFilter || hasCountryFilter) {
+        applyFilters(
           map,
           locations,
           blockConfig.filterName.trim(),
@@ -128,8 +129,8 @@ function getBlockConfig(block) {
     svgUpload: '',
     contentFragmentPath: '',
     filterName: '',
-    filterCategories: '',
-    filterCountry: '',
+    filterCategories: 'all',
+    filterCountry: 'all',
   };
 
   try {
@@ -198,78 +199,6 @@ function setupComponentStructure(block, config) {
 
   if (config.id) {
     block.id = config.id;
-  }
-
-  // Create filters container if filters are enabled
-  if (config.showFilters) {
-    let filtersContainer = block.querySelector('.cmp-map-locator__filters');
-    if (!filtersContainer) {
-      filtersContainer = document.createElement('div');
-      filtersContainer.className = 'cmp-map-locator__filters';
-      filtersContainer.setAttribute('data-js', 'filter__selection');
-      block.appendChild(filtersContainer);
-
-      // Setup search filter if enabled
-      if (config.enableSearchFilter) {
-        const searchFilterContainer = document.createElement('div');
-        searchFilterContainer.className = 'cmp-map-locator__filters-searchfilter';
-
-        const searchLabel = document.createElement('span');
-        searchLabel.className = 'cmp-map-locator__filters-searchfilter--label';
-        searchLabel.textContent = config.searchFilterTitle;
-
-        const searchInput = document.createElement('input');
-        searchInput.id = 'cmp-map-locator__filters-searchfilter--input';
-        searchInput.className = 'cmp-map-locator__filters-searchfilter--input';
-        searchInput.placeholder = config.searchFilterInitText;
-
-        searchFilterContainer.appendChild(searchLabel);
-        searchFilterContainer.appendChild(searchInput);
-        filtersContainer.appendChild(searchFilterContainer);
-      }
-
-      // Setup tag filters container
-      const tagFiltersContainer = document.createElement('div');
-      tagFiltersContainer.className = 'cmp-map-locator__filters-tagfiters';
-
-      // Add filter categories (will be populated with data later)
-      config.filterCategories.forEach((category) => {
-        const categoryContainer = document.createElement('div');
-        categoryContainer.className = `cmp-map-locator__filters-tagfiters--${category.title}`;
-
-        const categoryTitle = document.createElement('h5');
-        categoryTitle.className = `cmp-map-locator__filters-tagfiters--${category.title}-title`;
-        categoryTitle.textContent = category.title;
-
-        const categoryInputs = document.createElement('div');
-        categoryInputs.className = `cmp-map-locator__filters-tagfiters--${category.title}-input`;
-        categoryInputs.setAttribute('data-js', 'filter-category-inputs');
-
-        categoryContainer.appendChild(categoryTitle);
-        categoryContainer.appendChild(categoryInputs);
-        tagFiltersContainer.appendChild(categoryContainer);
-      });
-
-      // Add filter buttons
-      const buttonsContainer = document.createElement('div');
-      buttonsContainer.className = 'cmp-map-locator__filters-buttons';
-
-      const clearButton = document.createElement('button');
-      clearButton.setAttribute('data-js', 'filter__cancel-btn-toggle');
-      clearButton.className = 'filter__cancel-btn';
-      clearButton.textContent = config.clearFilters;
-
-      const showResultsButton = document.createElement('button');
-      showResultsButton.setAttribute('data-js', 'filter__show-results-link');
-      showResultsButton.className = 'filter__show-results';
-      showResultsButton.textContent = config.showResults;
-
-      buttonsContainer.appendChild(clearButton);
-      buttonsContainer.appendChild(showResultsButton);
-      tagFiltersContainer.appendChild(buttonsContainer);
-
-      filtersContainer.appendChild(tagFiltersContainer);
-    }
   }
 }
 
@@ -405,6 +334,7 @@ async function fetchLocationData(contentFragmentPath) {
           phone: fragmentData.phone || '',
           website: fragmentData.website || '',
           categories: Array.isArray(fragmentData.categories) ? fragmentData.categories : [],
+          country: fragmentData.country || '',
         };
 
         if (location.latitude && location.longitude) {
@@ -441,7 +371,7 @@ function getFallbackLocations() {
       phone: '+1 (212) 555-1234',
       website: 'https://example.com/ny',
       categories: ['headquarters', 'sales'],
-      countryCode: 'US',
+      country: 'us',
     },
     {
       name: 'Los Angeles Office (Fallback)',
@@ -451,7 +381,7 @@ function getFallbackLocations() {
       phone: '+1 (310) 555-5678',
       website: 'https://example.com/la',
       categories: ['branch', 'customer-service'],
-      countryCode: 'IT',
+      country: 'us',
     },
   ];
 }
@@ -549,13 +479,18 @@ function addInfoWindow(map, marker, location) {
 
   try {
     const infoContent = `
-      <div>
-        <h3>${location.name || ''}</h3>
-        <p>${location.address || ''}</p>
-        ${location.phone ? `<p>Phone: ${location.phone}</p>` : ''}
+      <div class="map-marker-tooltip">
+        <h3 class="map-marker-tooltip__title">${location.name || ''}</h3>
+        <p class="map-marker-tooltip__address">${location.address || ''}</p>
+        ${location.phone ? `<p class="map-marker-tooltip__phone">Phone: ${location.phone}</p>` : ''}
         ${
   location.website
-    ? `<p><a href="${location.website}" target="_blank">Website</a></p>`
+    ? `<p><a href="${location.website}" target="_blank" class="map-marker-tooltip__link">Website</a></p>`
+    : ''
+}
+        ${
+  location.categories && location.categories.length > 0
+    ? `<p class="map-marker-tooltip__categories">Categories: ${location.categories.join(', ')}</p>`
     : ''
 }
       </div>
@@ -574,188 +509,90 @@ function addInfoWindow(map, marker, location) {
 }
 
 /**
- * Initialize filter functionality
- * @param {HTMLElement} block - Component block element
- * @param {Object} map - Google Maps instance
- * @param {Array} locations - Array of location objects
- * @param {Array} filterCategories - Array of filter category objects
- * @param {boolean} enableSearchFilter - Whether search filter is enabled
+ * Apply filters to the map based on the given criteria
+ * @param {Object} map - The Google Maps instance
+ * @param {Array} locations - Array of all location objects
+ * @param {string} filterName - The name filter text
+ * @param {string} filterCategories - The category filter
+ * @param {string} filterCountry - The country filter
  */
-function initFilters(block, map, locations, filterName, filterCategories, filterCountry) {
-  // Make sure Google Maps API is loaded
-  console.log('--------Filter functionality--------');
-  console.log('Map:', map);
-  console.log('Locations:', locations);
-  console.log('Filter name:', filterName);
-  console.log('Filter categories:', filterCategories);
-  console.log('Filter country:', filterCountry);
-
-  const filtersContainer = block.querySelector('.cmp-map-locator__filters');
-  if (!filtersContainer) return;
-
-  const searchInput = filtersContainer.querySelector(
-    '.cmp-map-locator__filters-searchfilter--input',
-  );
-
-  // Create filter tag elements if needed
-  filterCategories.forEach((category) => {
-    const categoryInputsContainer = filtersContainer.querySelector(
-      `.cmp-map-locator__filters-tagfiters--${category.title}-input`,
-    );
-    if (!categoryInputsContainer) return;
-
-    // Clear existing filter elements
-    categoryInputsContainer.innerHTML = '';
-
-    // Add filter elements
-    Object.entries(category.filterTags).forEach(([tagName, tagId]) => {
-      const filterElement = document.createElement('div');
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = tagId;
-      checkbox.dataset.categoryId = tagId;
-      checkbox.value = tagId;
-
-      const label = document.createElement('label');
-      label.htmlFor = tagId;
-      label.textContent = tagName;
-
-      filterElement.appendChild(checkbox);
-      filterElement.appendChild(label);
-      categoryInputsContainer.appendChild(filterElement);
-    });
-  });
-
-  // Get all category inputs after they've been created
-  const categoryInputs = filtersContainer.querySelectorAll('[data-category-id]');
-
-  // Set up event listeners
-
-  // Search filter
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-
-  // Category filters
-  categoryInputs.forEach((input) => {
-    input.addEventListener('change', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  });
-
-  // Clear filters button
-  const clearButton = filtersContainer.querySelector(
-    '[data-js="filter__cancel-btn-toggle"]',
-  );
-  if (clearButton) {
-    clearButton.addEventListener('click', () => {
-      if (searchInput) searchInput.value = '';
-      categoryInputs.forEach((input) => {
-        input.checked = false;
-      });
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-
-  // Show results button
-  const showResultsButton = filtersContainer.querySelector(
-    '[data-js="filter__show-results-link"]',
-  );
-  if (showResultsButton) {
-    showResultsButton.addEventListener('click', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-}
-
-/**
- * Apply filters to map markers
- * @param {Object} map - Google Maps instance
- * @param {Array} locations - Array of location objects
- * @param {HTMLInputElement} searchInput - Search input element
- * @param {NodeList} categoryInputs - Category filter input elements
- */
-function applyFilters(map, locations, searchInput, categoryInputs) {
-  // Make sure Google Maps API is loaded
-  if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-    console.error('Map Locator: Google Maps API not loaded');
+function applyFilters(map, locations, filterName, filterCategories, filterCountry) {
+  // Make sure map and markers exist
+  if (!map || !map.markers || !map.markers.length) {
+    console.error('Map Locator: Invalid map or no markers found');
     return;
   }
 
-  // Make sure the map and markers exist
-  if (!map || !map.markers) {
-    console.error('Map Locator: Invalid map or markers');
-    return;
-  }
+  console.log('Applying filters:');
+  console.log('- Name filter:', filterName);
+  console.log('- Category filter:', filterCategories);
+  console.log('- Country filter:', filterCountry);
 
-  try {
-    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+  // Prepare the bounds for visible markers
+  const bounds = new google.maps.LatLngBounds();
+  let visibleMarkersCount = 0;
 
-    // Get selected category filters
-    const selectedCategories = {};
-    categoryInputs.forEach((input) => {
-      if (input.checked) {
-        const category = input.dataset.categoryId;
-        selectedCategories[category] = true;
+  // Process each marker
+  map.markers.forEach((marker) => {
+    const location = marker.locationData;
+    let isVisible = true;
+
+    // Apply name filter if specified (fuzzy match)
+    if (filterName && filterName.trim() !== '') {
+      const nameFilter = filterName.toLowerCase();
+      const locationName = location.name ? location.name.toLowerCase() : '';
+      const locationAddress = location.address ? location.address.toLowerCase() : '';
+
+      // Fuzzy match - check if filter is included in name or address
+      const matchesName = locationName.includes(nameFilter);
+      const matchesAddress = locationAddress.includes(nameFilter);
+
+      // Only show if it matches the name filter
+      if (!matchesName && !matchesAddress) {
+        isVisible = false;
       }
-    });
+    }
 
-    const hasSelectedCategories = Object.keys(selectedCategories).length > 0;
+    // Apply category filter if specified and not 'all'
+    if (isVisible && filterCategories && filterCategories !== 'all') {
+      // Check if the location has the specified category
+      const hasCategory = location.categories
+        && location.categories.some((cat) => cat.toLowerCase() === filterCategories.toLowerCase());
 
-    // Filter and update markers
-    const bounds = new google.maps.LatLngBounds();
-    let visibleMarkers = 0;
-
-    map.markers.forEach((marker) => {
-      const location = marker.locationData;
-      let visible = true;
-
-      // Apply search filter
-      if (searchTerm) {
-        const matchesSearch = (location.name && location.name.toLowerCase().includes(searchTerm))
-          || (location.address
-            && location.address.toLowerCase().includes(searchTerm))
-          || (location.city && location.city.toLowerCase().includes(searchTerm))
-          || (location.state
-            && location.state.toLowerCase().includes(searchTerm))
-          || (location.zip && location.zip.toLowerCase().includes(searchTerm));
-
-        if (!matchesSearch) {
-          visible = false;
-        }
+      if (!hasCategory) {
+        isVisible = false;
       }
+    }
 
-      // Apply category filters
-      if (visible && hasSelectedCategories) {
-        const matchesCategory = location.categories
-          && location.categories.some((cat) => selectedCategories[cat]);
+    // Apply country filter if specified and not 'all'
+    if (isVisible && filterCountry && filterCountry !== 'all') {
+      // Check if the location country matches the filter
+      const locationCountry = location.country ? location.country.toLowerCase() : '';
 
-        if (!matchesCategory) {
-          visible = false;
-        }
+      if (locationCountry !== filterCountry.toLowerCase()) {
+        isVisible = false;
       }
+    }
 
-      // Update marker visibility
-      marker.setVisible(visible);
+    // Update marker visibility
+    marker.setVisible(isVisible);
 
-      // Add to bounds if visible
-      if (visible) {
-        bounds.extend(marker.getPosition());
-        visibleMarkers += 1;
-      }
-    });
+    // If visible, extend map bounds to include this marker
+    if (isVisible) {
+      bounds.extend(marker.getPosition());
+      visibleMarkersCount += 1;
+    }
+  });
 
-    // Update map bounds to show all visible markers
-    if (visibleMarkers > 1) {
-      map.fitBounds(bounds);
-    } else if (visibleMarkers === 1) {
-      // If only one marker is visible, zoom in more
+  // Update map viewport based on visible markers
+  if (visibleMarkersCount > 0) {
+    map.fitBounds(bounds);
+
+    // If there's only one marker visible, zoom in more
+    if (visibleMarkersCount === 1) {
       map.setZoom(14);
     }
-  } catch (error) {
-    console.error('Error applying filters:', error);
   }
+
+  console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
 }
