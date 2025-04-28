@@ -620,6 +620,9 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
   if (visibleMarkersCount === 1) {
     // For a single marker, center on it with a fixed zoom level
     const visibleMarker = map.markers.find((marker) => marker.getVisible());
+    console.log('Markers:', map.markers);
+    console.log('Visible markers:', visibleMarker);
+
     if (visibleMarker) {
       map.setCenter(visibleMarker.getPosition());
       map.setZoom(7);
