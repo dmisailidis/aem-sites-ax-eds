@@ -334,7 +334,7 @@ async function fetchLocationData(contentFragmentPath) {
           phone: fragmentData.phone || '',
           website: fragmentData.website || '',
           categories: Array.isArray(fragmentData.categories) ? fragmentData.categories : [],
-          country: fragmentData.country || '',
+          country: fragmentData.countryCode || '',
         };
 
         if (location.latitude && location.longitude) {
@@ -371,7 +371,7 @@ function getFallbackLocations() {
       phone: '+1 (212) 555-1234',
       website: 'https://example.com/ny',
       categories: ['headquarters', 'sales'],
-      country: 'us',
+      countryCode: 'us',
     },
     {
       name: 'Los Angeles Office (Fallback)',
@@ -381,7 +381,7 @@ function getFallbackLocations() {
       phone: '+1 (310) 555-5678',
       website: 'https://example.com/la',
       categories: ['branch', 'customer-service'],
-      country: 'us',
+      countryCode: 'us',
     },
   ];
 }
