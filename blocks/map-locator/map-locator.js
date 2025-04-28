@@ -585,13 +585,16 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
   });
 
   // Update map viewport based on visible markers
-  if (visibleMarkersCount > 0) {
-    map.fitBounds(bounds);
-
-    // If there's only one marker visible, zoom in more
-    if (visibleMarkersCount === 1) {
-      map.setZoom(10);
+  if (visibleMarkersCount === 1) {
+    // For a single marker, center on it with a fixed zoom level
+    const visibleMarker = map.markers.find((marker) => marker.getVisible());
+    if (visibleMarker) {
+      map.setCenter(visibleMarker.getPosition());
+      map.setZoom(7);
     }
+  } else if (visibleMarkersCount > 1) {
+    // For multiple markers, fit bounds
+    map.fitBounds(bounds);
   }
 
   console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
