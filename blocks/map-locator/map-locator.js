@@ -68,19 +68,20 @@ export default async function decorate(block) {
       }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
+      console.log('LOCATIONS:', locations);
+
       // Create markers for locations
       if (locations && locations.length > 0) {
         createMarkers(
           map,
           locations,
           blockConfig.markerType,
-          blockConfig.customTooltip,
           blockConfig.svgUpload,
         );
       }
 
       // Initialize filters
-      if (blockConfig.showFilters) {
+      if (blockConfig.filterName || blockConfig.filterCategories || (blockConfig.filterCountry && !blockConfig.filterCountry.includes('all'))) {
         initFilters(
           block,
           map,
@@ -116,16 +117,11 @@ function getBlockConfig(block) {
     defaultLatitude: 50.7128,
     defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
-    customTooltip: false,
-    showFilters: false,
-    enableSearchFilter: false,
-    searchFilterTitle: 'Search',
-    searchFilterInitText: 'Search locations...',
-    clearFilters: 'Clear Filters',
-    showResults: 'Show Results',
     svgUpload: '',
     contentFragmentPath: '',
-    filterCategories: [],
+    filterName: '',
+    filterCategories: '',
+    filterCountry: '',
   };
 
   try {
@@ -148,12 +144,12 @@ function getBlockConfig(block) {
         config.defaultLongitude = parseFloat(propValue);
       } else if (propName === 'markerType') {
         config.markerType = propValue || 'googleMapsCustomizable';
-      } else if (propName === 'customTooltip') {
-        config.customTooltip = propValue === 'true';
-      } else if (propName === 'showFilters') {
-        config.showFilters = propValue === 'true';
-      } else if (propName === 'enableSearchFilter') {
-        config.enableSearchFilter = propValue === 'true';
+      } else if (propName === 'filterName') {
+        config.filterName = propValue;
+      } else if (propName === 'filterCategories') {
+        config.filterCategories = propValue;
+      } else if (propName === 'filterCountry') {
+        config.filterCountry = propValue;
       } else if (propName === 'svgUpload') {
         config.svgUpload = propValue;
       }
@@ -455,10 +451,9 @@ function getFallbackLocations() {
  * @param {Object} map - Google Maps instance
  * @param {Array} locations - Array of location objects
  * @param {string} markerType - Type of marker to use
- * @param {boolean} customTooltip - Whether to use custom tooltips
  * @param {string} svgPath - Path to custom marker SVG
  */
-function createMarkers(map, locations, markerType, customTooltip, svgPath) {
+function createMarkers(map, locations, markerType, svgPath) {
   // Make sure Google Maps API is loaded
   if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
     console.error('Map Locator: Google Maps API not loaded');
