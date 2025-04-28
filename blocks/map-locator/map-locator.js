@@ -122,9 +122,9 @@ function getBlockConfig(block) {
     googleMapApiKey: '', // Will be fetched from API
     proximityRadius: '1000',
     countryCode: 'US',
-    defaultZoomLevel: 7,
-    defaultLatitude: 50.7128,
-    defaultLongitude: -94.0060,
+    // defaultZoomLevel: 7,
+    // defaultLatitude: 50.7128,
+    // defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
     svgUpload: '',
     contentFragmentPath: '',
