@@ -33,6 +33,8 @@ export default async function decorate(block) {
     // Use the fetched API key
     blockConfig.googleMapApiKey = data.key;
 
+    console.log('BLOCK CONFIG:', blockConfig);
+
     // Load Google Maps API (using API key from CA Config)
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
 
