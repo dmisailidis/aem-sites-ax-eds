@@ -86,8 +86,9 @@ export default async function decorate(block) {
           block,
           map,
           locations,
+          blockConfig.filterName,
           blockConfig.filterCategories,
-          blockConfig.enableSearchFilter,
+          blockConfig.filterCountry,
         );
       }
     } else {
