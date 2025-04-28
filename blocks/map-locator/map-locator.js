@@ -80,7 +80,7 @@ export default async function decorate(block) {
         );
       }
 
-      const checkName = !!blockConfig.filterName;
+      const checkName = !!blockConfig.filterName.trim();
       const checkCategories = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
       const checkCountry = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
       console.log('Check name', checkName);
@@ -93,7 +93,7 @@ export default async function decorate(block) {
           block,
           map,
           locations,
-          blockConfig.filterName,
+          blockConfig.filterName.trim(),
           blockConfig.filterCategories,
           blockConfig.filterCountry,
         );
@@ -145,15 +145,15 @@ function getBlockConfig(block) {
       if (propName === 'contentFragmentPath') {
         config.contentFragmentPath = propValue;
       } else if (propName === 'defaultZoomLevel') {
-        config.defaultZoomLevel = parseInt(propValue, 10).trim();
+        config.defaultZoomLevel = parseInt(propValue, 10);
       } else if (propName === 'defaultLatitude') {
-        config.defaultLatitude = parseFloat(propValue).trim();
+        config.defaultLatitude = parseFloat(propValue);
       } else if (propName === 'defaultLongitude') {
-        config.defaultLongitude = parseFloat(propValue).trim();
+        config.defaultLongitude = parseFloat(propValue);
       } else if (propName === 'markerType') {
         config.markerType = propValue || 'googleMapsCustomizable';
       } else if (propName === 'filterName') {
-        config.filterName = propValue.trim();
+        config.filterName = propValue;
       } else if (propName === 'filterCategories') {
         config.filterCategories = propValue;
       } else if (propName === 'filterCountry') {
