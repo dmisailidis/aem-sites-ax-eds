@@ -590,7 +590,7 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
 
     // If there's only one marker visible, zoom in more
     if (visibleMarkersCount === 1) {
-      map.setZoom(8);
+      map.setZoom(10);
     }
   }
 
