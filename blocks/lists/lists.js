@@ -115,11 +115,11 @@ export default function decorate(block) {
 
                 // show description only if showDescription is true
                 if(showDescription && description) {
-                    // Aggiungiamo uno spazio o un separatore tra titolo e descrizione
+                    // add a separator between title and description
                     itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${description}</span>`;
                 }
             } else if(description && showDescription) {
-                // Mostra solo la descrizione se non c'è titolo, ma solo se showDescription è true
+                // show description only if showDescription is true, not the title
                 itemContent += `<span class="list-item-description">${description}</span>`;
             }
             itemContent += '</span>';
@@ -148,7 +148,7 @@ export default function decorate(block) {
         const titleElement = tempElement.querySelector('.list-item-title');
         if (titleElement) {
             sortOrder = titleElement.textContent.trim();
-            // Rimuovi l'intero elemento li dalla lista di uniqueItems
+            // remove the entire element if the value is "ascending" or "descending"
             if(sortOrder === 'ascending' || sortOrder === 'descending'){
                 uniqueItems.splice(0, 1);
             }
