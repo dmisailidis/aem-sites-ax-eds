@@ -80,7 +80,12 @@ export default async function decorate(block) {
         );
       }
 
-      console.log('Init filters', (blockConfig.filterName || (blockConfig.filterCategories && !blockConfig.filterCategories.includes('all')) || (blockConfig.filterCountry && !blockConfig.filterCountry.includes('all'))));
+      const checkName = blockConfig.filterName && blockConfig.filterName !== '';
+      const checkCategories = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
+      const checkCountry = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
+      console.log('Check name', checkName);
+      console.log('Check categories', checkCategories);
+      console.log('Check country', checkCountry);
 
       // Initialize filters
       if (blockConfig.filterName || (blockConfig.filterCategories && !blockConfig.filterCategories.includes('all')) || (blockConfig.filterCountry && !blockConfig.filterCountry.includes('all'))) {
