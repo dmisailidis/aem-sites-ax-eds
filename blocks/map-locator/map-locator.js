@@ -622,6 +622,8 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
     const visibleMarker = map.markers.find((marker) => marker.getVisible());
     console.log('Markers:', map.markers);
     console.log('Visible markers:', visibleMarker);
+    console.log('Visible marker:', visibleMarker.getPosition());
+    console.log('Visible marker name:', visibleMarker.locationData.name);
 
     if (visibleMarker) {
       map.setCenter(visibleMarker.getPosition());
