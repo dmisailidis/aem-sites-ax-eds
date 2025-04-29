@@ -21,6 +21,28 @@ export default async function decorate(block) {
     // Fetch the API key from our endpoint
     const response = await fetch('http://localhost:3001/maps-key');
 
+    // const myHeaders = {};
+    // myHeaders['Content-Type'] = 'application/json';
+    // myHeaders.Accept = 'application/json';
+    // eslint-disable-next-line max-len
+    // myHeaders.Authorization = 'Bearer <enter-key>';
+    // myHeaders['x-gw-ims-org-id'] = 'C0B99765576A7A987F000101@AdobeOrg';
+    // myHeaders['access-control-allow-methods'] = 'GET, OPTIONS';
+    // myHeaders['access-control-allow-origin'] = 'http://localhost:3000';
+    // myHeaders['access-control-allow-headers'] = 'Content-Type, Authorization, x-gw-ims-org-id';
+    // myHeaders['access-control-max-age'] = '3600';
+
+    // const requestOptions = {
+    //   method: 'GET',
+    //   headers: myHeaders,
+    // };
+
+    // console.log('Request Options:', requestOptions);
+
+    // const response = await fetch('https://localhost:53312/api/v1/web/ddax-adobe-io/maps-key', requestOptions)
+    //   .then((res) => console.log('Response:', res))
+    //   .catch((error) => console.log('Error:', error));
+
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
     }
