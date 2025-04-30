@@ -612,6 +612,7 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
   // Prepare the bounds for visible markers
   const bounds = new google.maps.LatLngBounds();
   let visibleMarkersCount = 0;
+  let lastVisibleMarker = null;
 
   // Process each marker
   map.markers.forEach((marker) => {
@@ -662,56 +663,60 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
     if (isVisible) {
       bounds.extend(marker.getPosition());
       visibleMarkersCount += 1;
+      lastVisibleMarker = marker; // Keep track of the last visible marker
     }
   });
 
-  // Update map viewport based on visible markers
-  if (visibleMarkersCount === 1) {
-  // For a single marker, center on it with a fixed zoom level
-    const visibleMarker = map.markers.find((marker) => marker.getVisible());
-    console.log('Single visible marker found:', visibleMarker);
+  console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
 
-    if (visibleMarker) {
+  // Use setTimeout to ensure the map has time to process marker visibility changes
+  setTimeout(() => {
+    // Update map viewport based on visible markers
+    if (visibleMarkersCount === 1 && lastVisibleMarker) {
+      console.log('Centering map on single visible marker with delay');
+
       try {
-      // Use the marker's position directly - this is a Google Maps LatLng object
-        const position = visibleMarker.getPosition();
-        console.log('Position from getPosition():', position.toString());
+        // Get position directly from the marker
+        const position = lastVisibleMarker.getPosition();
+        console.log('Position object:', position);
 
-        // First set center
+        // Force map to center on this position
         map.setCenter(position);
-        // Then set zoom level separately
-        map.setZoom(15); // You can adjust this zoom level as needed
 
-        console.log('Map centered using marker position with zoom level 15');
+        // Force zoom level change
+        const zoomLevel = 14;
+        map.setZoom(zoomLevel);
+
+        console.log(`Map centered at ${position.toString()} with zoom level ${zoomLevel}`);
+
+        // Force the map to redraw/refresh
+        google.maps.event.trigger(map, 'resize');
       } catch (error) {
-        console.error('Error using marker.getPosition():', error);
+        console.error('Error centering map:', error);
 
-        // Fallback to using locationData
+        // Fallback method using stored lat/lng
         try {
-          const latitude = parseFloat(visibleMarker.locationData.latitude);
-          const longitude = parseFloat(visibleMarker.locationData.longitude);
+          const lat = parseFloat(lastVisibleMarker.locationData.latitude);
+          const lng = parseFloat(lastVisibleMarker.locationData.longitude);
 
-          console.log('Parsed coordinates from locationData:', { lat: latitude, lng: longitude });
-
-          // Check if coordinates are valid numbers
-          if (!Number.isNaN(latitude) && !Number.isNaN(longitude)) {
-            const center = new google.maps.LatLng(latitude, longitude);
+          if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+            console.log('Using fallback method with lat/lng:', lat, lng);
+            const center = new google.maps.LatLng(lat, lng);
             map.setCenter(center);
-            map.setZoom(15);
-            console.log('Map centered using locationData coordinates');
-          } else {
-            console.error('Invalid coordinates from locationData:', { lat: latitude, lng: longitude });
+            map.setZoom(14);
+            google.maps.event.trigger(map, 'resize');
           }
-        } catch (dataError) {
-          console.error('Error using locationData coordinates:', dataError);
+        } catch (fallbackError) {
+          console.error('Fallback centering failed:', fallbackError);
         }
       }
-    }
-  } else if (visibleMarkersCount > 1) {
-  // For multiple markers, fit bounds
-    map.fitBounds(bounds);
-    console.log('Map bounds adjusted to fit multiple markers');
-  }
+    } else if (visibleMarkersCount > 1) {
+      // For multiple markers, fit bounds
+      console.log('Fitting bounds for multiple markers');
+      map.fitBounds(bounds);
 
-  console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
+      // Force map to refresh
+      google.maps.event.trigger(map, 'resize');
+    }
+  }, 300); // Short delay to ensure the map is ready
 }
