@@ -55,8 +55,6 @@ export default async function decorate(block) {
     // Use the fetched API key
     blockConfig.googleMapApiKey = data.key;
 
-    console.log('BLOCK CONFIG:', blockConfig);
-
     // Load Google Maps API (using API key from CA Config)
     await loadGoogleMapsApi(blockConfig.googleMapApiKey);
 
@@ -84,13 +82,7 @@ export default async function decorate(block) {
         throw new Error('Failed to initialize Google Map');
       }
 
-      // Load location data from Content Fragments
-      if (!blockConfig.contentFragmentPath) {
-        console.error('Content Fragment Path is not specified in component properties');
-      }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
-
-      console.log('LOCATIONS:', locations);
 
       // Create markers for locations
       if (locations && locations.length > 0) {
@@ -102,16 +94,10 @@ export default async function decorate(block) {
         );
       }
 
-      console.log('Block config:', blockConfig);
-
       // Check if any of the filtering fields has been set
       const hasNameFilter = !!blockConfig.filterName.trim();
       const hasCategoryFilter = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
       const hasCountryFilter = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
-
-      console.log('Check name', hasNameFilter);
-      console.log('Check categories', hasCategoryFilter);
-      console.log('Check country', hasCountryFilter);
 
       // Apply initial filtering if filters are set
       if (hasNameFilter || hasCategoryFilter || hasCountryFilter) {
@@ -124,13 +110,9 @@ export default async function decorate(block) {
         );
       }
     } else {
-      console.error('Map Locator: Google Maps API failed to load');
-      // Add a fallback message to the container
       mapContainer.innerHTML = '<div class="cmp-map-locator__error">Map could not be loaded. Please try again later.</div>';
     }
   } catch (error) {
-    console.error('Map Locator: Error initializing map', error);
-    // Add an error message to the container
     mapContainer.innerHTML = '<div class="cmp-map-locator__error">Map could not be loaded. Please try again later.</div>';
   }
 }
@@ -160,8 +142,6 @@ function getBlockConfig(block) {
   try {
     // Look for paragraphs with data-aue attributes
     const propElements = block.querySelectorAll('[data-aue-prop]');
-
-    console.log('PROP ELEMENTS:', propElements);
 
     if (propElements.length > 0) {
       propElements.forEach((propElement) => {
@@ -208,14 +188,10 @@ function getBlockConfig(block) {
         });
       }
     } else {
-      // APPROACH 2: Local development environment - parse block structure
-      console.log('Using local development configuration mode');
       // Find all divs with two child divs (label + value pattern)
       const rows = block.querySelectorAll(':scope > div');
 
-      console.log('Found rows:', rows);
-
-      rows[0].style.display = 'none'; // Hide the first row
+      rows[0].style.display = 'none';
 
       // Skip the first row if it appears to be the component title
       let startIndex = 0;
@@ -227,22 +203,14 @@ function getBlockConfig(block) {
 
       // Process each row and try to infer the property from its value
       rows.forEach((row, index) => {
-        console.log('Index', index);
-
         if (index < startIndex) return; // Skip component title row
 
         const currentKey = keys[index - startIndex];
-
         const propValue = row.innerText.trim();
-
         config[currentKey] = propValue;
-
-        console.log(`Row ${index} value:`, propValue);
 
         row.style.display = 'none';
       });
-
-      console.log('Final configuration:', config);
 
       // Hide any P tags that contain configuration data
       const allParagraphs = block.querySelectorAll('p');
@@ -261,8 +229,6 @@ function getBlockConfig(block) {
         }
       });
     }
-
-    console.log('Final configuration:', config);
   } catch (error) {
     console.error('Error extracting configuration:', error);
   }
@@ -701,21 +667,50 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
 
   // Update map viewport based on visible markers
   if (visibleMarkersCount === 1) {
-    // For a single marker, center on it with a fixed zoom level
+  // For a single marker, center on it with a fixed zoom level
     const visibleMarker = map.markers.find((marker) => marker.getVisible());
-    console.log('Markers:', map.markers);
-    console.log('Visible markers:', visibleMarker);
-    console.log('Visible marker:', visibleMarker.getPosition());
-    console.log('Visible marker name:', visibleMarker.locationData.name);
+    console.log('Single visible marker found:', visibleMarker);
 
     if (visibleMarker) {
-      const longitude = parseFloat(visibleMarker.locationData.longitude);
-      const latitude = parseFloat(visibleMarker.locationData.latitude);
-      map.setCenter({ lng: longitude, lat: latitude, zoom: 7 });
+      try {
+      // Use the marker's position directly - this is a Google Maps LatLng object
+        const position = visibleMarker.getPosition();
+        console.log('Position from getPosition():', position.toString());
+
+        // First set center
+        map.setCenter(position);
+        // Then set zoom level separately
+        map.setZoom(15); // You can adjust this zoom level as needed
+
+        console.log('Map centered using marker position with zoom level 15');
+      } catch (error) {
+        console.error('Error using marker.getPosition():', error);
+
+        // Fallback to using locationData
+        try {
+          const latitude = parseFloat(visibleMarker.locationData.latitude);
+          const longitude = parseFloat(visibleMarker.locationData.longitude);
+
+          console.log('Parsed coordinates from locationData:', { lat: latitude, lng: longitude });
+
+          // Check if coordinates are valid numbers
+          if (!Number.isNaN(latitude) && !Number.isNaN(longitude)) {
+            const center = new google.maps.LatLng(latitude, longitude);
+            map.setCenter(center);
+            map.setZoom(15);
+            console.log('Map centered using locationData coordinates');
+          } else {
+            console.error('Invalid coordinates from locationData:', { lat: latitude, lng: longitude });
+          }
+        } catch (dataError) {
+          console.error('Error using locationData coordinates:', dataError);
+        }
+      }
     }
   } else if (visibleMarkersCount > 1) {
-    // For multiple markers, fit bounds
+  // For multiple markers, fit bounds
     map.fitBounds(bounds);
+    console.log('Map bounds adjusted to fit multiple markers');
   }
 
   console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
