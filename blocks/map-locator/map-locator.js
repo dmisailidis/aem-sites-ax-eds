@@ -551,6 +551,12 @@ function createMarkers(map, locations, markerType, svgPath) {
  * @param {Object} marker - Marker instance
  * @param {Object} location - Location data
  */
+/**
+ * Add standard info window to marker with auto-close functionality
+ * @param {Object} map - Google Maps instance
+ * @param {Object} marker - Marker instance
+ * @param {Object} location - Location data
+ */
 function addInfoWindow(map, marker, location) {
   // Make sure Google Maps API is loaded
   if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
@@ -581,8 +587,42 @@ function addInfoWindow(map, marker, location) {
       content: infoContent,
     });
 
+    // Store a reference to the currently open info window on the map
+    if (!map.openInfoWindow) {
+      map.openInfoWindow = null;
+    }
+
+    // Add click listener to the marker
     marker.addListener('click', () => {
+      // Close the previously open info window (if any)
+      if (map.openInfoWindow) {
+        map.openInfoWindow.close();
+      }
+
+      // Open this info window and store a reference to it
       infoWindow.open(map, marker);
+      map.openInfoWindow = infoWindow;
+    });
+
+    // If not already added, add a map click listener to close info windows
+    // when clicking elsewhere on the map
+    if (!map.hasInfoWindowCloseHandler) {
+      map.addListener('click', (event) => {
+        // Only close if the click was not on a marker
+        // (markers will handle their own info windows)
+        if (map.openInfoWindow) {
+          map.openInfoWindow.close();
+          map.openInfoWindow = null;
+        }
+      });
+
+      // Mark that we've added this handler, so we don't add it multiple times
+      map.hasInfoWindowCloseHandler = true;
+    }
+
+    // Add close event to the info window itself
+    google.maps.event.addListener(infoWindow, 'closeclick', () => {
+      map.openInfoWindow = null;
     });
   } catch (error) {
     console.error('Error creating info window:', error);
