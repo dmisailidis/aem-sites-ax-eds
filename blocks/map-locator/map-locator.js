@@ -102,6 +102,8 @@ export default async function decorate(block) {
         );
       }
 
+      console.log('Block config:', blockConfig);
+
       // Check if any of the filtering fields has been set
       const hasNameFilter = !!blockConfig.filterName.trim();
       const hasCategoryFilter = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
@@ -144,9 +146,9 @@ function getBlockConfig(block) {
     googleMapApiKey: '', // Will be fetched from API
     proximityRadius: '1000',
     countryCode: 'US',
-    // defaultZoomLevel: 7,
-    // defaultLatitude: 50.7128,
-    // defaultLongitude: -94.0060,
+    defaultZoomLevel: 7,
+    defaultLatitude: 50.7128,
+    defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
     svgUpload: '',
     contentFragmentPath: '',
@@ -159,49 +161,148 @@ function getBlockConfig(block) {
     // Look for paragraphs with data-aue attributes
     const propElements = block.querySelectorAll('[data-aue-prop]');
 
-    propElements.forEach((propElement) => {
-      propElement.style.display = 'none'; // Hide the element
-      const propName = propElement.dataset.aueProp;
-      const propValue = propElement.textContent.trim();
+    console.log('PROP ELEMENTS:', propElements);
 
-      // Handle specific properties
-      if (propName === 'contentFragmentPath') {
-        config.contentFragmentPath = propValue;
-      } else if (propName === 'defaultZoomLevel') {
-        config.defaultZoomLevel = parseInt(propValue, 10);
-      } else if (propName === 'defaultLatitude') {
-        config.defaultLatitude = parseFloat(propValue);
-      } else if (propName === 'defaultLongitude') {
-        config.defaultLongitude = parseFloat(propValue);
-      } else if (propName === 'markerType') {
-        config.markerType = propValue || 'googleMapsCustomizable';
-      } else if (propName === 'filterName') {
-        config.filterName = propValue;
-      } else if (propName === 'filterCategories') {
-        config.filterCategories = propValue;
-      } else if (propName === 'filterCountry') {
-        config.filterCountry = propValue;
-      } else if (propName === 'svgUpload') {
-        config.svgUpload = propValue;
+    if (propElements.length > 0) {
+      propElements.forEach((propElement) => {
+        propElement.style.display = 'none'; // Hide the element
+        const propName = propElement.dataset.aueProp;
+        const propValue = propElement.textContent.trim();
+
+        // Handle specific properties
+        if (propName === 'contentFragmentPath') {
+          config.contentFragmentPath = propValue;
+        } else if (propName === 'defaultZoomLevel') {
+          config.defaultZoomLevel = parseInt(propValue, 10);
+        } else if (propName === 'defaultLatitude') {
+          config.defaultLatitude = parseFloat(propValue);
+        } else if (propName === 'defaultLongitude') {
+          config.defaultLongitude = parseFloat(propValue);
+        } else if (propName === 'markerType') {
+          config.markerType = propValue || 'googleMapsCustomizable';
+        } else if (propName === 'filterName') {
+          config.filterName = propValue;
+        } else if (propName === 'filterCategories') {
+          config.filterCategories = propValue;
+        } else if (propName === 'filterCountry') {
+          config.filterCountry = propValue;
+        } else if (propName === 'svgUpload') {
+          config.svgUpload = propValue;
+        }
+      });
+
+      // Specifically look for content fragment path
+      const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
+      if (contentFragmentInput) {
+        config.contentFragmentPath = contentFragmentInput.textContent.trim();
       }
-    });
 
-    // Specifically look for content fragment path
-    const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
-    if (contentFragmentInput) {
-      config.contentFragmentPath = contentFragmentInput.textContent.trim();
-    }
+      // Also look for direct links to content fragments
+      const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
+      if (contentFragmentLinks.length > 0) {
+        config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
 
-    // Also look for direct links to content fragments
-    const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
-    if (contentFragmentLinks.length > 0) {
-      config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
+        // Hide these links in the UI
+        contentFragmentLinks.forEach((link) => {
+          link.style.display = 'none';
+        });
+      }
+    } else {
+      // APPROACH 2: Local development environment - parse block structure
+      console.log('Using local development configuration mode');
+      // Find all divs with two child divs (label + value pattern)
+      const rows = block.querySelectorAll(':scope > div');
 
-      // Hide these links in the UI
-      contentFragmentLinks.forEach((link) => {
-        link.style.display = 'none';
+      console.log('Found rows:', rows);
+
+      rows[0].style.display = 'none'; // Hide the first row
+
+      // Skip the first row if it appears to be the component title
+      let startIndex = 0;
+      if (rows.length > 0 && rows[0].innerText.toLowerCase().includes('map-locator')) {
+        startIndex = 1;
+      }
+
+      // Process each row and try to infer the property from its value
+      rows.forEach((row, index) => {
+        if (index < startIndex) return; // Skip component title row
+
+        const propValue = row.innerText.trim();
+        if (!propValue) return; // Skip empty values
+
+        console.log(`Row ${index} value:`, propValue);
+
+        row.style.display = 'none';
+
+        // Infer property type from value format
+        if (propValue.match(/^\/content\/dam/i)) {
+          // Content fragment path
+          config.contentFragmentPath = propValue;
+          console.log('Found content fragment path:', propValue);
+        } else if (propValue.match(/^-?\d+\.\d+$/) && Math.abs(parseFloat(propValue)) <= 90) {
+          // Looks like latitude (-90 to 90)
+          config.defaultLatitude = parseFloat(propValue);
+          console.log('Found latitude:', propValue);
+        } else if (propValue.match(/^-?\d+\.\d+$/) && Math.abs(parseFloat(propValue)) <= 180) {
+          // Looks like longitude (-180 to 180)
+          // If latitude is already set and differs from default, this is likely longitude
+          if (config.defaultLatitude !== 50.7128 && config.defaultLongitude === -94.0060) {
+            config.defaultLongitude = parseFloat(propValue);
+            console.log('Found longitude:', propValue);
+          } else {
+            // Otherwise, set latitude
+            config.defaultLatitude = parseFloat(propValue);
+            console.log('Found latitude:', propValue);
+          }
+        } else if (propValue.match(/^\d+$/) && parseInt(propValue, 10) >= 0 && parseInt(propValue, 10) <= 21) {
+          // Likely zoom level (0-21)
+          config.defaultZoomLevel = parseInt(propValue, 10);
+          console.log('Found zoom level:', propValue);
+        } else if (['customSVG', 'googleMapsCustomizable'].includes(propValue)) {
+          // Marker type
+          config.markerType = propValue;
+          console.log('Found marker type:', propValue);
+        } else if (propValue.match(/\.(svg|png|jpg|jpeg|gif)$/i)) {
+          // SVG or image path
+          config.svgUpload = propValue;
+          console.log('Found SVG upload:', propValue);
+        } else if (['all', 'headquarters', 'branch', 'customer-service', 'sales', 'support'].includes(propValue.toLowerCase())) {
+          // Category filter
+          config.filterCategories = propValue.toLowerCase();
+          console.log('Found filter categories:', propValue);
+        } else if (['all', 'us', 'it', 'gr'].includes(propValue.toLowerCase())) {
+          // Country filter
+          config.filterCountry = propValue.toLowerCase();
+          console.log('Found filter country:', propValue);
+        } else if (propValue.match(/^\d+$/) && parseInt(propValue, 10) > 100) {
+          // Likely proximity radius (typically large numbers)
+          config.proximityRadius = propValue;
+          console.log('Found proximity radius:', propValue);
+        } else {
+          // For other strings, use as filter name if not already set
+          config.filterName = propValue;
+        }
+      });
+
+      // Hide any P tags that contain configuration data
+      const allParagraphs = block.querySelectorAll('p');
+      allParagraphs.forEach((p) => {
+        const text = p.textContent.trim();
+        if (text.match(/^\/content\/dam/i)
+            || text.match(/^\d+$/)
+            || text.match(/^-?\d+\.\d+$/)
+            || ['customSVG', 'googleMapsCustomizable', 'all', 'headquarters', 'branch',
+              'customer-service', 'sales', 'support', 'us', 'it', 'gr'].includes(text.toLowerCase())) {
+          if (p.closest('div') && p.closest('div') !== block) {
+            p.closest('div').style.display = 'none';
+          } else {
+            p.style.display = 'none';
+          }
+        }
       });
     }
+
+    console.log('Final configuration:', config);
   } catch (error) {
     console.error('Error extracting configuration:', error);
   }
@@ -386,6 +487,32 @@ async function fetchLocationData(contentFragmentPath) {
 function getFallbackLocations() {
   return [
     {
+      name: 'Los Angeles Office',
+      address: '456 Wilshire Blvd, Los Angeles, CA 90036',
+      latitude: 34.0522,
+      longitude: -118.2437,
+      phone: '+1 (310) 555-5678',
+      website: 'https://example.com/la',
+      categories: [
+        'branch',
+        'customer-service',
+      ],
+      country: 'us',
+    },
+    {
+      name: 'New York Office',
+      address: '123 Broadway, New York, NY 10001',
+      latitude: 40.7128,
+      longitude: -74.006,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ny',
+      categories: [
+        'headquarters',
+        'sales',
+      ],
+      country: 'us',
+    },
+    {
       name: 'Chicago Office',
       address: '522-534 W Roosevelt Rd',
       latitude: 41.8713239,
@@ -410,32 +537,6 @@ function getFallbackLocations() {
         'customer-service',
       ],
       country: 'it',
-    },
-    {
-      name: 'New York Office',
-      address: '123 Broadway, New York, NY 10001',
-      latitude: 40.7128,
-      longitude: -74.006,
-      phone: '+1 (212) 555-1234',
-      website: 'https://example.com/ny',
-      categories: [
-        'headquarters',
-        'sales',
-      ],
-      country: 'us',
-    },
-    {
-      name: 'Los Angeles Office',
-      address: '456 Wilshire Blvd, Los Angeles, CA 90036',
-      latitude: 34.0522,
-      longitude: -118.2437,
-      phone: '+1 (310) 555-5678',
-      website: 'https://example.com/la',
-      categories: [
-        'branch',
-        'customer-service',
-      ],
-      country: 'us',
     },
   ];
 }
