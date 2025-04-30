@@ -143,18 +143,18 @@ export default async function decorate(block) {
 function getBlockConfig(block) {
   // Create a default config object
   const config = {
-    googleMapApiKey: '', // Will be fetched from API
-    proximityRadius: '1000',
-    countryCode: 'US',
+    contentFragmentPath: '',
     defaultZoomLevel: 7,
     defaultLatitude: 50.7128,
     defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
     svgUpload: '',
-    contentFragmentPath: '',
     filterName: '',
     filterCategories: 'all',
     filterCountry: 'all',
+    proximityRadius: '1000',
+    countryCode: 'US',
+    googleMapApiKey: '',
   };
 
   try {
@@ -223,66 +223,26 @@ function getBlockConfig(block) {
         startIndex = 1;
       }
 
+      const keys = Object.keys(config);
+
       // Process each row and try to infer the property from its value
       rows.forEach((row, index) => {
+        console.log('Index', index);
+
         if (index < startIndex) return; // Skip component title row
 
+        const currentKey = keys[index - startIndex];
+
         const propValue = row.innerText.trim();
-        if (!propValue) return; // Skip empty values
+
+        config[currentKey] = propValue;
 
         console.log(`Row ${index} value:`, propValue);
 
         row.style.display = 'none';
-
-        // Infer property type from value format
-        if (propValue.match(/^\/content\/dam/i)) {
-          // Content fragment path
-          config.contentFragmentPath = propValue;
-          console.log('Found content fragment path:', propValue);
-        } else if (propValue.match(/^-?\d+\.\d+$/) && Math.abs(parseFloat(propValue)) <= 90) {
-          // Looks like latitude (-90 to 90)
-          config.defaultLatitude = parseFloat(propValue);
-          console.log('Found latitude:', propValue);
-        } else if (propValue.match(/^-?\d+\.\d+$/) && Math.abs(parseFloat(propValue)) <= 180) {
-          // Looks like longitude (-180 to 180)
-          // If latitude is already set and differs from default, this is likely longitude
-          if (config.defaultLatitude !== 50.7128 && config.defaultLongitude === -94.0060) {
-            config.defaultLongitude = parseFloat(propValue);
-            console.log('Found longitude:', propValue);
-          } else {
-            // Otherwise, set latitude
-            config.defaultLatitude = parseFloat(propValue);
-            console.log('Found latitude:', propValue);
-          }
-        } else if (propValue.match(/^\d+$/) && parseInt(propValue, 10) >= 0 && parseInt(propValue, 10) <= 21) {
-          // Likely zoom level (0-21)
-          config.defaultZoomLevel = parseInt(propValue, 10);
-          console.log('Found zoom level:', propValue);
-        } else if (['customSVG', 'googleMapsCustomizable'].includes(propValue)) {
-          // Marker type
-          config.markerType = propValue;
-          console.log('Found marker type:', propValue);
-        } else if (propValue.match(/\.(svg|png|jpg|jpeg|gif)$/i)) {
-          // SVG or image path
-          config.svgUpload = propValue;
-          console.log('Found SVG upload:', propValue);
-        } else if (['all', 'headquarters', 'branch', 'customer-service', 'sales', 'support'].includes(propValue.toLowerCase())) {
-          // Category filter
-          config.filterCategories = propValue.toLowerCase();
-          console.log('Found filter categories:', propValue);
-        } else if (['all', 'us', 'it', 'gr'].includes(propValue.toLowerCase())) {
-          // Country filter
-          config.filterCountry = propValue.toLowerCase();
-          console.log('Found filter country:', propValue);
-        } else if (propValue.match(/^\d+$/) && parseInt(propValue, 10) > 100) {
-          // Likely proximity radius (typically large numbers)
-          config.proximityRadius = propValue;
-          console.log('Found proximity radius:', propValue);
-        } else {
-          // For other strings, use as filter name if not already set
-          config.filterName = propValue;
-        }
       });
+
+      console.log('Final configuration:', config);
 
       // Hide any P tags that contain configuration data
       const allParagraphs = block.querySelectorAll('p');
