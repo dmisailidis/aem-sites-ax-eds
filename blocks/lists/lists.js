@@ -1,365 +1,186 @@
-/**
- * Fetches child pages based on the parent page path
- * @param {string} parentPath - Path to the parent page
- * @param {number} depth - Depth of child pages to fetch
- * @return {Promise<Array>} - Array of child page data
- */
-async function fetchChildPages(parentPath, depth = 1) {
-  try {
-    // Fetch the query index
-    const response = await fetch('/query-index.json');
-    if (!response.ok) {
-      throw new Error('Failed to fetch query index');
+
+export default function decorate(block) {
+// detection of the universal editor
+    const isInEditor = window.location.hostname.includes('adobeaemcloud.com') &&
+                       (window.location.href.includes('/universal-editor/') ||
+                        window.location.search.includes('universal-editor') ||
+                        document.body.classList.contains('universal-editor-page'));
+
+    // in editor mode, hide the configuration divs
+    if (isInEditor) {
+        console.log("Universal Editor rilevato - limitazione decorazione");
+        // Nascondi solo le righe di configurazione
+        if (block.children.length >= 2) block.children[1].style.display = 'none';
+        if (block.children.length >= 3) block.children[2].style.display = 'none';
+        if (block.children.length >= 4) block.children[3].style.display = 'none';
+        return;
     }
-    const data = await response.json();
+    // set the value of the checkbox to false as default
+    let linkItems = false;
+    let showDescription = false;
+    let id = '0';
+    if(block.children.length >= 2){
+        if(block.children[1].children.length > 0){
+            const IDtext = block.children[1].children[0].textContent.trim().toLowerCase();
+            //check if IDtext is a number
+            if(!isNaN(IDtext)){
+                id = IDtext;
+                console.log("ID", id);
+            }
+        }
+   }
 
-    // Filter pages that are children of the specified parent path
-    return data.filter((page) => {
-      const pagePath = page.path;
-      if (!pagePath.startsWith(parentPath)) return false;
+   if (block.children.length >= 4) {
+       //access to the intern div which contains "true" or "false"
+       if (block.children[2].children.length > 0) {
+           const linkItemsText = block.children[2].children[0].textContent.trim().toLowerCase();
+           console.log("linkItemsText value:", linkItemsText);
+           linkItems = linkItemsText === 'true';
+           console.log("linkItems value:", linkItems);
+       }
+   }
 
-      // Calculate the level difference to check depth
-      const parentPathParts = parentPath.split('/').filter(Boolean);
-      const pagePathParts = pagePath.split('/').filter(Boolean);
-      const levelDifference = pagePathParts.length - parentPathParts.length;
+   if (block.children.length >= 5) {
+       //access to the intern div which contains "true" or "false"
+       if (block.children[3].children.length > 0) {
+           const showDescriptionText = block.children[3].children[0].textContent.trim().toLowerCase();
+           showDescription = showDescriptionText === 'true';
+           console.log("showDescription value:", showDescription);
+       }
+   }
+    // remove the empty divs and the configuration divs
+    const items = [...block.children].filter((item, index) => {
+        // Escludi i div di configurazione (linkItems e showDescription)
+        if (index === 1 || index === 2 || index === 3) {
+            return false;
+        }
 
-      return levelDifference > 0 && levelDifference <= depth;
+        if (item.children.length === 1 &&
+            item.children[0].tagName === 'DIV' &&
+            !item.children[0].textContent.trim()) {
+            return false;
+        }
+
+        return true;
     });
-  } catch (error) {
-    console.error('Error fetching child pages:', error);
-    return [];
-  }
-}
 
-/**
- * Fetches pages based on a search query
- * @param {string} query - Search query
- * @return {Promise<Array>} - Array of matching page data
- */
-async function fetchSearchResults(query) {
-  try {
-    // Fetch the query index
-    const response = await fetch('/query-index.json');
-    if (!response.ok) {
-      throw new Error('Failed to fetch query index');
-    }
-    const data = await response.json();
+    // get the value of orderBy from the block's data attribute
+    const orderBy = block.classList.contains('description') ? 'description' : 'title';
 
-    // Simple search implementation
-    const searchTerms = query.toLowerCase().split(' ');
+    let sortOrder;
 
-    return data.filter((page) => {
-      const title = (page.title || '').toLowerCase();
-      const description = (page.description || '').toLowerCase();
+    // crate the list tag
+    const list = document.createElement('ul');
+    list.className = 'list';
+    list.id = `list-${id}`;
 
-      return searchTerms.some((term) => title.includes(term) || description.includes(term));
+    // Create an array to store list items and their data for sorting
+    const listItemsData = [];
+
+    items.forEach((item) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-item';
+        const components = [...item.children];
+        let title = '';
+        let description = '';
+        let link = null;
+
+        const linkElement = item.querySelector('a');
+        if (linkElement) {
+            link = linkElement.cloneNode(true);
+        }
+
+        // extract title and description from the components if present
+        if (components.length >= 1) {
+            title = components[0].textContent.trim();
+        }
+
+        if (components.length >= 2) {
+            description = components[1].textContent.trim();
+        }
+
+        // create the content of the list item
+        let itemContent = '';
+
+        if (title || description) {
+            itemContent += '<span class="list-item-content">';
+
+            // add title and description on the same row else print only description
+            if(title) {
+                if(link && linkItems){
+                    itemContent += `<span class="list-item-title"><a href="${link.href}" ${link.target ? `target="${link.target}"` : ''}>${title}</a></span>`;
+                } else {
+                    itemContent += `<span class="list-item-title">${title}</span>`;
+                }
+
+                // show description only if showDescription is true
+                if(showDescription && description) {
+                    // add a separator between title and description
+                    itemContent += `<span class="list-item-separator"></span><span class="list-item-description">${description}</span>`;
+                }
+            } else if(description && showDescription) {
+                // show description only if showDescription is true, not the title
+                itemContent += `<span class="list-item-description">${description}</span>`;
+            }
+            itemContent += '</span>';
+        }
+
+        // check if the item content is not empty
+        if (itemContent) {
+            listItem.innerHTML = itemContent;
+            listItem.classList.add('list-item-row');
+
+            // Store the item and its data for sorting
+            listItemsData.push({
+                element: listItem,
+                title,
+                description
+            });
+        }
     });
-  } catch (error) {
-    console.error('Error performing search:', error);
-    return [];
-  }
-}
 
-/**
- * Fetches pages that match the specified tags
- * @param {string} parentPath - Path to limit the search (optional)
- * @param {Array} tags - Array of tags to match
- * @param {string} match - Match type ('anyTag' or 'allTags')
- * @return {Promise<Array>} - Array of matching page data
- */
-async function fetchPagesByTags(parentPath, tags, match = 'anyTag') {
-  try {
-    // Fetch the query index
-    const response = await fetch('/query-index.json');
-    if (!response.ok) {
-      throw new Error('Failed to fetch query index');
+
+    const uniqueItems = [...listItemsData];
+    // if there is almost one element, get the value of sortOrder
+    if (uniqueItems.length > 0) {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = uniqueItems[0].element.innerHTML;
+        const titleElement = tempElement.querySelector('.list-item-title');
+        if (titleElement) {
+            sortOrder = titleElement.textContent.trim();
+            // remove the entire element if the value is "ascending" or "descending"
+            if(sortOrder === 'ascending' || sortOrder === 'descending'){
+                uniqueItems.splice(0, 1);
+            }
+        }
     }
-    const data = await response.json();
+    // set default value for sortOrder
+    if(sortOrder !== 'ascending' && sortOrder !== 'descending'){
+        sortOrder = 'ascending';
+    }
+    console.log("OrderBy value:", orderBy, "Sort order:", sortOrder);
 
-    // Filter pages based on tags
-    return data.filter((page) => {
-      // First, check if we need to limit by parent path
-      if (parentPath && !page.path.startsWith(parentPath)) {
-        return false;
-      }
+    // order second the value of orderBy
+    uniqueItems.sort((a, b) => {
+        const valueA = a[orderBy] ? a[orderBy].toLowerCase() : '';
+        const valueB = b[orderBy] ? b[orderBy].toLowerCase() : '';
 
-      // Then check tags
-      const pageTags = page.tags || [];
-
-      if (match === 'anyTag') {
-        return tags.some((tag) => pageTags.includes(tag));
-      }
-      // allTags - must match all specified tags
-      return tags.every((tag) => pageTags.includes(tag));
+        // apply the sorting order
+        return sortOrder === 'descending'
+            ? valueB.localeCompare(valueA)
+            : valueA.localeCompare(valueB);
     });
-  } catch (error) {
-    console.error('Error fetching pages by tags:', error);
-    return [];
-  }
-}
 
-/**
- * Sorts the page data based on the provided criteria
- * @param {Array} pages - Array of page data
- * @param {string} orderBy - Property to sort by
- * @param {string} sortOrder - 'ascending' or 'descending'
- * @return {Array} - Sorted array of page data
- */
-function sortPages(pages, orderBy = 'title', sortOrder = 'ascending') {
-  return [...pages].sort((a, b) => {
-    const valA = a[orderBy] || '';
-    const valB = b[orderBy] || '';
+    // add the items to the list
+    uniqueItems.forEach(item => {
+        list.appendChild(item.element);
+    });
 
-    const comparison = typeof valA === 'string'
-      ? valA.localeCompare(valB)
-      : valA - valB;
-
-    return sortOrder === 'ascending' ? comparison : -comparison;
-  });
-}
-
-/**
- * Formats a date for display
- * @param {string} dateStr - Date string
- * @return {string} - Formatted date string
- */
-function formatDate(dateStr) {
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString();
-  } catch (e) {
-    return dateStr;
-  }
-}
-
-/**
- * Extract configuration from the block
- * @param {Element} block - The block element
- * @return {Object} - Configuration object
- */
-function extractConfig(block) {
-  const config = {};
-  block.querySelectorAll(':scope > div').forEach((row) => {
-    if (row.children.length >= 2) {
-      const key = row.children[0].textContent.trim();
-      const value = row.children[1].textContent.trim();
-      config[key] = value;
-    }
-  });
-
-  // If config doesn't have buildList and there are list-item elements, assume it's a fixedList
-  if (!config.buildList && block.querySelector('.list-item')) {
-    config.buildList = 'fixedList';
-  }
-
-  return config;
-}
-
-/**
- * Process list items from provided data
- * @param {Array} items - Array of item data
- * @param {Object} config - Configuration options
- * @return {DocumentFragment} - Fragment with list items
- */
-function createListItems(items, config) {
-  const fragment = document.createDocumentFragment();
-
-  items.forEach((item) => {
-    const li = document.createElement('li');
-    li.classList.add('list-item');
-
-    if (config.displayAsTeaser === 'true') {
-      li.classList.add('list-teaser');
-    }
-
-    // Create title element
-    const title = document.createElement(config.displayAsTeaser === 'true' ? 'h3' : 'span');
-    title.classList.add('list-item-title');
-
-    if (config.linkItems === 'true' && item.path) {
-      const link = document.createElement('a');
-      link.href = item.path;
-      link.textContent = item.title || '';
-      title.appendChild(link);
-    } else {
-      title.textContent = item.title || '';
-    }
-
-    // Add icon if available
-    if (item.icon) {
-      const iconSpan = document.createElement('span');
-      iconSpan.classList.add('list-item-icon', `icon-${item.icon}`);
-      li.appendChild(iconSpan);
-    }
-
-    li.appendChild(title);
-
-    // Add description if configured
-    if (config.showDescription === 'true' && item.description) {
-      const description = document.createElement('p');
-      description.classList.add('list-item-description');
-      description.textContent = item.description;
-      li.appendChild(description);
-    }
-
-    // Add date if configured
-    if (config.showDate === 'true' && item.lastModified) {
-      const date = document.createElement('span');
-      date.classList.add('list-item-date');
-      date.textContent = formatDate(item.lastModified);
-      li.appendChild(date);
-    }
-
-    fragment.appendChild(li);
-  });
-
-  return fragment;
-}
-
-/**
- * Decorates the list block
- * @param {Element} block - The list block element
- */
-export default async function decorate(block) {
-  // Extract configuration
-  const config = extractConfig(block);
-
-  // If the block already has list items, assume it's a fixed list
-  const hasListItems = block.querySelector('.list-item') !== null;
-
-  // Default to fixedList if buildList is undefined and we have list items
-  if (!config.buildList && hasListItems) {
-    config.buildList = 'fixedList';
-  } else if (!config.buildList) {
-    // Set a default if not specified (may be useful for new blocks)
-    config.buildList = 'fixedList';
-  }
-
-  // Parse fixed list items if using that mode
-  const fixedListItems = [];
-  if (config.buildList === 'fixedList') {
-    // Get all elements that look like list items
-    const itemBlocks = [...block.querySelectorAll('.list-item')];
-
-    // If we're in an editing context with list items
-    // (they might not have the expected structure yet)
-    if (itemBlocks.length > 0) {
-      itemBlocks.forEach((itemBlock) => {
-        const title = itemBlock.querySelector('.list-item-title')?.textContent
-                      || itemBlock.textContent || 'List Item';
-        const description = itemBlock.querySelector('.list-item-description')?.textContent || '';
-        const link = itemBlock.querySelector('.list-item-title a')?.href || '';
-        const iconEl = itemBlock.querySelector('.list-item-icon');
-        const icon = iconEl
-          ? Array.from(iconEl.classList)
-            .find((cls) => cls.startsWith('icon-'))?.substring(5) : '';
-
-        fixedListItems.push({
-          title,
-          description,
-          path: link,
-          icon,
+    // hide the original elements
+        [...block.children].forEach(child => {
+            child.style.display = 'none';
         });
-      });
-    }
 
-    // If we have no items, but we're in fixedList mode (likely a new block),
-    // show an empty message or placeholder
-    if (fixedListItems.length === 0) {
-      fixedListItems.push({
-        title: 'Add list items',
-        description: 'Use the "+" button to add list items',
-        path: '',
-        icon: '',
-      });
-    }
-  }
+    block.appendChild(list);
 
-  // Keep existing list items if this is just a refresh during editing
-  const existingItems = block.querySelector('.list-container');
-  if (existingItems && config.buildList === 'fixedList' && hasListItems) {
-    // Don't clear the content, let the existing items remain
-    return;
-  }
-
-  // Clear the block content to prepare for the list
-  block.innerHTML = '';
-
-  // Create list container
-  const listElement = document.createElement('ul');
-  listElement.classList.add('list-container');
-
-  if (config.displayAsTeaser === 'true') {
-    listElement.classList.add('list-teaser-container');
-  }
-
-  if (config.id) {
-    listElement.id = config.id;
-  }
-
-  let listItems = [];
-
-  // Fetch list items based on the buildList method
-  try {
-    switch (config.buildList) {
-      case 'childPages':
-        if (config.parentPage) {
-          const childDepth = parseInt(config.childDepth, 10) || 1;
-          listItems = await fetchChildPages(config.parentPage, childDepth);
-        }
-        break;
-
-      case 'fixedList':
-        // Use the pre-processed fixed list items
-        listItems = fixedListItems;
-        break;
-
-      case 'search':
-        if (config.searchQuery) {
-          listItems = await fetchSearchResults(config.searchQuery);
-        }
-        break;
-
-      case 'tags':
-        if (config.referenceTags) {
-          const tags = config.referenceTags.split(',').map((tag) => tag.trim());
-          listItems = await fetchPagesByTags(config.referenceParentPage, tags, config.match);
-        }
-        break;
-
-      default:
-        console.warn(`Unknown list building method: ${config.buildList}`);
-        // Default to empty fixed list if method is unknown
-        listItems = [{
-          title: 'Configure list building method',
-          description: 'Select a list building method in the component properties',
-          path: '',
-          icon: '',
-        }];
-    }
-
-    // Apply sorting
-    listItems = sortPages(listItems, config.orderBy, config.sortOrder);
-
-    // Apply item limit
-    if (config.maxItems) {
-      const maxItems = parseInt(config.maxItems, 10);
-      if (maxItems > 0) {
-        listItems = listItems.slice(0, maxItems);
-      }
-    }
-
-    // Create and add list items
-    const itemsFragment = createListItems(listItems, config);
-    listElement.appendChild(itemsFragment);
-  } catch (error) {
-    console.error('Error building list:', error);
-    // Add a message for error state
-    const errorMsg = document.createElement('li');
-    errorMsg.textContent = 'Unable to load list items.';
-    listElement.appendChild(errorMsg);
-  }
-
-  // Add the list to the block
-  block.appendChild(listElement);
 }
