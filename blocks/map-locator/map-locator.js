@@ -20,6 +20,29 @@ export default async function decorate(block) {
   try {
     // Fetch the API key from our endpoint
     const response = await fetch('http://localhost:3001/maps-key');
+
+    // const myHeaders = {};
+    // myHeaders['Content-Type'] = 'application/json';
+    // myHeaders.Accept = 'application/json';
+    // eslint-disable-next-line max-len
+    // myHeaders.Authorization = 'Bearer <enter-key>';
+    // myHeaders['x-gw-ims-org-id'] = 'C0B99765576A7A987F000101@AdobeOrg';
+    // myHeaders['access-control-allow-methods'] = 'GET, OPTIONS';
+    // myHeaders['access-control-allow-origin'] = 'http://localhost:3000';
+    // myHeaders['access-control-allow-headers'] = 'Content-Type, Authorization, x-gw-ims-org-id';
+    // myHeaders['access-control-max-age'] = '3600';
+
+    // const requestOptions = {
+    //   method: 'GET',
+    //   headers: myHeaders,
+    // };
+
+    // console.log('Request Options:', requestOptions);
+
+    // const response = await fetch('https://localhost:53312/api/v1/web/ddax-adobe-io/maps-key', requestOptions)
+    //   .then((res) => console.log('Response:', res))
+    //   .catch((error) => console.log('Error:', error));
+
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
     }
@@ -59,10 +82,6 @@ export default async function decorate(block) {
         throw new Error('Failed to initialize Google Map');
       }
 
-      // Load location data from Content Fragments
-      if (!blockConfig.contentFragmentPath) {
-        console.error('Content Fragment Path is not specified in component properties');
-      }
       const locations = await fetchLocationData(blockConfig.contentFragmentPath);
 
       // Create markers for locations
@@ -71,29 +90,29 @@ export default async function decorate(block) {
           map,
           locations,
           blockConfig.markerType,
-          blockConfig.customTooltip,
           blockConfig.svgUpload,
         );
       }
 
-      // Initialize filters
-      if (blockConfig.showFilters) {
-        initFilters(
-          block,
+      // Check if any of the filtering fields has been set
+      const hasNameFilter = !!blockConfig.filterName.trim();
+      const hasCategoryFilter = blockConfig.filterCategories && blockConfig.filterCategories !== 'all';
+      const hasCountryFilter = blockConfig.filterCountry && blockConfig.filterCountry !== 'all';
+
+      // Apply initial filtering if filters are set
+      if (hasNameFilter || hasCategoryFilter || hasCountryFilter) {
+        applyFilters(
           map,
           locations,
+          blockConfig.filterName.trim(),
           blockConfig.filterCategories,
-          blockConfig.enableSearchFilter,
+          blockConfig.filterCountry,
         );
       }
     } else {
-      console.error('Map Locator: Google Maps API failed to load');
-      // Add a fallback message to the container
       mapContainer.innerHTML = '<div class="cmp-map-locator__error">Map could not be loaded. Please try again later.</div>';
     }
   } catch (error) {
-    console.error('Map Locator: Error initializing map', error);
-    // Add an error message to the container
     mapContainer.innerHTML = '<div class="cmp-map-locator__error">Map could not be loaded. Please try again later.</div>';
   }
 }
@@ -106,70 +125,108 @@ export default async function decorate(block) {
 function getBlockConfig(block) {
   // Create a default config object
   const config = {
-    googleMapApiKey: '', // Will be fetched from API
-    proximityRadius: '1000',
-    countryCode: 'US',
+    contentFragmentPath: '',
     defaultZoomLevel: 7,
     defaultLatitude: 50.7128,
     defaultLongitude: -94.0060,
     markerType: 'googleMapsCustomizable',
-    customTooltip: false,
-    showFilters: false,
-    enableSearchFilter: false,
-    searchFilterTitle: 'Search',
-    searchFilterInitText: 'Search locations...',
-    clearFilters: 'Clear Filters',
-    showResults: 'Show Results',
     svgUpload: '',
-    contentFragmentPath: '',
-    filterCategories: [],
+    filterName: '',
+    filterCategories: 'all',
+    filterCountry: 'all',
+    proximityRadius: '1000',
+    countryCode: 'US',
+    googleMapApiKey: '',
   };
 
   try {
     // Look for paragraphs with data-aue attributes
     const propElements = block.querySelectorAll('[data-aue-prop]');
 
-    propElements.forEach((propElement) => {
-      propElement.style.display = 'none'; // Hide the element
-      const propName = propElement.dataset.aueProp;
-      const propValue = propElement.textContent.trim();
+    if (propElements.length > 0) {
+      propElements.forEach((propElement) => {
+        propElement.style.display = 'none'; // Hide the element
+        const propName = propElement.dataset.aueProp;
+        const propValue = propElement.textContent.trim();
 
-      // Handle specific properties
-      if (propName === 'contentFragmentPath') {
-        config.contentFragmentPath = propValue;
-      } else if (propName === 'defaultZoomLevel') {
-        config.defaultZoomLevel = parseInt(propValue, 10);
-      } else if (propName === 'defaultLatitude') {
-        config.defaultLatitude = parseFloat(propValue);
-      } else if (propName === 'defaultLongitude') {
-        config.defaultLongitude = parseFloat(propValue);
-      } else if (propName === 'markerType') {
-        config.markerType = propValue || 'googleMapsCustomizable';
-      } else if (propName === 'customTooltip') {
-        config.customTooltip = propValue === 'true';
-      } else if (propName === 'showFilters') {
-        config.showFilters = propValue === 'true';
-      } else if (propName === 'enableSearchFilter') {
-        config.enableSearchFilter = propValue === 'true';
-      } else if (propName === 'svgUpload') {
-        config.svgUpload = propValue;
+        // Handle specific properties
+        if (propName === 'contentFragmentPath') {
+          config.contentFragmentPath = propValue;
+        } else if (propName === 'defaultZoomLevel') {
+          config.defaultZoomLevel = parseInt(propValue, 10);
+        } else if (propName === 'defaultLatitude') {
+          config.defaultLatitude = parseFloat(propValue);
+        } else if (propName === 'defaultLongitude') {
+          config.defaultLongitude = parseFloat(propValue);
+        } else if (propName === 'markerType') {
+          config.markerType = propValue || 'googleMapsCustomizable';
+        } else if (propName === 'filterName') {
+          config.filterName = propValue;
+        } else if (propName === 'filterCategories') {
+          config.filterCategories = propValue;
+        } else if (propName === 'filterCountry') {
+          config.filterCountry = propValue;
+        } else if (propName === 'svgUpload') {
+          config.svgUpload = propValue;
+        }
+      });
+
+      // Specifically look for content fragment path
+      const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
+      if (contentFragmentInput) {
+        config.contentFragmentPath = contentFragmentInput.textContent.trim();
       }
-    });
 
-    // Specifically look for content fragment path
-    const contentFragmentInput = block.querySelector('[data-aue-prop="contentFragmentPath"]');
-    if (contentFragmentInput) {
-      config.contentFragmentPath = contentFragmentInput.textContent.trim();
-    }
+      // Also look for direct links to content fragments
+      const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
+      if (contentFragmentLinks.length > 0) {
+        config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
 
-    // Also look for direct links to content fragments
-    const contentFragmentLinks = block.querySelectorAll('a[href^="/content/dam/"]');
-    if (contentFragmentLinks.length > 0) {
-      config.contentFragmentPath = contentFragmentLinks[0].getAttribute('href');
+        // Hide these links in the UI
+        contentFragmentLinks.forEach((link) => {
+          link.style.display = 'none';
+        });
+      }
+    } else {
+      // Find all divs with two child divs (label + value pattern)
+      const rows = block.querySelectorAll(':scope > div');
 
-      // Hide these links in the UI
-      contentFragmentLinks.forEach((link) => {
-        link.style.display = 'none';
+      rows[0].style.display = 'none';
+
+      // Skip the first row if it appears to be the component title
+      let startIndex = 0;
+      if (rows.length > 0 && rows[0].innerText.toLowerCase().includes('map-locator')) {
+        startIndex = 1;
+      }
+
+      const keys = Object.keys(config);
+
+      // Process each row and try to infer the property from its value
+      rows.forEach((row, index) => {
+        if (index < startIndex) return; // Skip component title row
+
+        const currentKey = keys[index - startIndex];
+        const propValue = row.innerText.trim();
+        config[currentKey] = propValue;
+
+        row.style.display = 'none';
+      });
+
+      // Hide any P tags that contain configuration data
+      const allParagraphs = block.querySelectorAll('p');
+      allParagraphs.forEach((p) => {
+        const text = p.textContent.trim();
+        if (text.match(/^\/content\/dam/i)
+            || text.match(/^\d+$/)
+            || text.match(/^-?\d+\.\d+$/)
+            || ['customSVG', 'googleMapsCustomizable', 'all', 'headquarters', 'branch',
+              'customer-service', 'sales', 'support', 'us', 'it', 'gr'].includes(text.toLowerCase())) {
+          if (p.closest('div') && p.closest('div') !== block) {
+            p.closest('div').style.display = 'none';
+          } else {
+            p.style.display = 'none';
+          }
+        }
       });
     }
   } catch (error) {
@@ -191,78 +248,6 @@ function setupComponentStructure(block, config) {
 
   if (config.id) {
     block.id = config.id;
-  }
-
-  // Create filters container if filters are enabled
-  if (config.showFilters) {
-    let filtersContainer = block.querySelector('.cmp-map-locator__filters');
-    if (!filtersContainer) {
-      filtersContainer = document.createElement('div');
-      filtersContainer.className = 'cmp-map-locator__filters';
-      filtersContainer.setAttribute('data-js', 'filter__selection');
-      block.appendChild(filtersContainer);
-
-      // Setup search filter if enabled
-      if (config.enableSearchFilter) {
-        const searchFilterContainer = document.createElement('div');
-        searchFilterContainer.className = 'cmp-map-locator__filters-searchfilter';
-
-        const searchLabel = document.createElement('span');
-        searchLabel.className = 'cmp-map-locator__filters-searchfilter--label';
-        searchLabel.textContent = config.searchFilterTitle;
-
-        const searchInput = document.createElement('input');
-        searchInput.id = 'cmp-map-locator__filters-searchfilter--input';
-        searchInput.className = 'cmp-map-locator__filters-searchfilter--input';
-        searchInput.placeholder = config.searchFilterInitText;
-
-        searchFilterContainer.appendChild(searchLabel);
-        searchFilterContainer.appendChild(searchInput);
-        filtersContainer.appendChild(searchFilterContainer);
-      }
-
-      // Setup tag filters container
-      const tagFiltersContainer = document.createElement('div');
-      tagFiltersContainer.className = 'cmp-map-locator__filters-tagfiters';
-
-      // Add filter categories (will be populated with data later)
-      config.filterCategories.forEach((category) => {
-        const categoryContainer = document.createElement('div');
-        categoryContainer.className = `cmp-map-locator__filters-tagfiters--${category.title}`;
-
-        const categoryTitle = document.createElement('h5');
-        categoryTitle.className = `cmp-map-locator__filters-tagfiters--${category.title}-title`;
-        categoryTitle.textContent = category.title;
-
-        const categoryInputs = document.createElement('div');
-        categoryInputs.className = `cmp-map-locator__filters-tagfiters--${category.title}-input`;
-        categoryInputs.setAttribute('data-js', 'filter-category-inputs');
-
-        categoryContainer.appendChild(categoryTitle);
-        categoryContainer.appendChild(categoryInputs);
-        tagFiltersContainer.appendChild(categoryContainer);
-      });
-
-      // Add filter buttons
-      const buttonsContainer = document.createElement('div');
-      buttonsContainer.className = 'cmp-map-locator__filters-buttons';
-
-      const clearButton = document.createElement('button');
-      clearButton.setAttribute('data-js', 'filter__cancel-btn-toggle');
-      clearButton.className = 'filter__cancel-btn';
-      clearButton.textContent = config.clearFilters;
-
-      const showResultsButton = document.createElement('button');
-      showResultsButton.setAttribute('data-js', 'filter__show-results-link');
-      showResultsButton.className = 'filter__show-results';
-      showResultsButton.textContent = config.showResults;
-
-      buttonsContainer.appendChild(clearButton);
-      buttonsContainer.appendChild(showResultsButton);
-      tagFiltersContainer.appendChild(buttonsContainer);
-
-      filtersContainer.appendChild(tagFiltersContainer);
-    }
   }
 }
 
@@ -398,6 +383,7 @@ async function fetchLocationData(contentFragmentPath) {
           phone: fragmentData.phone || '',
           website: fragmentData.website || '',
           categories: Array.isArray(fragmentData.categories) ? fragmentData.categories : [],
+          country: fragmentData.countryCode || '',
         };
 
         if (location.latitude && location.longitude) {
@@ -427,22 +413,56 @@ async function fetchLocationData(contentFragmentPath) {
 function getFallbackLocations() {
   return [
     {
-      name: 'New York Office (Fallback)',
-      address: '123 Broadway, New York, NY 10001',
-      latitude: 40.7128,
-      longitude: -74.0060,
-      phone: '+1 (212) 555-1234',
-      website: 'https://example.com/ny',
-      categories: ['headquarters', 'sales'],
-    },
-    {
-      name: 'Los Angeles Office (Fallback)',
+      name: 'Los Angeles Office',
       address: '456 Wilshire Blvd, Los Angeles, CA 90036',
       latitude: 34.0522,
       longitude: -118.2437,
       phone: '+1 (310) 555-5678',
       website: 'https://example.com/la',
-      categories: ['branch', 'customer-service'],
+      categories: [
+        'branch',
+        'customer-service',
+      ],
+      country: 'us',
+    },
+    {
+      name: 'New York Office',
+      address: '123 Broadway, New York, NY 10001',
+      latitude: 40.7128,
+      longitude: -74.006,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ny',
+      categories: [
+        'headquarters',
+        'sales',
+      ],
+      country: 'us',
+    },
+    {
+      name: 'Chicago Office',
+      address: '522-534 W Roosevelt Rd',
+      latitude: 41.8713239,
+      longitude: -87.6342781,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ch',
+      categories: [
+        'branch',
+        'sales',
+      ],
+      country: 'us',
+    },
+    {
+      name: 'Milan Office',
+      address: 'Via Tortona, 25, 20144 Milano MI, Italy',
+      latitude: 45.4524723,
+      longitude: 9.1560075,
+      phone: '+1 (212) 555-1234',
+      website: 'https://example.com/ml',
+      categories: [
+        'headquarters',
+        'customer-service',
+      ],
+      country: 'it',
     },
   ];
 }
@@ -452,10 +472,9 @@ function getFallbackLocations() {
  * @param {Object} map - Google Maps instance
  * @param {Array} locations - Array of location objects
  * @param {string} markerType - Type of marker to use
- * @param {boolean} customTooltip - Whether to use custom tooltips
  * @param {string} svgPath - Path to custom marker SVG
  */
-function createMarkers(map, locations, markerType, customTooltip, svgPath) {
+function createMarkers(map, locations, markerType, svgPath) {
   // Make sure Google Maps API is loaded
   if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
     console.error('Map Locator: Google Maps API not loaded');
@@ -511,11 +530,7 @@ function createMarkers(map, locations, markerType, customTooltip, svgPath) {
       bounds.extend(position);
 
       // Add info window or custom tooltip
-      if (customTooltip) {
-        addCustomTooltip(map, marker, location);
-      } else {
-        addInfoWindow(map, marker, location);
-      }
+      addInfoWindow(map, marker, location);
     });
 
     // Auto-center map to show all markers
@@ -536,6 +551,12 @@ function createMarkers(map, locations, markerType, customTooltip, svgPath) {
  * @param {Object} marker - Marker instance
  * @param {Object} location - Location data
  */
+/**
+ * Add standard info window to marker with auto-close functionality
+ * @param {Object} map - Google Maps instance
+ * @param {Object} marker - Marker instance
+ * @param {Object} location - Location data
+ */
 function addInfoWindow(map, marker, location) {
   // Make sure Google Maps API is loaded
   if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
@@ -545,13 +566,18 @@ function addInfoWindow(map, marker, location) {
 
   try {
     const infoContent = `
-      <div>
-        <h3>${location.name || ''}</h3>
-        <p>${location.address || ''}</p>
-        ${location.phone ? `<p>Phone: ${location.phone}</p>` : ''}
+      <div class="map-marker-tooltip">
+        <h3 class="map-marker-tooltip__title">${location.name || ''}</h3>
+        <p class="map-marker-tooltip__address">${location.address || ''}</p>
+        ${location.phone ? `<p class="map-marker-tooltip__phone">Phone: ${location.phone}</p>` : ''}
         ${
   location.website
-    ? `<p><a href="${location.website}" target="_blank">Website</a></p>`
+    ? `<p><a href="${location.website}" target="_blank" class="map-marker-tooltip__link">Website</a></p>`
+    : ''
+}
+        ${
+  location.categories && location.categories.length > 0
+    ? `<p class="map-marker-tooltip__categories">Categories: ${location.categories.join(', ')}</p>`
     : ''
 }
       </div>
@@ -561,8 +587,42 @@ function addInfoWindow(map, marker, location) {
       content: infoContent,
     });
 
+    // Store a reference to the currently open info window on the map
+    if (!map.openInfoWindow) {
+      map.openInfoWindow = null;
+    }
+
+    // Add click listener to the marker
     marker.addListener('click', () => {
+      // Close the previously open info window (if any)
+      if (map.openInfoWindow) {
+        map.openInfoWindow.close();
+      }
+
+      // Open this info window and store a reference to it
       infoWindow.open(map, marker);
+      map.openInfoWindow = infoWindow;
+    });
+
+    // If not already added, add a map click listener to close info windows
+    // when clicking elsewhere on the map
+    if (!map.hasInfoWindowCloseHandler) {
+      map.addListener('click', (event) => {
+        // Only close if the click was not on a marker
+        // (markers will handle their own info windows)
+        if (map.openInfoWindow) {
+          map.openInfoWindow.close();
+          map.openInfoWindow = null;
+        }
+      });
+
+      // Mark that we've added this handler, so we don't add it multiple times
+      map.hasInfoWindowCloseHandler = true;
+    }
+
+    // Add close event to the info window itself
+    google.maps.event.addListener(infoWindow, 'closeclick', () => {
+      map.openInfoWindow = null;
     });
   } catch (error) {
     console.error('Error creating info window:', error);
@@ -570,248 +630,119 @@ function addInfoWindow(map, marker, location) {
 }
 
 /**
- * Add custom tooltip to marker
- * @param {Object} map - Google Maps instance
- * @param {Object} marker - Marker instance
- * @param {Object} location - Location data
+ * Apply filters to the map based on the given criteria
+ * @param {Object} map - The Google Maps instance
+ * @param {Array} locations - Array of all location objects
+ * @param {string} filterName - The name filter text
+ * @param {string} filterCategories - The category filter
+ * @param {string} filterCountry - The country filter
  */
-function addCustomTooltip(map, marker, location) {
-  // Make sure Google Maps API is loaded
-  if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-    console.error('Map Locator: Google Maps API not loaded');
+function applyFilters(map, locations, filterName, filterCategories, filterCountry) {
+  // Make sure map and markers exist
+  if (!map || !map.markers || !map.markers.length) {
+    console.error('Map Locator: Invalid map or no markers found');
     return;
   }
 
-  try {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'map-marker-tooltip';
-    tooltip.innerHTML = `
-      <div class="map-marker-tooltip__title">${location.name || ''}</div>
-      <div class="map-marker-tooltip__address">${location.address || ''}</div>
-      ${
-  location.phone
-    ? `<div class="map-marker-tooltip__phone">${location.phone}</div>`
-    : ''
-}
-      ${
-  location.website
-    ? `<a href="${location.website}" class="map-marker-tooltip__link" target="_blank">Visit website</a>`
-    : ''
-}
-    `;
+  // Prepare the bounds for visible markers
+  const bounds = new google.maps.LatLngBounds();
+  let visibleMarkersCount = 0;
+  let lastVisibleMarker = null;
 
-    tooltip.style.display = 'none';
-    document.body.appendChild(tooltip);
+  // Process each marker
+  map.markers.forEach((marker) => {
+    const location = marker.locationData;
+    let isVisible = true;
 
-    marker.addListener('click', () => {
-      // Hide all other tooltips
-      document.querySelectorAll('.map-marker-tooltip').forEach((el) => {
-        el.style.display = 'none';
-      });
+    // Apply name filter if specified (fuzzy match)
+    if (filterName && filterName.trim() !== '') {
+      const nameFilter = filterName.toLowerCase();
+      const locationName = location.name ? location.name.toLowerCase() : '';
+      const locationAddress = location.address ? location.address.toLowerCase() : '';
 
-      // Position and show this tooltip
-      const scale = 2 ** map.getZoom();
-      const nw = new google.maps.LatLng(
-        map.getBounds().getNorthEast().lat(),
-        map.getBounds().getSouthWest().lng(),
-      );
-      const worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
-      const worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition());
-      const pixelOffset = new google.maps.Point(
-        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
-        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale),
-      );
+      // Fuzzy match - check if filter is included in name or address
+      const matchesName = locationName.includes(nameFilter);
+      const matchesAddress = locationAddress.includes(nameFilter);
 
-      tooltip.style.position = 'absolute';
-      tooltip.style.left = `${pixelOffset.x + 10}px`;
-      tooltip.style.top = `${pixelOffset.y - 30}px`;
-      tooltip.style.display = 'block';
-
-      // Close tooltip when clicking elsewhere on the map
-      map.addListener('click', () => {
-        tooltip.style.display = 'none';
-      });
-    });
-  } catch (error) {
-    console.error('Error creating custom tooltip:', error);
-  }
-}
-
-/**
- * Initialize filter functionality
- * @param {HTMLElement} block - Component block element
- * @param {Object} map - Google Maps instance
- * @param {Array} locations - Array of location objects
- * @param {Array} filterCategories - Array of filter category objects
- * @param {boolean} enableSearchFilter - Whether search filter is enabled
- */
-function initFilters(block, map, locations, filterCategories) {
-  const filtersContainer = block.querySelector('.cmp-map-locator__filters');
-  if (!filtersContainer) return;
-
-  const searchInput = filtersContainer.querySelector(
-    '.cmp-map-locator__filters-searchfilter--input',
-  );
-
-  // Create filter tag elements if needed
-  filterCategories.forEach((category) => {
-    const categoryInputsContainer = filtersContainer.querySelector(
-      `.cmp-map-locator__filters-tagfiters--${category.title}-input`,
-    );
-    if (!categoryInputsContainer) return;
-
-    // Clear existing filter elements
-    categoryInputsContainer.innerHTML = '';
-
-    // Add filter elements
-    Object.entries(category.filterTags).forEach(([tagName, tagId]) => {
-      const filterElement = document.createElement('div');
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = tagId;
-      checkbox.dataset.categoryId = tagId;
-      checkbox.value = tagId;
-
-      const label = document.createElement('label');
-      label.htmlFor = tagId;
-      label.textContent = tagName;
-
-      filterElement.appendChild(checkbox);
-      filterElement.appendChild(label);
-      categoryInputsContainer.appendChild(filterElement);
-    });
-  });
-
-  // Get all category inputs after they've been created
-  const categoryInputs = filtersContainer.querySelectorAll('[data-category-id]');
-
-  // Set up event listeners
-
-  // Search filter
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-
-  // Category filters
-  categoryInputs.forEach((input) => {
-    input.addEventListener('change', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  });
-
-  // Clear filters button
-  const clearButton = filtersContainer.querySelector(
-    '[data-js="filter__cancel-btn-toggle"]',
-  );
-  if (clearButton) {
-    clearButton.addEventListener('click', () => {
-      if (searchInput) searchInput.value = '';
-      categoryInputs.forEach((input) => {
-        input.checked = false;
-      });
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-
-  // Show results button
-  const showResultsButton = filtersContainer.querySelector(
-    '[data-js="filter__show-results-link"]',
-  );
-  if (showResultsButton) {
-    showResultsButton.addEventListener('click', () => {
-      applyFilters(map, locations, searchInput, categoryInputs);
-    });
-  }
-}
-
-/**
- * Apply filters to map markers
- * @param {Object} map - Google Maps instance
- * @param {Array} locations - Array of location objects
- * @param {HTMLInputElement} searchInput - Search input element
- * @param {NodeList} categoryInputs - Category filter input elements
- */
-function applyFilters(map, locations, searchInput, categoryInputs) {
-  // Make sure Google Maps API is loaded
-  if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-    console.error('Map Locator: Google Maps API not loaded');
-    return;
-  }
-
-  // Make sure the map and markers exist
-  if (!map || !map.markers) {
-    console.error('Map Locator: Invalid map or markers');
-    return;
-  }
-
-  try {
-    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-
-    // Get selected category filters
-    const selectedCategories = {};
-    categoryInputs.forEach((input) => {
-      if (input.checked) {
-        const category = input.dataset.categoryId;
-        selectedCategories[category] = true;
+      // Only show if it matches the name filter
+      if (!matchesName && !matchesAddress) {
+        isVisible = false;
       }
-    });
-
-    const hasSelectedCategories = Object.keys(selectedCategories).length > 0;
-
-    // Filter and update markers
-    const bounds = new google.maps.LatLngBounds();
-    let visibleMarkers = 0;
-
-    map.markers.forEach((marker) => {
-      const location = marker.locationData;
-      let visible = true;
-
-      // Apply search filter
-      if (searchTerm) {
-        const matchesSearch = (location.name && location.name.toLowerCase().includes(searchTerm))
-          || (location.address
-            && location.address.toLowerCase().includes(searchTerm))
-          || (location.city && location.city.toLowerCase().includes(searchTerm))
-          || (location.state
-            && location.state.toLowerCase().includes(searchTerm))
-          || (location.zip && location.zip.toLowerCase().includes(searchTerm));
-
-        if (!matchesSearch) {
-          visible = false;
-        }
-      }
-
-      // Apply category filters
-      if (visible && hasSelectedCategories) {
-        const matchesCategory = location.categories
-          && location.categories.some((cat) => selectedCategories[cat]);
-
-        if (!matchesCategory) {
-          visible = false;
-        }
-      }
-
-      // Update marker visibility
-      marker.setVisible(visible);
-
-      // Add to bounds if visible
-      if (visible) {
-        bounds.extend(marker.getPosition());
-        visibleMarkers += 1;
-      }
-    });
-
-    // Update map bounds to show all visible markers
-    if (visibleMarkers > 1) {
-      map.fitBounds(bounds);
-    } else if (visibleMarkers === 1) {
-      // If only one marker is visible, zoom in more
-      map.setZoom(14);
     }
-  } catch (error) {
-    console.error('Error applying filters:', error);
-  }
+
+    // Apply category filter if specified and not 'all'
+    if (isVisible && filterCategories && filterCategories !== 'all') {
+      // Check if the location has the specified category
+      const hasCategory = location.categories
+        && location.categories.some((cat) => cat.toLowerCase() === filterCategories.toLowerCase());
+
+      if (!hasCategory) {
+        isVisible = false;
+      }
+    }
+
+    // Apply country filter if specified and not 'all'
+    if (isVisible && filterCountry && filterCountry !== 'all') {
+      // Check if the location country matches the filter
+      const locationCountry = location.country ? location.country.toLowerCase() : '';
+
+      if (locationCountry !== filterCountry.toLowerCase()) {
+        isVisible = false;
+      }
+    }
+
+    // Update marker visibility
+    marker.setVisible(isVisible);
+
+    // If visible, extend map bounds to include this marker
+    if (isVisible) {
+      bounds.extend(marker.getPosition());
+      visibleMarkersCount += 1;
+      lastVisibleMarker = marker; // Keep track of the last visible marker
+    }
+  });
+
+  // Use setTimeout to ensure the map has time to process marker visibility changes
+  setTimeout(() => {
+    // Update map viewport based on visible markers
+    if (visibleMarkersCount === 1 && lastVisibleMarker) {
+      try {
+        // Get position directly from the marker
+        const position = lastVisibleMarker.getPosition();
+
+        // Force map to center on this position
+        map.setCenter(position);
+
+        // Force zoom level change
+        const zoomLevel = 14;
+        map.setZoom(zoomLevel);
+
+        // Force the map to redraw/refresh
+        google.maps.event.trigger(map, 'resize');
+      } catch (error) {
+        console.error('Error centering map:', error);
+
+        // Fallback method using stored lat/lng
+        try {
+          const lat = parseFloat(lastVisibleMarker.locationData.latitude);
+          const lng = parseFloat(lastVisibleMarker.locationData.longitude);
+
+          if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+            const center = new google.maps.LatLng(lat, lng);
+            map.setCenter(center);
+            map.setZoom(14);
+            google.maps.event.trigger(map, 'resize');
+          }
+        } catch (fallbackError) {
+          console.error('Fallback centering failed:', fallbackError);
+        }
+      }
+    } else if (visibleMarkersCount > 1) {
+      // For multiple markers, fit bounds
+      map.fitBounds(bounds);
+
+      // Force map to refresh
+      google.maps.event.trigger(map, 'resize');
+    }
+  }, 300); // Short delay to ensure the map is ready
 }

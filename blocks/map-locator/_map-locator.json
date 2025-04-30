@@ -83,72 +83,71 @@
           "multi": false
         },
         {
-          "component": "boolean",
-          "valueType": "boolean",
-          "name": "customTooltip",
-          "label": "Custom Tooltip",
-          "fieldDescription": "Enable custom tooltips for markers."
+          "component": "text",
+          "valueType": "string",
+          "name": "filterName",
+          "label": "Filter Name",
+          "fieldDescription": "Filter by marker name"
         },
         {
-          "component": "boolean",
-          "valueType": "boolean",
-          "name": "showFilters",
-          "label": "Show Filters",
-          "fieldDescription": "Enable filter options for the map."
-        },
-        {
-          "component": "multifield",
+          "component": "select",
           "name": "filterCategories",
           "label": "Filter Categories",
-          "valueType": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "component": "text",
-                "valueType": "string",
-                "name": "title",
-                "label": "Title",
-                "required": true
-              },
-              "filterTags": {
-                "component": "multiselect",
-                "name": "filterTags",
-                "label": "Filter Elements",
-                "valueType": "string[]",
-                "required": true,
-                "options": []
-              }
+          "valueType": "string",
+          "value": "all",
+          "fieldDescription": "Select the category to filter the markers.",
+          "options": [
+            {
+              "name": "All",
+              "value": "all"
+            },
+            {
+              "name": "Headquarters",
+              "value": "headquarters"
+            },
+            {
+              "name": "Branch",
+              "value": "branch"
+            },
+            {
+              "name": "Customer service",
+              "value": "customer-service"
+            },
+            {
+              "name": "Sales",
+              "value": "sales"
+            },
+            {
+              "name": "Support",
+              "value": "support"
             }
-          }
+          ]
         },
         {
-          "component": "boolean",
-          "valueType": "boolean",
-          "name": "enableSearchFilter",
-          "label": "Enable Search Filter",
-          "fieldDescription": "If this field checked, search filter is enabled"
-        },
-        {
-          "component": "text",
+          "component": "select",
+          "name": "filterCountry",
+          "label": "Filter Countries",
           "valueType": "string",
-          "name": "searchFilterTitle",
-          "label": "Search Filter Title",
-          "fieldDescription": "Search Filter Title"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "searchFilterInitText",
-          "label": "Search Filter Initial Text",
-          "fieldDescription": "Search Filter Initial Text"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "countryCode",
-          "label": "Search Filter Country Code",
-          "fieldDescription": "Enter the two-letter country code that will be used to restrict the autocomplete results to a specific country. For example, 'US' for United States, 'GB' for United Kingdom, 'FR' for France, etc. If left blank, no country restriction will be applied and the results will be global."
+          "value": "all",
+          "fieldDescription": "Select the country to filter the markers.",
+          "options": [
+            {
+              "name": "All",
+              "value": "all"
+            },
+            {
+              "name": "US",
+              "value": "us"
+            },
+            {
+              "name": "IT",
+              "value": "it"
+            },
+            {
+              "name": "GR",
+              "value": "gr"
+            }
+          ]
         },
         {
           "component": "text-input",
@@ -157,28 +156,6 @@
           "label": "Proximity Radius (meters)",
           "value": "1000",
           "fieldDescription": "Enter the distance (in meters) from the search location that nearby results should be displayed."
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "showResults",
-          "label": "Show Results Label",
-          "fieldDescription": "Show Results Label",
-          "required": true
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "clearFilters",
-          "label": "Clear Filters Label",
-          "fieldDescription": "Clear Filters Label"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "selectInit",
-          "label": "Select Filters Initial Text",
-          "fieldDescription": "Select Filters Initial Text"
         }
       ]
     }
