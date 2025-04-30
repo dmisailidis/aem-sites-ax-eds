@@ -644,11 +644,6 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
     return;
   }
 
-  console.log('Applying filters:');
-  console.log('- Name filter:', filterName);
-  console.log('- Category filter:', filterCategories);
-  console.log('- Country filter:', filterCountry);
-
   // Prepare the bounds for visible markers
   const bounds = new google.maps.LatLngBounds();
   let visibleMarkersCount = 0;
@@ -707,18 +702,13 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
     }
   });
 
-  console.log(`Filter applied: ${visibleMarkersCount} of ${map.markers.length} markers visible`);
-
   // Use setTimeout to ensure the map has time to process marker visibility changes
   setTimeout(() => {
     // Update map viewport based on visible markers
     if (visibleMarkersCount === 1 && lastVisibleMarker) {
-      console.log('Centering map on single visible marker with delay');
-
       try {
         // Get position directly from the marker
         const position = lastVisibleMarker.getPosition();
-        console.log('Position object:', position);
 
         // Force map to center on this position
         map.setCenter(position);
@@ -726,8 +716,6 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
         // Force zoom level change
         const zoomLevel = 14;
         map.setZoom(zoomLevel);
-
-        console.log(`Map centered at ${position.toString()} with zoom level ${zoomLevel}`);
 
         // Force the map to redraw/refresh
         google.maps.event.trigger(map, 'resize');
@@ -740,7 +728,6 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
           const lng = parseFloat(lastVisibleMarker.locationData.longitude);
 
           if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-            console.log('Using fallback method with lat/lng:', lat, lng);
             const center = new google.maps.LatLng(lat, lng);
             map.setCenter(center);
             map.setZoom(14);
@@ -752,7 +739,6 @@ function applyFilters(map, locations, filterName, filterCategories, filterCountr
       }
     } else if (visibleMarkersCount > 1) {
       // For multiple markers, fit bounds
-      console.log('Fitting bounds for multiple markers');
       map.fitBounds(bounds);
 
       // Force map to refresh
