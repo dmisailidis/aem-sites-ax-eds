@@ -147,6 +147,7 @@ header .nav-brand {
   line-height: 1;
   display: flex;
   justify-content: center;
+  max-height: 90%;
 }
 
 header nav .nav-brand img {
