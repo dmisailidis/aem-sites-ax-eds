@@ -137,7 +137,7 @@ function getBlockConfig(block) {
   };
 
   try {
-    console.log('block ', block);
+    console.log('block test', block);
 
     // Look for paragraphs with data-aue attributes
     const propElements = block.querySelectorAll('[data-aue-prop]');
