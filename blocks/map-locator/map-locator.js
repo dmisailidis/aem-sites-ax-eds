@@ -19,7 +19,7 @@ export default async function decorate(block) {
 
   try {
     // Fetch the API key from our endpoint
-    // const response = await fetch('http://localhost:3001/maps-key');
+    const response = await fetch('http://localhost:3001/maps-key');
 
     // const myHeaders = {};
     // myHeaders['Content-Type'] = 'application/json';
