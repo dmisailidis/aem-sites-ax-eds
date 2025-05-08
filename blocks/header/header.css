@@ -2,7 +2,7 @@
 header .nav-wrapper {
   background-color: var(--bg-color-base);
   width: 100%;
-  z-index: 2;
+  z-index: 4;
   position: fixed;
 }
 
@@ -301,7 +301,7 @@ header nav .nav-sections .default-content-wrapper > ul > li.nav-drop > ul > li >
     left: 12.5%;
     height: 4px;
     border-radius: 2px 2px 0 0 ;
-    z-index: 2;
+    z-index: 4;
     background-color: var(--color-base-link);
   }
 
