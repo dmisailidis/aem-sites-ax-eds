@@ -24,6 +24,8 @@ function initCookieNotice(version) {
     if (!localStorage.getItem('cookiesAccepted')
         || localStorage.getItem('cookiesAccepted') !== 'true'
         || localStorage.getItem('cookieNoticeVersion') !== version) {
+        localStorage.removeItem('cookiesAccepted');
+        localStorage.removeItem('cookieNoticeVersion');
         cookieNotice.style.display = 'block';
     }
 
