@@ -42,8 +42,6 @@ export default async function decorate(block) {
     console.error('Error fetching the PDF file size:', error);
   }
 
-  console.log(title, assetLink, fileName, fileType, fileSize);
-
   const linkRight = document.createElement('div');
   const fileTitle = document.createElement('p');
   fileTitle.innerText = title;

@@ -4,7 +4,6 @@ export default function decorate(block) {
   const authorName = authorNameDiv.querySelector('p');
   const date = dateDiv.querySelector('p');
   block.replaceChildren();
-  console.log(img, authorName, date);
 
   const authorInfo = document.createElement('div');
   authorInfo.className = 'author-info__info';

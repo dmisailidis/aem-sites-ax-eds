@@ -21,6 +21,7 @@ export default async function decorate(block) {
     // Fetch the API key from our endpoint
     const response = await fetch('http://localhost:3001/maps-key');
 
+    // Uncomment the following lines to set up headers for Adobe I/O integration
     // const myHeaders = {};
     // myHeaders['Content-Type'] = 'application/json';
     // myHeaders.Accept = 'application/json';
@@ -137,8 +138,6 @@ function getBlockConfig(block) {
   };
 
   try {
-    console.log('block ', block);
-
     // Look for paragraphs with data-aue attributes
     const propElements = block.querySelectorAll('[data-aue-prop]');
 
