@@ -363,6 +363,7 @@ async function fetchLocationData(contentFragmentPath) {
     // Use Promise.all to fetch all fragments in parallel
     await Promise.all(fragmentPaths.map(async (fragmentPath) => {
       try {
+        console.log('Paths', cleanPath, fragmentPath);
         // Construct the path to the master data
         const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
 
