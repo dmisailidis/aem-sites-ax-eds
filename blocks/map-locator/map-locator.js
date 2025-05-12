@@ -366,6 +366,8 @@ async function fetchLocationData(contentFragmentPath) {
         // Construct the path to the master data
         const fragmentEndpoint = `${cleanPath}/${fragmentPath}/jcr:content/data/master.json`;
 
+        console.log('Fragment Endpoint:', fragmentEndpoint);
+
         const fragmentResponse = await fetch(fragmentEndpoint);
         if (!fragmentResponse.ok) {
           console.warn(`Failed to fetch fragment ${fragmentPath}: ${fragmentResponse.status}`);
