@@ -339,6 +339,8 @@ async function fetchLocationData(contentFragmentPath) {
 
     const folderData = await folderResponse.json();
 
+    console.log('Folder Data:', folderData);
+
     // Extract content fragment paths
     const fragmentPaths = [];
 
