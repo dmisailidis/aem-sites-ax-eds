@@ -605,7 +605,7 @@ function addInfoWindow(map, marker, location) {
     // If not already added, add a map click listener to close info windows
     // when clicking elsewhere on the map
     if (!map.hasInfoWindowCloseHandler) {
-      map.addListener('click', (event) => {
+      map.addListener('click', () => {
         // Only close if the click was not on a marker
         // (markers will handle their own info windows)
         if (map.openInfoWindow) {
