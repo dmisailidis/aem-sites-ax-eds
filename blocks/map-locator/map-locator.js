@@ -24,23 +24,44 @@ export default async function decorate(block) {
     myHeaders.Authorization = 'Bearer eyJhbGciOiJSUzI1NiIsIng1dSI6Imltc19uYTEta2V5LWF0LTEuY2VyIiwia2lkIjoiaW1zX25hMS1rZXktYXQtMSIsIml0dCI6ImF0In0...';
     myHeaders['x-gw-ims-org-id'] = 'C0B99765576A7A987F000101@AdobeOrg';
 
-    const requestOptions = {
+    // Static endpoint - only production Adobe I/O Runtime URL
+    const apiEndpoint = 'https://42795-ddax.adobeioruntime.net/api/v1/web/ddax-adobe-io/maps-key';
+
+    // Try a simpler GET request first
+    const response = await fetch(apiEndpoint, {
       method: 'GET',
-      headers: myHeaders,
-    };
-
-    console.log('Request Options:', requestOptions);
-
-    const response = await fetch('https://localhost:9080/api/v1/web/ddax-adobe-io/maps-key', requestOptions);
-
-    console.log('Response:', response);
+      headers: {
+        Authorization: myHeaders.Authorization,
+        'x-gw-ims-org-id': myHeaders['x-gw-ims-org-id'],
+        // Remove Content-Type and Accept to see if they're causing issues
+      },
+    });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch API key: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Response error text:', errorText);
+      console.error('Full response details:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorText,
+      });
+      throw new Error(`Failed to fetch API key: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    const responseText = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse JSON:', parseError);
+      console.error('Raw response was:', responseText);
+      throw new Error('Invalid JSON response from server');
+    }
+
     if (!data.key) {
+      console.error('API key not found in response. Available keys:', Object.keys(data));
       throw new Error('API key not found in response');
     }
 
