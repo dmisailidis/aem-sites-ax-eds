@@ -90,7 +90,7 @@ export default async function decorate(block) {
       if (window.location.host.includes('adobeaemcloud')) {
         // If it's a DAM path, convert it to a repository path
         // Example: /content/dam/pdfs/sample.pdf -> /pdfs/sample.pdf
-        pdfUrl = window.location.host + filePath;
+        pdfUrl = window.location.origin + filePath;
       } else {
         // If it's a relative path, use it with current origin
         pdfUrl = '/pdfs/Lorem_ipsum.pdf';
