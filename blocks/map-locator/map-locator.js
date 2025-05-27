@@ -18,28 +18,22 @@ export default async function decorate(block) {
   }
 
   try {
-    // Fetch the API key from our endpoint
-    const response = await fetch('http://localhost:3001/maps-key');
+    const myHeaders = {};
+    myHeaders['Content-Type'] = 'application/json';
+    myHeaders.Accept = 'application/json';
+    myHeaders.Authorization = 'Bearer eyJhbGciOiJSUzI1NiIsIng1dSI6Imltc19uYTEta2V5LWF0LTEuY2VyIiwia2lkIjoiaW1zX25hMS1rZXktYXQtMSIsIml0dCI6ImF0In0...';
+    myHeaders['x-gw-ims-org-id'] = 'C0B99765576A7A987F000101@AdobeOrg';
 
-    // Uncomment the following lines to set up headers for Adobe I/O integration
-    // const myHeaders = {};
-    // myHeaders['Content-Type'] = 'application/json';
-    // myHeaders.Accept = 'application/json';
-    // myHeaders.Authorization = 'Bearer;
-    // myHeaders['access-control-allow-origin'] = 'http://localhost:3000';
-    // myHeaders['access-control-allow-headers'] = 'Content-Type, Authorization, x-gw-ims-org-id';
-    // myHeaders['access-control-max-age'] = '3600';
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
 
-    // const requestOptions = {
-    //   method: 'GET',
-    //   headers: myHeaders,
-    // };
+    console.log('Request Options:', requestOptions);
 
-    // console.log('Request Options:', requestOptions);
+    const response = await fetch('https://localhost:9080/api/v1/web/ddax-adobe-io/maps-key', requestOptions);
 
-    // const response = await fetch('https://localhost:9080/api/v1/web/ddax-adobe-io/maps-key', requestOptions)
-    //   .then((res) => console.log('Response:', res))
-    //   .catch((error) => console.log('Error:', error));
+    console.log('Response:', response);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch API key: ${response.status}`);
@@ -50,7 +44,6 @@ export default async function decorate(block) {
       throw new Error('API key not found in response');
     }
 
-    // Use the fetched API key
     blockConfig.googleMapApiKey = data.key;
 
     // Load Google Maps API (using API key from CA Config)
