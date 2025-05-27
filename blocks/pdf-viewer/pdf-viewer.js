@@ -85,16 +85,15 @@ export default async function decorate(block) {
       // Determine the correct PDF URL based on the file path
       let pdfUrl;
 
-      if (filePath.startsWith('/content/dam/')) {
+      console.log('path', window.location.host);
+
+      if (window.location.host.includes('adobeaemcloud')) {
         // If it's a DAM path, convert it to a repository path
         // Example: /content/dam/pdfs/sample.pdf -> /pdfs/sample.pdf
-        pdfUrl = filePath.replace('/content/dam/', '/');
-      } else if (filePath.startsWith('http')) {
-        // If it's already a full URL, use it as is
         pdfUrl = filePath;
       } else {
         // If it's a relative path, use it with current origin
-        pdfUrl = window.location.origin + filePath;
+        pdfUrl = '/pdfs/Lorem_ipsum.pdf';
       }
 
       console.log('PDF URL:', pdfUrl);
